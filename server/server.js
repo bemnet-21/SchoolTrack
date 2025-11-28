@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import authRoutes from './routes/authRoutes.js'
+import studentsRoutes from './routes/studentsRoutes.js'
 
 dotenv.config({ quiet: true })
 
@@ -15,5 +16,6 @@ app.listen(port, () => {
 })
 
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/students', studentsRoutes)
 
 

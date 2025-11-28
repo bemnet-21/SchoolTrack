@@ -4,9 +4,14 @@ import dotenv from 'dotenv'
 dotenv.config
 const JWT_SECRET = process.env.JWT_SECRET
 const JWT_EXPIRES = process.env.JWT_EXPIRES
+
 export const generateToken = (user) => {
+    const payload = {
+        id: user.id,
+        role: user.role
+    }
     return jwt.sign(
-        { id: user.id, role: user.role },
+        payload,
         JWT_SECRET,
         { expiresIn: JWT_EXPIRES }
     )
