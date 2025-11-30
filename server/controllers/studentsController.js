@@ -90,8 +90,9 @@ export const getAllStudents = async (req, res) => {
             data: studentResult
          })
 
-    } catch {
-
+    } catch(err) {
+        res.status(500).json({ message: err.message })
+        console.log(err)
     }
 
 }
@@ -152,5 +153,26 @@ export const updateStudent = async (req, res) => {
 
 // delete student
 export const deleteStudent = async (req, res) => {
-    
+    const { studentId } = req.params
+    if(!studentId) return res.status(400).json({ message : "Student Id is required" })
+
+    const client = await db.connect()    
+    try {
+        await client.query('BEGIN')
+        const studentMeta = await client.query(`SELECT user_id FROM student WHERE id = $1`, [studentId])
+        if(!studentMeta) {
+            await client.query('ROLLBACK')
+            return res.status(404).json({ message : "Student not found" })
+        }
+        await client.query(`DELETE FROM student WHERE id = $1`, [studentId])
+        await client.query(`DELETE FROM users WHERE id = $1`, [studentMeta.rows[0].user_id])
+        await client.query('COMMIT')
+        res.status(200).json({ message : "Deleted Successfully" })
+    } catch(err) {
+        await client.query('ROLLBACK')
+        console.log(err)
+        res.status(500).json({ message: err.message })
+    } finally {
+        client.release()
+    }
 }
