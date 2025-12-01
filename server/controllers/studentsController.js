@@ -176,3 +176,27 @@ export const deleteStudent = async (req, res) => {
         client.release()
     }
 }
+
+// get student profile 
+
+export const getStudent = async (req, res) => {
+    const { studentId } = req.params
+    if(!studentId) return res.status(400).json({ message : "Student Id is required" })
+
+    try {
+        const result = await db.query(`SELECT s.first_name, s.last_name, s.dob, s.gender, r.name, r.grade, p.name, p.phone, p.email FROM student s LEFT JOIN class r ON s.class_id = r.id LEFT JOIN parent p ON s.parent_id = p.id WHERE s.id = $1`, [studentId])
+        const studentDetail = result.rows
+        if(studentDetail.length === 0) {
+            return res.status(404).json({ message : "Student Not Found" })
+        }
+
+        res.status(200).json({ 
+            message : "Student Found",
+            data: studentDetail
+         })
+
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({ message : "Internal Server Error" })
+    }
+}
