@@ -180,23 +180,70 @@ export const deleteStudent = async (req, res) => {
 // get student profile 
 
 export const getStudent = async (req, res) => {
-    const { studentId } = req.params
-    if(!studentId) return res.status(400).json({ message : "Student Id is required" })
-
     try {
-        const result = await db.query(`SELECT s.first_name, s.last_name, s.dob, s.gender, r.name, r.grade, p.name, p.phone, p.email FROM student s LEFT JOIN class r ON s.class_id = r.id LEFT JOIN parent p ON s.parent_id = p.id WHERE s.id = $1`, [studentId])
-        const studentDetail = result.rows
-        if(studentDetail.length === 0) {
-            return res.status(404).json({ message : "Student Not Found" })
+        let { studentId } = req.body
+        const user = req.user
+
+        if (user.role === 'PARENT') {
+            const parentId = await db.query(`SELECT id FROM parent WHERE user_id = $1`, [user.id])
+
+            if (studentId) {
+                const check = await db.query(
+                    `SELECT id FROM student WHERE id = $1 AND parent_id = $2`, 
+                    [studentId, parentId.rows[0].id]
+                )
+                if (check.rows.length === 0) {
+                    return res.status(403).json({ message: "Not authorized for this student" })
+                }
+            } else {
+                const student = await db.query(`SELECT id FROM student WHERE parent_id = $1`, [user.id])
+                if (student.rows.length === 0) {
+                    return res.status(404).json({ message: "No students linked to this parent" })
+                }
+                studentId = student.rows[0].id
+            }
+        } 
+        else if (user.role === 'STUDENT') {
+            const student = await db.query(`SELECT id FROM student WHERE user_id = $1`, [user.id])
+            if (student.rows.length === 0) {
+                return res.status(404).json({ message: "Student profile not found for this user" })
+            }
+            studentId = student.rows[0].id
         }
 
-        res.status(200).json({ 
-            message : "Student Found",
-            data: studentDetail
-         })
 
-    } catch(err) {
-        console.log(err);
-        res.status(500).json({ message : "Internal Server Error" })
+        if (!studentId) {
+            return res.status(400).json({ message: "Student Id is required" })
+        }
+
+
+        const result = await db.query(`
+            SELECT 
+                s.first_name, s.last_name, s.parent_id, s.dob, s.gender, 
+                r.name AS class_name, r.grade, 
+                p.name AS parent_name, p.phone, p.email 
+            FROM student s 
+            LEFT JOIN class r ON s.class_id = r.id 
+            LEFT JOIN parent p ON s.parent_id = p.id 
+            WHERE s.id = $1`, 
+            [studentId]
+        )
+
+        const studentDetail = result.rows[0]
+
+        if (!studentDetail) {
+            return res.status(404).json({ message: "Student Not Found" })
+        }
+
+        delete studentDetail.parent_id
+
+        res.status(200).json({ 
+            message: "Student Found",
+            data: studentDetail
+        })
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "Internal Server Error" })
     }
 }
