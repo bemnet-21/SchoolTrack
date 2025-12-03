@@ -1,40 +1,45 @@
 import db from '../db/index.js'
 import bcrypt from 'bcrypt'
+import crypto from 'crypto'
 
 
 // register students
 export const registerStudents = async (req, res) => {
-    let { studentEmail, studentPassword, parentEmail, parentPassword, parentName, parentPhone, studentFirstName, studentLastName, studentGender, studentDob, classId } = req.body
+    let { studentEmail, parentEmail, parentName, parentPhone, studentFirstName, studentLastName, studentGender, studentDob, classId } = req.body
 
     if (classId === "NULL" || classId === "null") {
         classId = null;
     }
 
-    if (!studentEmail || !studentPassword || !parentEmail || !parentPassword || !parentName || !parentPhone || !studentFirstName || !studentLastName || !studentGender || !studentDob) {
+    if (!studentEmail || !parentEmail || !parentName || !parentPhone || !studentFirstName || !studentLastName || !studentGender || !studentDob) {
         return res.status(400).json({ error: 'Missing fields' });
     }
     
 
-    const hashedStudentPassword = await bcrypt.hash(studentPassword, 10)
 
     const client = await db.connect()
     try {
         await client.query('BEGIN')
         // creating user for students
-        const userStudentResult = await client.query(`INSERT INTO users (email, password, role) VALUES ($1, $2, 'STUDENT') RETURNING id`, [studentEmail, hashedStudentPassword])
+
+        const generatedStudentPassword = crypto.randomBytes(4).toString('hex')
+        const hashedStudentPassword = await bcrypt.hash(generatedStudentPassword, 10)
+
+        const userStudentResult = await client.query(`INSERT INTO users (email, password, role, must_change_password) VALUES ($1, $2, 'STUDENT', 'TRUE') RETURNING id`, [studentEmail, hashedStudentPassword])
 
         const newStudentUserId = userStudentResult.rows[0].id
     
         let parentId
+        let generatedParentPassword = null
         // check if parent already exists
         const existingParent = await client.query(`SELECT id FROM parent WHERE email = $1`, [parentEmail])
-        if(existingParent) {
+        if(existingParent.rows.length > 0) {
             parentId = existingParent.rows[0].id
         } else {
             // creating user for parent
-
-            const hashedParentPassword = await bcrypt.hash(parentPassword, 10)
-            const userParentResult = await client.query(`INSERT INTO users (email, password, role) VALUES ($1, $2, 'PARENT') RETURNING id`, [parentEmail, hashedParentPassword])
+            generatedParentPassword = crypto.randomBytes(4).toString('hex')
+            const hashedParentPassword = await bcrypt.hash(generatedParentPassword, 10)
+            const userParentResult = await client.query(`INSERT INTO users (email, password, role, must_change_password) VALUES ($1, $2, 'PARENT', 'TRUE') RETURNING id`, [parentEmail, hashedParentPassword])
     
             const newParentUserId = userParentResult.rows[0].id
     
@@ -60,13 +65,29 @@ export const registerStudents = async (req, res) => {
         ])
 
         await client.query('COMMIT')
-        res.status(201).json(newStudent.rows[0])
+        res.status(201).json({
+            message : "Registration Successful",
+            studentData: newStudent.rows[0],
+            credentials: {
+                student: {
+                    email: studentEmail,
+                    temporaryPassword: generatedStudentPassword
+                },
+                parent: generatedParentPassword ? {
+                    email: parentEmail,
+                    temporaryPassword: generatedParentPassword
+                } : {
+                    message : "Parent already existed, no password change."
+                }
+            }
+        })
 
 
 
     } catch(err) {
         await client.query('ROLLBACK')
-        res.status(500).json({ message: err.message })
+        console.log(err)
+        res.status(500).json({ message : "Internal server error"})
     } finally {
         client.release()
     }

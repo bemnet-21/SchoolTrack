@@ -2,31 +2,6 @@ import db from '../db/index.js'
 import bcrypt from 'bcrypt'
 import { generateToken } from '../utils/generateToken.js'
 
-export const registerUser = async (req, res) => {
-    const { name, password, email, role } = req.body
-    try {
-        const existingUser = await db.query(`SELECT * FROM users WHERE email=$1`, [email])
-        if(existingUser.rows.length > 0) {
-            return res.status(400).json({ message : "User already exists" })
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const result = await db.query(`INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *`, [name, email, hashedPassword, role ||"PARENT"])
-
-        const user = result.rows[0]
-        res.status(201).json({
-            message: "User created successfully",
-            user: {
-                id: user.id,
-                name: user.name,
-                role: user.role
-            }
-        })
-    } catch(err) {
-        console.log(err)
-        res.status(500).json({ message : "Internal Server Error" })
-    }
-}
 
 export const loginUser = async (req, res) => {
     const { email, password } = req.body
@@ -40,17 +15,48 @@ export const loginUser = async (req, res) => {
         if(!valid) return res.status(400).json({ message: "Invalid Credentials" })
         const token = generateToken(user)
 
+        if(user.must_change_password) {
+            return res.status(200).json({
+                message : "Password change required",
+                requirePasswordChange: true,
+                token,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    role: user.role
+                }
+            })
+        }
         res.status(200).json({ 
             message: "Successfully logged in",
             token,
             user: {
                 id: user.id,
-                name: user.name,
+                email: user.email,
                 role: user.role
             }
          })
     } catch(err) {
         console.log(err)
         res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+export const changePassword = async (req, res) => {
+    const { newPassword } = req.body
+    const userId = req.user.id
+
+    if(!newPassword) return res.status(400).json({ message : "New password is required" })
+
+    
+    try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+        await db.query(`UPDATE users SET password = $1, must_change_password = false WHERE id = $2`, [hashedPassword, userId])
+
+        res.status(200).json({ message : "Password updated successfully. Please login again." })
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
     }
 }
