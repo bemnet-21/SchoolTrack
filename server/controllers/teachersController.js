@@ -27,7 +27,7 @@ export const registerTeachers = async (req, res) => {
 
         res.status(201).json({
             message : "Registered Successfully",
-            teacherData : teacher,
+            data : teacher,
             credentails: {
                 email: teacherEmail,
                 temporaryPassword: generatedTeacherPassword
@@ -42,4 +42,17 @@ export const registerTeachers = async (req, res) => {
     } finally {
         client.release()
     }
+}
+
+// get all teachers
+export const getAllTeachers = async (req, res) => {
+    const teachersResult = await db.query(`SELECT name, email, subject , phone FROM teacher`)
+    if(teachersResult.rows.length === 0) {
+        return res.status(404).json({ message : "No teachers found" })
+    }
+
+    res.status(200).json({ 
+        message : "Teachers Found",
+        data: teachersResult.rows
+     })
 }

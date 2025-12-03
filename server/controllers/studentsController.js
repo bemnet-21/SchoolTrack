@@ -67,7 +67,7 @@ export const registerStudents = async (req, res) => {
         await client.query('COMMIT')
         res.status(201).json({
             message : "Registration Successful",
-            studentData: newStudent.rows[0],
+            data: newStudent.rows[0],
             credentials: {
                 student: {
                     email: studentEmail,
