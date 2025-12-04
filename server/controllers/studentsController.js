@@ -185,7 +185,6 @@ export const deleteStudent = async (req, res) => {
             await client.query('ROLLBACK')
             return res.status(404).json({ message : "Student not found" })
         }
-        await client.query(`DELETE FROM student WHERE id = $1`, [studentId])
         await client.query(`DELETE FROM users WHERE id = $1`, [studentMeta.rows[0].user_id])
         await client.query('COMMIT')
         res.status(200).json({ message : "Deleted Successfully" })

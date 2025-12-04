@@ -72,7 +72,6 @@ export const deleteTeacher = async (req, res) => {
         const userId = teacherMeta.rows[0].user_id
 
         await client.query(`DELETE FROM users WHERE id = $1`, [userId])
-        await client.query(`DELETE FROM teacher WHERE id = $1`, [teacherId])
         await client.query('COMMIT')
 
         res.status(200).json({ message : "Deleted successfully" })
