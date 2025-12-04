@@ -181,7 +181,7 @@ export const deleteStudent = async (req, res) => {
     try {
         await client.query('BEGIN')
         const studentMeta = await client.query(`SELECT user_id FROM student WHERE id = $1`, [studentId])
-        if(!studentMeta) {
+        if(studentMeta.rows.length === 0) {
             await client.query('ROLLBACK')
             return res.status(404).json({ message : "Student not found" })
         }
@@ -272,10 +272,6 @@ export const getParentChildren = async (req, res) => {
     try {
         const user = req.user
 
-        // Security Check: Only Parents should access this
-        // if (user.role !== 'PARENT') {
-        //     return res.status(403).json({ message: "Access denied. Parents only." })
-        // }
 
         // 1. Find the Parent Profile ID using the User ID
         const parentMeta = await db.query(`SELECT id FROM parent WHERE user_id = $1`, [user.id])
@@ -285,8 +281,6 @@ export const getParentChildren = async (req, res) => {
         }
         const parentId = parentMeta.rows[0].id
 
-        // 2. Fetch Summary Data for ALL children linked to this parent
-        // We only fetch info needed for the "Card" (Name, Class, Grade, Photo/Gender)
         const result = await db.query(`
             SELECT 
                 s.id, 
@@ -302,7 +296,6 @@ export const getParentChildren = async (req, res) => {
             [parentId]
         )
 
-        // 3. Return the array (Empty array is valid if they have no kids enrolled yet)
         res.status(200).json({ 
             message: "Children Found",
             data: result.rows 

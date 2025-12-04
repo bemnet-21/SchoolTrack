@@ -56,3 +56,31 @@ export const getAllTeachers = async (req, res) => {
         data: teachersResult.rows
      })
 }
+
+export const deleteTeacher = async (req, res) => {
+    const { teacherId } = req.params
+    if(!teacherId) return res.status(400).json({ message : "Teacher Id is required" })
+
+    const client = await db.connect()
+    try {
+        await client.query('BEGIN')
+        const teacherMeta = await client.query(`SELECT user_id FROM teacher WHERE id = $1`, [teacherId])
+        if(teacherMeta.rows.length === 0) {
+            client.query('ROLLBACK')
+            return res.status(404).json({ message : 'Teacher not found' })
+        }
+        const userId = teacherMeta.rows[0].user_id
+
+        await client.query(`DELETE FROM users WHERE id = $1`, [userId])
+        await client.query(`DELETE FROM teacher WHERE id = $1`, [teacherId])
+        await client.query('COMMIT')
+
+        res.status(200).json({ message : "Deleted successfully" })
+    } catch(err) {
+        client.query('ROLLBACK')
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    } finally {
+        client.release()
+    }
+}
