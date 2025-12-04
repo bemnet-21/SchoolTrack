@@ -200,51 +200,52 @@ export const deleteStudent = async (req, res) => {
 
 // get student profile 
 
-export const getStudent = async (req, res) => {
+export const getStudentProfile = async (req, res) => {
     try {
-        let { studentId } = req.body
+        let { studentId } = req.params 
         const user = req.user
 
-        if (user.role === 'PARENT') {
-            const parentId = await db.query(`SELECT id FROM parent WHERE user_id = $1`, [user.id])
-
-            if (studentId) {
-                const check = await db.query(
-                    `SELECT id FROM student WHERE id = $1 AND parent_id = $2`, 
-                    [studentId, parentId.rows[0].id]
-                )
-                if (check.rows.length === 0) {
-                    return res.status(403).json({ message: "Not authorized for this student" })
-                }
-            } else {
-                const student = await db.query(`SELECT id FROM student WHERE parent_id = $1`, [user.id])
-                if (student.rows.length === 0) {
-                    return res.status(404).json({ message: "No students linked to this parent" })
-                }
-                studentId = student.rows[0].id
+        if (user.role === 'ADMIN') {
+            if (!studentId) {
+                return res.status(400).json({ message: "Student Id is required" })
             }
         } 
         else if (user.role === 'STUDENT') {
-            const student = await db.query(`SELECT id FROM student WHERE user_id = $1`, [user.id])
-            if (student.rows.length === 0) {
-                return res.status(404).json({ message: "Student profile not found for this user" })
+            const studentMeta = await db.query(`SELECT id FROM student WHERE user_id = $1`, [user.id])
+            
+            if (studentMeta.rows.length === 0) {
+                return res.status(404).json({ message: "Student profile not found" })
             }
-            studentId = student.rows[0].id
+            studentId = studentMeta.rows[0].id
+        } 
+        else if (user.role === 'PARENT') {
+            if (!studentId) {
+                return res.status(400).json({ message: "Student Id is required" })
+            }
+
+            const parentMeta = await db.query(`SELECT id FROM parent WHERE user_id = $1`, [user.id])
+            if (parentMeta.rows.length === 0) {
+                return res.status(404).json({ message: "Parent profile not found" })
+            }
+            const parentId = parentMeta.rows[0].id
+
+            const checkOwnership = await db.query(
+                `SELECT id FROM student WHERE id = $1 AND parent_id = $2`, 
+                [studentId, parentId]
+            )
+
+            if (checkOwnership.rows.length === 0) {
+                return res.status(403).json({ message: "You are not authorized to view this student profile" })
+            }
         }
-
-
-        if (!studentId) {
-            return res.status(400).json({ message: "Student Id is required" })
-        }
-
 
         const result = await db.query(`
             SELECT 
-                s.first_name, s.last_name, s.parent_id, s.dob, s.gender, 
-                r.name AS class_name, r.grade, 
-                p.name AS parent_name, p.phone, p.email 
+                s.id, s.first_name, s.last_name, s.dob, s.gender, s.address,
+                c.name AS class_name, c.grade, 
+                p.name AS parent_name, p.phone AS parent_phone, p.email AS parent_email
             FROM student s 
-            LEFT JOIN class r ON s.class_id = r.id 
+            LEFT JOIN class c ON s.class_id = c.id 
             LEFT JOIN parent p ON s.parent_id = p.id 
             WHERE s.id = $1`, 
             [studentId]
@@ -256,11 +257,55 @@ export const getStudent = async (req, res) => {
             return res.status(404).json({ message: "Student Not Found" })
         }
 
-        delete studentDetail.parent_id
-
         res.status(200).json({ 
             message: "Student Found",
             data: studentDetail
+        })
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+export const getParentChildren = async (req, res) => {
+    try {
+        const user = req.user
+
+        // Security Check: Only Parents should access this
+        // if (user.role !== 'PARENT') {
+        //     return res.status(403).json({ message: "Access denied. Parents only." })
+        // }
+
+        // 1. Find the Parent Profile ID using the User ID
+        const parentMeta = await db.query(`SELECT id FROM parent WHERE user_id = $1`, [user.id])
+        
+        if (parentMeta.rows.length === 0) {
+            return res.status(404).json({ message: "Parent profile not found" })
+        }
+        const parentId = parentMeta.rows[0].id
+
+        // 2. Fetch Summary Data for ALL children linked to this parent
+        // We only fetch info needed for the "Card" (Name, Class, Grade, Photo/Gender)
+        const result = await db.query(`
+            SELECT 
+                s.id, 
+                s.first_name, 
+                s.last_name, 
+                s.gender, 
+                c.name AS class_name, 
+                c.grade 
+            FROM student s
+            LEFT JOIN class c ON s.class_id = c.id
+            WHERE s.parent_id = $1
+            ORDER BY s.first_name ASC`, 
+            [parentId]
+        )
+
+        // 3. Return the array (Empty array is valid if they have no kids enrolled yet)
+        res.status(200).json({ 
+            message: "Children Found",
+            data: result.rows 
         })
 
     } catch (err) {
