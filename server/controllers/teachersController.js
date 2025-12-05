@@ -83,3 +83,49 @@ export const deleteTeacher = async (req, res) => {
         client.release()
     }
 }
+
+export const updateTeacher = async (req, res) => {
+    const { teacherId } = req.params
+    if(!teacherId) return res.status(400).json({ message : "Teacher Id is required" })
+    const { name, teacherEmail, subject, phone } = req.body
+    if(!name || !teacherEmail || !subject || !phone) {
+        return res.status(400).json({ message : "Missing Fields" })
+    }
+    const client = await db.connect()
+
+    try {
+        await client.query('BEGIN')
+        const teacherMeta = await client.query(`SELECT user_id FROM teacher WHERE id = $1`, [teacherId])
+        if(teacherMeta.rows.length === 0) {
+            await client.query('ROLLBACK')
+            return res.status(404).json({ message : "Teacher not found" })
+        }
+        const userId = teacherMeta.rows[0].user_id
+
+        await client.query(`UPDATE teacher SET email = $1, name = $2, phone = $3, subject = $4 WHERE id = $5`, [teacherEmail, name, phone, subject, teacherId])
+        await client.query(`UPDATE users SET email = $1 WHERE id = $2`, [teacherEmail, userId])
+        await client.query('COMMIT')
+
+        res.status(200).json({
+            message : "Updated successfully",
+            data: {
+                name,
+                email: teacherEmail,
+                phone,
+                subject
+            }
+        })
+
+    } catch(err) {
+        await client.query('ROLLBACK')
+        console.error("Update Error:", err)
+
+        if (err.code === '23505') {
+            return res.status(409).json({ message: "Email already in use by another user" })
+        }
+
+        res.status(500).json({ message: "Internal server error" })
+    } finally {
+        client.release()
+    }
+}
