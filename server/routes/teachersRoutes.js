@@ -9,6 +9,6 @@ router.post('/register', protect, authorizeRoles('ADMIN'), registerTeachers)
 router.get('/', protect, authorizeRoles('ADMIN'), getAllTeachers)
 router.delete('/:teacherId', protect, authorizeRoles('ADMIN'), deleteTeacher)
 router.put('/:teacherId', protect, authorizeRoles('ADMIN'), updateTeacher)
-router.get('/profile/', protect, authorizeRoles('ADMIN', 'TEACHER'), getTeacher)
+router.get('/profile', protect, authorizeRoles('ADMIN', 'TEACHER'), getTeacher)
 router.get('/:teacherId', protect, authorizeRoles('ADMIN'), getTeacher)
 export default router
