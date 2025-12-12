@@ -39,9 +39,32 @@ export const getSubject = async (req, res) => {
             return res.status(404).json({ message : "Subject not found" })
         }
         res.status(200).json({ 
-            message: "Teacher found",
+            message: "Subject found",
             data: result.rows[0]
          })
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}
+
+export const updateSubject = async (req, res) => {
+    const { subjectId } = req.params
+    const { name } = req.body
+    if(!subjectId) return res.status(400).json({ message : "Subject ID is required" })
+    if(!name) return res.status(400).json({ message : "Missing field" })
+
+    try {
+        const result = await db.query(`UPDATE subject SET name = $1 WHERE id = $2 RETURNING *`, [name, subjectId])
+        if(result.rows.length === 0) {
+            return res.status(404).json({ message : "Subject not found" })
+        }
+
+        res.status(200).json({ 
+            message : "Updated successfully", 
+            data: result.rows[0]
+         })
+
     } catch(err) {
         console.log(err)
         res.status(500).json({ message : "Internal server error" })
