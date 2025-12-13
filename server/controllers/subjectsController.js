@@ -48,6 +48,24 @@ export const getSubject = async (req, res) => {
     }
 }
 
+export const getAllSubject = async (req, res) => {
+    try {
+        const result = await db.query(`SELECT name FROM subject`)
+        if(result.rows.length === 0) {
+            return res.json({ message : "No subject" })
+        }
+
+        res.status(200).json({ 
+            message : "Subjects found",
+            data: result.rows
+         })
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal Server error" })
+    }
+}
+
 export const updateSubject = async (req, res) => {
     const { subjectId } = req.params
     const { name } = req.body
