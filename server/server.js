@@ -6,6 +6,7 @@ import studentsRoutes from './routes/studentsRoutes.js'
 import teachersRoutes from './routes/teachersRoutes.js'
 import subjectsRoutes from './routes/subjectsRoute.js'
 import classRoutes from './routes/classRoutes.js'
+import attendanceRoutes from './routes/attendanceRoutes.js'
 
 
 dotenv.config({ quiet: true })
@@ -24,5 +25,6 @@ app.use('/api/v1/students', studentsRoutes)
 app.use('/api/v1/teachers', teachersRoutes)
 app.use('/api/v1/subjects', subjectsRoutes)
 app.use('/api/v1/class', classRoutes)
+app.use('/api/v1/attendance', attendanceRoutes)
 
 

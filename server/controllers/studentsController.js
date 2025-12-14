@@ -100,7 +100,7 @@ export const getAllStudents = async (req, res) => {
     if(!classId) return res.status(400).json({ message : "Class Id is required" })
 
     try {
-        const result = await db.query(`SELECT s.first_name, s.last_name, s.dob, s.gender FROM student s LEFT JOIN class r ON s.class_id = $1`, [classId])
+        const result = await db.query(`SELECT id, first_name, last_name, dob, gender FROM student WHERE class_id = $1`, [classId])
 
         const studentResult = result.rows
         if(!studentResult) {
