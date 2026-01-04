@@ -1,49 +1,77 @@
 'use client';
 
-import { User } from '@/interface';
+import { AuthGuardProps, User } from '@/interface';
 import { RootState } from '@/store';
-import { logout, setCredentials, setLoading } from '@/store/slices/auth.slice';
+import { logout, setCredentials } from '@/store/slices/auth.slice';
 import { jwtDecode } from 'jwt-decode';
-import React, { use, useEffect } from 'react'
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
-const AuthGuard = ({children} : { children: React.ReactNode }) => {
+const AuthGuard = ({ children, allowedRoles }: AuthGuardProps) => {
   
   const dispatch = useDispatch();
+  const router = useRouter();
    
-  const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth) 
+  const [isChecking, setIsChecking] = useState(true);
+
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => { 
-    dispatch(setLoading(true));
-    const token = localStorage.getItem('token');
-    if (token && !isAuthenticated) {
+    
+    const checkAuth = () => {
+        const token = localStorage.getItem('token');
 
-      try {
-        const user = jwtDecode<User>(token);
+        if (!token) {
+            dispatch(logout());
+            router.replace('/login'); 
+            return;
+        }
 
-        const currentTime = Date.now() / 1000;
-            if (user.exp && user.exp < currentTime) {
-                throw new Error("Token expired");
+        try {
+            let currentUser = user; 
+            if (!isAuthenticated || !currentUser) {
+                const decodedUser = jwtDecode<User>(token);
+
+                const currentTime = Date.now() / 1000;
+                if ((decodedUser as any).exp < currentTime) {
+                    throw new Error("Token expired");
+                }
+
+                dispatch(setCredentials({ user: decodedUser, token }));
+                currentUser = decodedUser;
             }
 
-        dispatch(setCredentials({ user, token }));
-      } catch(err) {
-        dispatch(logout());
-        localStorage.clear();
-      }
-      
-    } else if (!token) {
-        dispatch(logout());
-    }
+            if (allowedRoles && currentUser) {
+                const userRole = (currentUser.role || "").toLowerCase(); 
+                
+                const hasAccess = allowedRoles.some(r => r.toLowerCase() === userRole);
 
-    dispatch(setLoading(false));
-   }, [isAuthenticated, dispatch]);
+                if (!hasAccess) {
+                    router.replace(`/${userRole}`);
+                    return;
+                }
+            }
 
-   if(loading) return <div>Loading...</div>
+            setIsChecking(false);
 
-   return (
-        <>{children}</>
-    )
+        } catch(err) {
+            console.error("Auth Guard Error", err);
+            localStorage.clear();
+            dispatch(logout());
+            router.replace('/login');
+        }
+    };
+
+    checkAuth();
+
+   }, [isAuthenticated, user, dispatch, router, allowedRoles]);
+
+   if(isChecking) {
+       return <div className="h-screen w-full flex items-center justify-center">Loading...</div>;
+   }
+
+   return <>{children}</>;
 }
 
-export default AuthGuard
+export default AuthGuard;

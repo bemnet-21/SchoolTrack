@@ -1,8 +1,8 @@
 'use client'
-import { RootState } from '@/store';
+import { User } from '@/interface';
+import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 const page = () => {
   const router = useRouter()
@@ -10,8 +10,24 @@ const page = () => {
     const token = localStorage.getItem('token');
     if(!token) {
       router.push('/login');
-    } else {
-      router.push('/admin');
+      return
+    } 
+    try {
+      const user = jwtDecode<User>(token);
+      const currentTime = Date.now() / 1000;
+
+      if(user.exp && user.exp < currentTime) {
+        localStorage.removeItem('token');
+        router.push('/login');
+        return  
+      }
+
+      const role = user.role.toLowerCase();
+      router.push(`/${role}`);
+      
+    } catch(err) {
+      localStorage.removeItem('token');
+      router.push('/login');
     }
 
   }, [router])

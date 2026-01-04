@@ -1,17 +1,19 @@
 'use client'
 
 import { login } from '@/services/auth.service';
+import { RootState } from '@/store';
 import { setCredentials } from '@/store/slices/auth.slice';
-import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { FaGraduationCap } from 'react-icons/fa'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const Page = () => {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +23,8 @@ const Page = () => {
     localStorage.setItem('token', data.token);
 
     dispatch(setCredentials({ user: data.user, token: data.token }));
+
+    router.push(`/${data.user.role.toLowerCase()}`);
 
 
     // window.location.href = '/dashboard';

@@ -6,6 +6,11 @@ export interface LoginUser {
 export interface User {
   id: string;
   email: string;
-  role: "admin" | "teacher" | "student" | "parent";
+  role: "ADMIN" | "TEACHER" | "STUDENT" | "PARENT";
   exp: number;
+}
+
+export interface AuthGuardProps {
+  children: React.ReactNode;
+  allowedRoles?: string[];
 }
