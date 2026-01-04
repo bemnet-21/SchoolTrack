@@ -1,4 +1,5 @@
 import AuthGuard from "@/app/components/AuthGuard";
+import StoreProvider from "../components/StoreProvider";
 
 export default function DashboardLayout({
   children,
@@ -6,10 +7,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthGuard>
-        <div className="dashboard-container">
-            {children}
-        </div>
-    </AuthGuard>
+    <StoreProvider>
+      <AuthGuard>
+          <div className="dashboard-container">
+              {children}
+          </div>
+      </AuthGuard>
+    </StoreProvider>
   );
 }
