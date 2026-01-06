@@ -14,3 +14,9 @@ export interface AuthGuardProps {
   children: React.ReactNode;
   allowedRoles?: string[];
 }
+
+export interface MenuItem {
+  name: string;
+  path: string;
+  icon: React.ElementType;
+}

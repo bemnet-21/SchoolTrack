@@ -1,0 +1,77 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { adminMenuItems, studentMenuItems, teacherMenuItems } from "../constants/menuItems";
+import { FaSignOutAlt } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/auth.slice";
+import { useRouter } from "next/navigation";
+
+const Sidebar = () => {
+  const pathname = usePathname();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  
+  const { user } = useSelector((state: RootState) => state.auth);
+  
+  const role = user?.role?.toLowerCase();
+
+  let menuItems = studentMenuItems;
+  if (role === 'admin') menuItems = adminMenuItems;
+  if (role === 'teacher') menuItems = teacherMenuItems;
+
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logout());
+    router.replace('/login');
+  };
+
+  return (
+    <aside className="w-64 h-screen bg-white shadow-lg flex flex-col fixed left-0 top-0">
+      
+      <div className="p-6 flex items-center gap-2">
+        <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold">
+            B
+        </div>
+        <span className="text-xl font-bold text-gray-800">Bigstar</span>
+      </div>
+
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        {menuItems.map((item) => {
+          const isActive = pathname === item.path;
+          
+          return (
+            <Link 
+              key={item.path} 
+              href={item.path}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 
+                ${isActive 
+                  ? "bg-blue-50 text-blue-600 font-semibold" 
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                }`}
+            >
+              <item.icon className="text-lg" />
+              <span>{item.name}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4">
+        <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 w-full hover:bg-red-50 rounded-lg transition-colors"
+        >
+            <FaSignOutAlt />
+            <span>Logout</span>
+        </button>
+      </div>
+
+    </aside>
+  );
+};
+
+export default Sidebar;
