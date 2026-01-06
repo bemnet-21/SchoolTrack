@@ -25,7 +25,7 @@ export const registerStudents = async (req, res) => {
         const generatedStudentPassword = crypto.randomBytes(4).toString('hex')
         const hashedStudentPassword = await bcrypt.hash(generatedStudentPassword, 10)
 
-        const userStudentResult = await client.query(`INSERT INTO users (email, password, role, must_change_password) VALUES ($1, $2, 'STUDENT', 'TRUE') RETURNING id`, [studentEmail, hashedStudentPassword])
+        const userStudentResult = await client.query(`INSERT INTO users (email, name, password, role, must_change_password) VALUES ($1, $2, $3, 'STUDENT', 'TRUE') RETURNING id`, [studentEmail, studentFirstName + " " + studentLastName, hashedStudentPassword])
 
         const newStudentUserId = userStudentResult.rows[0].id
     

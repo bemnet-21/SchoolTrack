@@ -2,10 +2,12 @@ import db from '../db/index.js'
 
 export const markAttendance = async (req, res) => {
     const { date, records } = req.body; 
-    // records : {
+    // record : {
     //     status, 1 - present, 0-absent, 2-permission
     //     studentId
     // }
+
+    // records = [record]
 
 
     const client = await db.connect();

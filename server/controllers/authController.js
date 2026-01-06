@@ -60,3 +60,16 @@ export const changePassword = async (req, res) => {
         res.status(500).json({ message : "Internal server error" })
     }
 }
+
+export const getCurrentUser = async (req, res) => {
+    const userId = req.user.id
+
+    try {
+        const result = await db.query(`SELECT id, email, role, name FROM users WHERE id = $1`, [userId])
+        const user = result.rows[0]
+        res.status(200).json({ user })
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}

@@ -12,7 +12,7 @@ export const registerTeachers = async (req, res) => {
         const generatedTeacherPassword = crypto.randomBytes(4).toString('hex')
         const hashedPassword = await bcrypt.hash(generatedTeacherPassword, 10)
         // create user for teacher
-        const userResult = await client.query(`INSERT INTO users (email, password, role, must_change_password) VALUES ($1, $2, 'TEACHER', 'TRUE') RETURNING *`, [teacherEmail, hashedPassword])
+        const userResult = await client.query(`INSERT INTO users (email, name, password, role, must_change_password) VALUES ($1, $2, $3, 'TEACHER', 'TRUE') RETURNING *`, [teacherEmail, name, hashedPassword])
         const user = userResult.rows[0]
         if(!user) {
             return res.status(400).json({ message : "Failed to add user" })

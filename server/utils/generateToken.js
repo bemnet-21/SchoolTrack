@@ -8,7 +8,8 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES
 export const generateToken = (user) => {
     const payload = {
         id: user.id,
-        role: user.role
+        role: user.role,
+        email: user.email
     }
     return jwt.sign(
         payload,
