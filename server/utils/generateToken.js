@@ -9,7 +9,8 @@ export const generateToken = (user) => {
     const payload = {
         id: user.id,
         role: user.role,
-        email: user.email
+        email: user.email,
+        name: user.name
     }
     return jwt.sign(
         payload,
