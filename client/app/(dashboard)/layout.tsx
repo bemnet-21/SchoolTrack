@@ -1,6 +1,7 @@
 import AuthGuard from "@/app/components/AuthGuard";
 import StoreProvider from "../components/StoreProvider";
 import Sidebar from "../components/Sidebar";
+import Header from "../components/layout/Header";
 
 export default function DashboardLayout({
   children,
@@ -10,9 +11,10 @@ export default function DashboardLayout({
   return (
     <StoreProvider>
       <AuthGuard>
-          <div className="flex h-screen bg-gray-100">
+          <div className="flex h-screen">
               <Sidebar />
-              <main className="flex ml-64 p-8 overflow-y-auto">
+              <main className="w-full overflow-y-auto bg-bgGray md:ml-64">
+                <Header />
                 {children}
               </main>
           </div>
