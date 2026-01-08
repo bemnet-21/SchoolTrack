@@ -12,20 +12,34 @@ const Page = () => {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('')
   const dispatch = useDispatch();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('')
+    try {
+      const res = await login({ email, password });
+      const data = res.data;
+      localStorage.setItem('token', data.token);
 
-    const res = await login({ email, password });
-    const data = res.data;
-    localStorage.setItem('token', data.token);
+      dispatch(setCredentials({ user: data.user, token: data.token }));
 
-    dispatch(setCredentials({ user: data.user, token: data.token }));
+      router.push(`/${data.user.role.toLowerCase()}`);
 
-    router.push(`/${data.user.role.toLowerCase()}`);
+    } catch(err: any) {
+      if(err.response && err.response.data ) {
+        setError(err.response.data.message)
+      }
+      else if(err.request) {
+        setError("Server is not responding. Please try again later.")
+      } else {
+        setError("An unexpected error occured.")
+      }
+    }
 
+    
 
     // window.location.href = '/dashboard';
     
@@ -78,7 +92,11 @@ const Page = () => {
                     placeholder='••••••••' 
                   />
                 </div>
-
+                {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">
+                            <span className="block sm:inline">{error}</span>
+                        </div>
+                    )}
                 <button 
                     type="submit"
                     className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95'
