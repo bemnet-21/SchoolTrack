@@ -52,3 +52,12 @@ export interface Event {
 export interface EventsCard {
   events: Event[]
 }
+
+export interface Performance {
+  subject: string
+  average: number
+}
+export interface PerformanceCardProps {
+  performance: Performance[],
+  grade: string
+}

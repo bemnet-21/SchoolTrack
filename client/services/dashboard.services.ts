@@ -7,3 +7,7 @@ export const getDashboardStats = () => {
 export const getAllEvents = () => {
     return api.get("/events")
 }
+
+export const getStudentPerformance = (grade : string) => {
+    return api.get(`/dashboard/performance?grade=${grade}`)
+}

@@ -1,10 +1,11 @@
 'use client'
 
+import PerformanceCard from '@/app/components/performance/PerformanceCard'
 import Pills from '@/app/components/Pills'
 import SummaryCard from '@/app/components/SummaryCard'
 import UpcomingEventsCard from '@/app/components/UpcomingEventsCard'
-import { Event, EventsCard, Stats } from '@/interface'
-import { getAllEvents, getDashboardStats } from '@/services/dashboard.services'
+import { Event, EventsCard, Performance, Stats } from '@/interface'
+import { getAllEvents, getDashboardStats, getStudentPerformance } from '@/services/dashboard.services'
 import React, { useEffect, useState } from 'react'
 import { FaUser, FaUsers } from 'react-icons/fa'
 import { FaNoteSticky, FaPeopleGroup } from 'react-icons/fa6'
@@ -14,6 +15,8 @@ const page = () => {
   const { user } = useSelector((state: any) => state.auth)
   const [statsData, setStatsData] = useState<Stats | null>(null);
   const [events, setEvents] = useState<Event[] | null>(null)
+  const [performances, setPerformances] = useState<Performance[] | null>(null)
+  const grade = '9'
 
   const stats = async () => {
     const res = await getDashboardStats()
@@ -27,12 +30,20 @@ const page = () => {
     setEvents(data)
   }
 
+  const getPerformances = async (grade : string) => {
+    const res = await getStudentPerformance(grade)
+    const data = res.data.data
+
+    setPerformances(data.performance)
+  }
+
   useEffect(() => {
     stats()
     getEvents()
+    getPerformances(grade)
   }, [])
 
-  console.log("events", events)
+  console.log("performance", performances)
   return (
     <section className='flex flex-col w-full gap-y-8 p-4'>
       <div className='flex flex-col gap-y-4 w-full lg:justify-between lg:items-center lg:flex-row'>
@@ -53,8 +64,14 @@ const page = () => {
             {statsData && <SummaryCard title='Total Classes' icon={FaNoteSticky} value={statsData.totalClasses} iconClassName='text-3xl text-[#A855F7]' iconBgColor='bg-[#A855F7]' />}
         </div>
       </div>
-      <div>
-        { events && <UpcomingEventsCard events={events} /> }
+
+      <div className='flex flex-col gap-x-10 gap-y-6 w-full border border-amber-600 lg:flex-row lg:justify-between'>
+        <div className='w-full max-w-138 mx-auto lg:mx-0'>
+          { performances && <PerformanceCard performance={performances} grade={grade} />}
+        </div>
+        <div className='place-self-center lg:place-self-auto'>
+          { events && <UpcomingEventsCard events={events} /> }
+        </div>
       </div>
     </section>
   )
