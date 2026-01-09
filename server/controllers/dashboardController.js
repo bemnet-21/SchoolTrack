@@ -43,9 +43,15 @@ export const getStudentPerformance = async (req, res) => {
             return res.status(404).json({ message : "No performance has been found" })
         }
 
+        
+
         res.status(200).json({ 
             message : "Success",
-            data: results.rows
+            data: {
+                performance: results.rows,
+                grade
+            }
+
          })
 
 
