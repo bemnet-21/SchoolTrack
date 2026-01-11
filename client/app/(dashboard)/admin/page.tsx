@@ -65,7 +65,7 @@ const page = () => {
         </div>
       </div>
 
-      <div className='flex flex-col gap-x-10 gap-y-6 w-full border border-amber-600 lg:flex-row lg:justify-between'>
+      <div className='flex flex-col gap-x-10 gap-y-6 w-full lg:flex-row lg:justify-between'>
         <div className='w-full max-w-138 mx-auto lg:mx-0'>
           { performances && <PerformanceCard performance={performances} grade={grade} />}
         </div>

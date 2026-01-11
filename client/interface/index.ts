@@ -61,3 +61,19 @@ export interface PerformanceCardProps {
   performance: Performance[],
   grade: string
 }
+
+export interface StudentProps {
+  studentEmail: string
+  parentEmail: string
+  parentName: string
+  parentPhone: string
+  studentFirstName: string
+  studentLastName: string
+  studentGender: string
+  studentDob: string
+  classId: string
+}
+
+export interface RegisterStudent {
+  data: StudentProps
+}
