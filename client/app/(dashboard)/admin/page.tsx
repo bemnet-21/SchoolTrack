@@ -6,6 +6,7 @@ import SummaryCard from '@/app/components/SummaryCard'
 import UpcomingEventsCard from '@/app/components/UpcomingEventsCard'
 import { Event, EventsCard, Performance, Stats } from '@/interface'
 import { getAllEvents, getDashboardStats, getStudentPerformance } from '@/services/dashboard.services'
+import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { FaUser, FaUsers } from 'react-icons/fa'
 import { FaNoteSticky, FaPeopleGroup } from 'react-icons/fa6'
@@ -52,7 +53,9 @@ const page = () => {
           <h2 className='text-xl text-gray-400'>Here's a summary of your school's activity</h2>
         </div>
         <div className='flex flex-wrap gap-3 shrink-0 lg:justify-end'>
-          <Pills label='Add Student' />
+          <Link href='/admin/students/register'>
+            <Pills label='Add Student' />
+          </Link>
           <Pills label='Add Teacher' />
           <Pills label='Add Class' />
         </div>
