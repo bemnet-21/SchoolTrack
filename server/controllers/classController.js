@@ -69,3 +69,23 @@ export const assignTeacher = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+// get classId
+export const getClassId = async (req, res) => {
+    const { grade } = req.query
+    if(!grade) return res.status(400).json({ message : "Grade is required" })
+
+    try {
+        const result = await db.query(
+            `SELECT id, name FROM class WHERE grade = $1`,
+            [grade]
+        );
+        res.status(200).json({ 
+            message: "Success",
+            classId: result.rows[0].id
+         });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
