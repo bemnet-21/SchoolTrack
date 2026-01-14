@@ -71,7 +71,17 @@ export interface StudentProps {
   studentLastName: string
   studentGender: string
   studentDob: string
-  classId: string
+  classId: string | null
+}
+
+export interface CredentialDetails {
+  email: string
+  temporaryPassword: string
+}
+
+export interface RegistrationSuccessData {
+  student: CredentialDetails
+  parent: CredentialDetails
 }
 
 export interface RegisterStudent {
