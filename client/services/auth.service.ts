@@ -6,6 +6,6 @@ export const login = (data : LoginUser) => {
 }
 
 export const changePassword = (newPassword: string) => {
-    return api.post("/auth/change-password", { password: newPassword });
+    return api.post("/auth/change-password", { newPassword});
 }
 

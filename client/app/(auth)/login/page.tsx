@@ -1,7 +1,6 @@
 'use client'
 
 import { login } from '@/services/auth.service';
-import { RootState } from '@/store';
 import { setCredentials } from '@/store/slices/auth.slice';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
@@ -19,13 +18,24 @@ const Page = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('')
+    
     try {
       const res = await login({ email, password });
       const data = res.data;
+
+      if (data.requirePasswordChange) {
+        localStorage.setItem('token', data.token);
+        
+        
+        router.push('/change-password'); 
+        return; 
+      }
+
+      // 2. Standard Login Flow
       localStorage.setItem('token', data.token);
-
       dispatch(setCredentials({ user: data.user, token: data.token }));
-
+      
+      // Redirect based on role
       router.push(`/${data.user.role.toLowerCase()}`);
 
     } catch(err: any) {
@@ -38,13 +48,7 @@ const Page = () => {
         setError("An unexpected error occured.")
       }
     }
-
-    
-
-    // window.location.href = '/dashboard';
-    
   }
-
 
   return (
     <section className='bg-gray-100 w-full min-h-screen flex justify-center items-center p-4'>
@@ -57,7 +61,8 @@ const Page = () => {
                 <h1 className='text-3xl font-bold text-gray-800 tracking-tight'>Bigstar</h1>
             </div>
 
-            <form className='p-8 space-y-6'>
+            {/* Added onSubmit here, removed onClick from button */}
+            <form className='p-8 space-y-6' onSubmit={handleLogin}>
                 <div className='text-center mb-6'>
                     <h2 className='text-xl font-semibold text-gray-800'>Welcome Back</h2>
                     <p className='text-gray-500 text-sm'>Sign in to access your account</p>
@@ -97,10 +102,10 @@ const Page = () => {
                             <span className="block sm:inline">{error}</span>
                         </div>
                     )}
+                
                 <button 
                     type="submit"
                     className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95'
-                    onClick={handleLogin}
                 >
                     Login
                 </button>
