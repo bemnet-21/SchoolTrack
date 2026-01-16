@@ -46,7 +46,7 @@ const page = () => {
 
   console.log("performance", performances)
   return (
-    <section className='flex flex-col w-full gap-y-8 p-4'>
+    <section className='flex flex-col w-full gap-y-8 py-8 lg:px-16'>
       <div className='flex flex-col gap-y-4 w-full lg:justify-between lg:items-center lg:flex-row'>
         <div className='flex flex-col'>
           <h1 className='text-3xl font-bold'>{`Welcome Back, ${user?.name}!`}</h1>
