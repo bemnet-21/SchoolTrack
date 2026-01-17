@@ -87,3 +87,11 @@ export interface RegistrationSuccessData {
 export interface RegisterStudent {
   data: StudentProps
 }
+
+export interface ClassProps {
+  id: string
+  grade: string
+  name: string
+  teacher_name: string
+  student_count: number
+}
