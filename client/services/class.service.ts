@@ -7,3 +7,7 @@ export const getClassId = (grade : string) => {
 export const getAllClasses = () => {
     return api.get('/class')
 }
+
+export const getClassDetail = (id : string) => {
+    return api.get(`/class/${id}`)
+}

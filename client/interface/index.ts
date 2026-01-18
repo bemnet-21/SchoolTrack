@@ -72,6 +72,16 @@ export interface StudentProps {
   studentGender: string
   studentDob: string
   classId: string | null
+  joined?: string
+}
+
+export interface GetStudentsProps {
+  studentfirstname: string
+  studentlastname: string
+  studentgender: string
+  studentdob: string
+  id: string
+  joined?:string
 }
 
 export interface CredentialDetails {
