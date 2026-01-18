@@ -46,7 +46,18 @@ export const registerTeachers = async (req, res) => {
 
 // get all teachers
 export const getAllTeachers = async (req, res) => {
-    const teachersResult = await db.query(`SELECT id, name, email, phone FROM teacher`)
+    const teachersResult = await db.query(`
+        SELECT 
+            t.id, 
+            t.name, 
+            t.email, 
+            t.phone, 
+            s.name as subject_name 
+        FROM teacher t 
+        LEFT JOIN subject s 
+        ON 
+            s.id = t.subject_id 
+        ORDER BY t.name ASC`)
     if(teachersResult.rows.length === 0) {
         return res.status(404).json({ message : "No teachers found" })
     }

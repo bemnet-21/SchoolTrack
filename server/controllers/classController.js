@@ -89,3 +89,21 @@ export const getClassId = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const getAllClasses = async (req, res) => {
+    try {
+        const result = await db.query('SELECT c.id, c.name, c.grade, t.name as teacher_name, (SELECT COUNT(*) FROM student s WHERE s.class_id = c.id) as student_count FROM class c LEFT JOIN teacher t ON c.teacher_id = t.id');
+
+        if(result.rows.length === 0) {
+            return res.status(404).json({ message : "No classes found" })
+        }
+
+        res.status(200).json({ 
+            message: "Success",
+            data: result.rows
+         });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }  
+}
