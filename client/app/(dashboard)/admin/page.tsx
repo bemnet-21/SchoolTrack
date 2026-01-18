@@ -47,7 +47,7 @@ const page = () => {
   return (
     <section className='flex flex-col w-full gap-y-8 py-8 px-8 lg:px-16'>
       <div className='flex flex-col gap-y-4 w-full lg:justify-between gap-x-4 items-center lg:flex-row'>
-        <div className='flex flex-col border border-amber-400 flex-1'>
+        <div className='flex flex-col flex-1'>
           <h1 className='text-3xl font-bold'>{`Welcome Back, ${user?.name}!`}</h1>
           <h2 className='text-xl text-gray-400'>Here's a summary of your school's activity</h2>
         </div>

@@ -33,6 +33,10 @@ const Header = () => {
             return <h1 className="text-xl font-bold">Classes</h1>;
         }
 
+        if(pathName?.startsWith('/admin/teachers')) {
+            return <h1 className="text-xl font-bold">Teachers</h1>;
+        }
+
         return null;
     }
 

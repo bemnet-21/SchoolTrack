@@ -66,7 +66,7 @@ const ClassDetailsPage = () => {
       <div className='flex flex-col gap-4'>
         <button 
             onClick={() => router.back()} 
-            className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit text-sm md:text-base'
+            className='flex items-center gap-2 text-gray-500 cursor-pointer hover:text-blue-600 transition-colors w-fit text-sm md:text-base'
         >
             <FaArrowLeft />
             <span className='font-medium'>Back to Classes</span>

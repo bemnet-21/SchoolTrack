@@ -105,3 +105,11 @@ export interface ClassProps {
   teacher_name: string
   student_count: number
 }
+
+export interface TeacherProps {
+  id: string
+  name: string
+  email: string
+  phone: string
+  subject_name: string | null
+}
