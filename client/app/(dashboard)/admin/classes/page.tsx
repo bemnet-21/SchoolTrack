@@ -37,9 +37,9 @@ const ClassesPage = () => {
                 <p className='text-gray-500 text-sm'>Central directory for managing all classes in the school system.</p>
             </div>
 
-            <div className="shrink-0">
+            <Link href={'/admin/classes/add-class'} className="shrink-0">
                 <Pills label='Add New Class' />
-            </div>
+            </Link>
         </div>
 
         {loading ? (

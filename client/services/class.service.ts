@@ -1,3 +1,4 @@
+import { AddClassInterface } from "@/interface"
 import api from "./api"
 
 export const getClassId = (grade : string) => {
@@ -10,4 +11,8 @@ export const getAllClasses = () => {
 
 export const getClassDetail = (id : string) => {
     return api.get(`/class/${id}`)
+}
+
+export const addClass = ({ grade, name, teacherId }: AddClassInterface) => {
+    return api.post('/class', { grade, name, teacherId })
 }

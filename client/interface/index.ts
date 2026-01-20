@@ -113,3 +113,9 @@ export interface TeacherProps {
   phone: string
   subject_name: string | null
 }
+
+export interface AddClassInterface {
+  grade: string
+  name: string
+  teacherId: string
+}
