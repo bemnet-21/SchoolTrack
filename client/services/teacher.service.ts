@@ -8,3 +8,7 @@ export const getAllTeachers = () => {
 export const addTeacher = ({ name, teacherEmail, teacherPhone, subjectId } : AddTeacherInterface) => {
     return api.post('/teachers/register', { name, teacherEmail, teacherPhone, subjectId })
 }
+
+export const getTeacherById = (teacherId: string) => {
+    return api.get(`/teachers/${teacherId}`)
+}

@@ -129,6 +129,13 @@ export interface TeacherProps {
   subject_name: string | null
 }
 
+export interface TeacherDetail {
+  teachername: string
+  teacheremail: string
+  teacherphone: string
+  subject: string | null
+}
+
 export interface AddClassInterface {
   grade: string
   name: string

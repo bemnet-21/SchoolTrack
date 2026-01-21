@@ -6,8 +6,10 @@ import { TeacherProps } from '@/interface'
 import { getAllTeachers } from '@/services/teacher.service'
 import Pills from '@/app/components/Pills'
 import { FaChalkboardTeacher, FaEnvelope, FaPhone, FaSearch, FaEllipsisV } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
 
 const TeachersPage = () => {
+  const router = useRouter()
   const [teachers, setTeachers] = useState<TeacherProps[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -91,7 +93,10 @@ const TeachersPage = () => {
                             </thead>
                             <tbody className='divide-y divide-gray-100'>
                                 {filteredTeachers.map((teacher) => (
-                                    <tr key={teacher.id} className='hover:bg-gray-50/50 transition-colors group'>
+                                    <tr 
+                                    key={teacher.id} 
+                                    className='hover:bg-gray-50/50 transition-colors group cursor-pointer'
+                                    onClick={() => router.push(`/admin/teachers/${teacher.id}`)}>
                                         <td className='px-6 py-4'>
                                             <div className='flex items-center gap-3'>
                                                 <div className='w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm'>
