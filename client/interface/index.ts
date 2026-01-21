@@ -75,6 +75,20 @@ export interface StudentProps {
   joined?: string
 }
 
+export interface StudentDetail {
+  id: string;
+  studentfirstname: string;
+  studentlastname: string;
+  studentdob: string;
+  studentgender: string;
+  studentaddress: string | null;
+  class: string | null; 
+  grade: string | null;
+  parentname: string;
+  parentphone: string;
+  parentemail: string;
+}
+
 export interface GetStudentsProps {
   studentfirstname: string
   studentlastname: string

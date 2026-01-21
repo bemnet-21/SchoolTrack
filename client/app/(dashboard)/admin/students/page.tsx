@@ -7,8 +7,10 @@ import { getAllStudents } from '@/services/student.service'
 import { formatDate } from '@/utils/formatTime'
 import Pills from '@/app/components/Pills'
 import { FaUserGraduate, FaSearch, FaEllipsisV, FaBirthdayCake, FaLayerGroup } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
 
 const StudentsPage = () => {
+  const router = useRouter();
   const [students, setStudents] = useState<GetStudentsProps[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -95,7 +97,10 @@ const StudentsPage = () => {
                             </thead>
                             <tbody className='divide-y divide-gray-100'>
                                 {filteredStudents.map((student) => (
-                                    <tr key={student.id} className='hover:bg-gray-50/50 transition-colors group cursor-pointer'>
+                                    <tr 
+                                        key={student.id} 
+                                        className='hover:bg-gray-50/50 transition-colors group cursor-pointer'
+                                        onClick={() => router.push(`/admin/students/${student.id}`)}>
                                         {/* Name */}
                                         <td className='px-6 py-4'>
                                             <div className='flex items-center gap-3'>
