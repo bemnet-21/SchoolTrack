@@ -12,46 +12,65 @@ const Header = () => {
     const pathName = usePathname()
 
     const getHeaderContent = () => {
+        // Dashboard
         if (pathName === '/admin') {
-            return <h1 className="text-xl font-bold">Dashboard</h1>;
+            return <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>;
         }
 
-        if (pathName === '/admin/students') {
-            return (
-                <div className="relative w-full max-w-xl">
-                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-                    <input 
-                        type='text' 
-                        placeholder='Search students by ID, name...' 
-                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 text-sm focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
-                    />
-                </div>
-            );
+        // Students (Search Bar)
+       if(pathName?.startsWith('/admin/students')) {
+            if(pathName.includes('/register')) return <h1 className="text-2xl font-bold text-gray-800">Register Student</h1>;
+            return <h1 className="text-2xl font-bold text-gray-800">Students</h1>;
         }
 
+        // Classes
         if (pathName?.startsWith('/admin/classes')) {
-            return <h1 className="text-xl font-bold">Classes</h1>;
+            if(pathName.includes('/register')) return <h1 className="text-2xl font-bold text-gray-800">Create Class</h1>;
+            return <h1 className="text-2xl font-bold text-gray-800">Class Management</h1>;
         }
 
+        // Teachers
         if(pathName?.startsWith('/admin/teachers')) {
-            return <h1 className="text-xl font-bold">Teachers</h1>;
+            if(pathName.includes('/register')) return <h1 className="text-2xl font-bold text-gray-800">Register Teacher</h1>;
+            return <h1 className="text-2xl font-bold text-gray-800">Teachers</h1>;
         }
 
-        return null;
+        return <h1 className="text-2xl font-bold text-gray-800">Bigstar</h1>;
     }
 
   return (
-   <header className="w-full h-24 bg-white shadow-md p-4 flex items-center justify-between md:px-8">
-        <div className='flex gap-x-4 items-center flex-1'>    
-            <FiMenu className="text-2xl text-mainBlue cursor-pointer md:hidden" onClick={() => dispatch(toggleSidebar())}/>
+   <header className="w-full h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 shadow-sm">
+        
+        <div className='flex gap-4 items-center flex-1'>    
+            <button 
+                onClick={() => dispatch(toggleSidebar())}
+                className="p-2 -ml-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors md:hidden focus:outline-none"
+            >
+                <FiMenu className="text-2xl" />
+            </button>
             
             {getHeaderContent()}
-
         </div>
-        <div className='flex gap-x-4 items-center pl-4'>
-            <FaBell className="text-2xl text-mainBlue cursor-pointer" />
-            <div className='p-2 bg-mainBlue rounded-full'>
-                <FiUser className="text-2xl text-white cursor-pointer" />
+
+        <div className='flex items-center gap-6 pl-6'>
+            
+            <button className="relative text-gray-500 hover:text-blue-600 transition-colors">
+                <FaBell className="text-xl" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                    3
+                </span>
+            </button>
+
+            <div className="h-8 w-px bg-gray-200 hidden sm:block"></div>
+
+            <div className='flex items-center gap-3 cursor-pointer group'>
+                <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300'>
+                    <FiUser className="text-xl" />
+                </div>
+                <div className="hidden md:flex flex-col">
+                    <span className="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors">Admin</span>
+                    <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Super User</span>
+                </div>
             </div>
         </div>
    </header>

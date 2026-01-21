@@ -82,6 +82,7 @@ export interface GetStudentsProps {
   studentdob: string
   id: string
   joined?:string
+  class?:string
 }
 
 export interface CredentialDetails {

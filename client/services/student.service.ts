@@ -8,3 +8,7 @@ export const registerStudent = ( data: StudentProps ) => {
 export const getStudentsPerClass = ( classId: string ) => {
     return api.get(`/students/class/${classId}`)
 }
+
+export const getAllStudents = () => {
+    return api.get('/students')
+}
