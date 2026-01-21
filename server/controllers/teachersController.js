@@ -148,7 +148,17 @@ export const getTeacher = async (req, res) => {
     try {
         if(req.user.role === 'TEACHER') {
             const userId = req.user.id
-            const result = await db.query(`SELECT name, email, phone, subject FROM teacher WHERE user_id = $1`, [userId])
+            const result = await db.query(`
+                SELECT 
+                    t.name AS teacherName, 
+                    email AS teacherEmail, 
+                    phone AS teacherPhone, 
+                    s.name AS subject 
+                FROM teacher t 
+                JOIN subject s 
+                ON t.subject_id = s.id
+                WHERE user_id = $1`, 
+                 [userId])
 
             if(result.rows.length === 0) {
                 return res.status(404).json({ message : "Teacher not found" })
@@ -160,7 +170,15 @@ export const getTeacher = async (req, res) => {
         } else if(req.user.role === 'ADMIN') {
             
             if(!teacherId) return res.status(400).json({ message : "Teacher ID is required" })
-            const result = await db.query(`SELECT name, email, subject, phone FROM teacher WHERE id = $1`, [teacherId])
+            const result = await db.query(`SELECT 
+                    t.name AS teacherName, 
+                    email AS teacherEmail, 
+                    phone AS teacherPhone, 
+                    s.name AS subject 
+                FROM teacher t 
+                JOIN subject s 
+                ON t.subject_id = s.id
+                WHERE t.id = $1`, [teacherId])
             if(result.rows.length === 0) {
                 return res.status(404).json({ message : "Teacher not found" })
             }

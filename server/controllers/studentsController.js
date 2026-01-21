@@ -94,7 +94,7 @@ export const registerStudents = async (req, res) => {
 }
 
 //get students per class
-export const getAllStudents = async (req, res) => {
+export const getAllStudentsPerClass = async (req, res) => {
     const { classId } = req.params
 
     if(!classId) return res.status(400).json({ message : "Class Id is required" })
@@ -240,9 +240,9 @@ export const getStudentProfile = async (req, res) => {
 
         const result = await db.query(`
             SELECT 
-                s.id, s.first_name, s.last_name, s.dob, s.gender, s.address,
-                c.name AS class_name, c.grade, 
-                p.name AS parent_name, p.phone AS parent_phone, p.email AS parent_email
+                s.id, s.first_name AS studentFirstName, s.last_name AS studentLastName, s.dob AS studentDob, s.gender AS studentGender, s.address AS studentAddress,
+                c.name AS class, c.grade AS grade, 
+                p.name AS parentName, p.phone AS parentPhone, p.email AS parentEmail
             FROM student s 
             LEFT JOIN class c ON s.class_id = c.id 
             LEFT JOIN parent p ON s.parent_id = p.id 
@@ -303,5 +303,20 @@ export const getParentChildren = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+export const getAllStudents = async (req, res) => {
+    try {
+        const results = await db.query(`SELECT s.id, s.first_name AS studentFirstName, s.last_name AS studentLastName, s.dob AS studentDob, s.gender AS studentGender, s.created_at AS joined, c.name AS class FROM student s LEFT JOIN class c ON s.class_id = c.id ORDER BY CAST(c.grade AS INTEGER) ASC, s.first_name ASC`)
+        
+        res.status(200).json({ 
+            message : "Students found",
+            data: results.rows
+         })
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
     }
 }
