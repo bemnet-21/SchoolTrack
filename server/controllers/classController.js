@@ -20,7 +20,17 @@ export const getClassDetails = async (req, res) => {
     
     try {
         const result = await db.query(`
-        SELECT c.name, c.grade, t.name as teacher_name, (SELECT COUNT(*) FROM student s WHERE s.class_id = c.id) as student_count FROM class c LEFT JOIN teacher t ON c.teacher_id = t.id WHERE c.id = $1`, [classId])
+        SELECT 
+            c.name, 
+            c.grade, 
+            t.name as teacher_name, 
+            (SELECT COUNT(*) 
+        FROM student s 
+        WHERE s.class_id = c.id) as student_count 
+        FROM class c 
+        LEFT JOIN teacher t ON c.teacher_id = t.id 
+        WHERE c.id = $1
+        ORDER BY c.name ASC`, [classId])
 
         if(result.rows.length === 0) {
             return res.status(404).json({ message : "Class not found" })

@@ -50,7 +50,7 @@ export const getSubject = async (req, res) => {
 
 export const getAllSubject = async (req, res) => {
     try {
-        const result = await db.query(`SELECT name FROM subject`)
+        const result = await db.query(`SELECT id, name FROM subject`)
         if(result.rows.length === 0) {
             return res.json({ message : "No subject" })
         }

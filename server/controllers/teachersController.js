@@ -4,8 +4,8 @@ import bcrypt from 'bcrypt'
 
 //register teachers
 export const registerTeachers = async (req, res) => {
-    const { name, teacherEmail, subject, teacherPhone } = req.body
-    if(!name || !teacherEmail || !subject || !teacherPhone) return res.status(400).json({ message : "Missing Fields" })
+    const { name, teacherEmail, subjectId, teacherPhone } = req.body
+    if(!name || !teacherEmail || !subjectId || !teacherPhone) return res.status(400).json({ message : "Missing Fields" })
     const client = await db.connect()
 
     try {
@@ -19,7 +19,7 @@ export const registerTeachers = async (req, res) => {
         }
         const userId = user.id
 
-        const teacherResult = await client.query(`INSERT INTO teacher (name, email, subject, phone, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [name, teacherEmail, subject, teacherPhone, userId])
+        const teacherResult = await client.query(`INSERT INTO teacher (name, email, subject_id, phone, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [name, teacherEmail, subjectId, teacherPhone, userId])
         const teacher = teacherResult.rows[0]
         if(!teacher) {
             return res.status(400).json({ message : "Failed to register teacher" })
@@ -28,7 +28,7 @@ export const registerTeachers = async (req, res) => {
         res.status(201).json({
             message : "Registered Successfully",
             data : teacher,
-            credentails: {
+            credentials: {
                 email: teacherEmail,
                 temporaryPassword: generatedTeacherPassword
             }

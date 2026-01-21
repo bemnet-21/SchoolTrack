@@ -119,3 +119,18 @@ export interface AddClassInterface {
   name: string
   teacherId: string
 }
+
+export interface AddTeacherInterface {
+  name: string
+  teacherEmail: string
+  teacherPhone: string
+  subjectId: string
+}
+export interface TeacherCredentials {
+    email: string;
+    temporaryPassword: string;
+}
+export interface SubjectProps {
+  id: string
+  name: string
+}

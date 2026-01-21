@@ -55,8 +55,12 @@ const page = () => {
           <Link href='/admin/students/register'>
             <Pills label='Add Student' />
           </Link>
-          <Pills label='Add Teacher' />
-          <Pills label='Add Class' />
+          <Link href='/admin/teachers/register'>
+            <Pills label='Add Teacher' />
+          </Link>
+          <Link href='/admin/classes/add-class'>
+            <Pills label='Add Class' />
+          </Link>
         </div>
       </div>
       <div className='place-self-center xl:place-self-auto grid gap-y-4 gap-x-8  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>

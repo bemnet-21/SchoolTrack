@@ -1,0 +1,20 @@
+{
+  "name": "schooladmin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/bemnet-21/SchoolAdmin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bemnet-21/SchoolAdmin/issues"
+  },
+  "homepage": "https://github.com/bemnet-21/SchoolAdmin#readme"
+}
