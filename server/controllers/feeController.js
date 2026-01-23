@@ -47,6 +47,7 @@ export const getFeesByTerm = async (req, res) => {
     try {
         const result = await db.query(`
             SELECT 
+                f.id,
                 f.amount, 
                 f.start_date, 
                 f.due_date, 
@@ -54,7 +55,7 @@ export const getFeesByTerm = async (req, res) => {
                 f.invoice_no,
                 s.first_name,
                 s.last_name,
-                p.phone
+                p.phone AS parent_phone
             FROM fee f
             JOIN student s ON f.student_id = s.id
             JOIN parent p ON s.parent_id = p.id
@@ -64,7 +65,10 @@ export const getFeesByTerm = async (req, res) => {
         if(result.rows.length === 0) {
             return res.status(404).json({ message: 'No fees found for the specified term and year.' });
         }
-        res.status(200).json(result.rows);
+        res.status(200).json({
+            message : 'Fees retrieved successfully.',
+            data: result.rows
+        });
     } catch(err) {
         console.log(err)
         res.status(500).json({ message: 'Internal server error.' });
