@@ -37,6 +37,36 @@ export const assignFees = async (req, res) => {
         console.error('Error assigning fees:', err);
         await client.query('ROLLBACK');
         res.status(500).json({ message : 'Internal server error.' });
+    } finally {
+        client.release();
     }
+}
 
+export const getFeesByTerm = async (req, res) => {
+    const { term, year } = req.query;
+    try {
+        const result = await db.query(`
+            SELECT 
+                f.amount, 
+                f.start_date, 
+                f.due_date, 
+                f.is_paid,
+                f.invoice_no,
+                s.first_name,
+                s.last_name,
+                p.phone
+            FROM fee f
+            JOIN student s ON f.student_id = s.id
+            JOIN parent p ON s.parent_id = p.id
+            WHERE term = $1 AND year = $2
+        `, [term, year]);
+
+        if(result.rows.length === 0) {
+            return res.status(404).json({ message: 'No fees found for the specified term and year.' });
+        }
+        res.status(200).json(result.rows);
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message: 'Internal server error.' });
+    }
 }
