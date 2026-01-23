@@ -156,3 +156,24 @@ export interface SubjectProps {
   id: string
   name: string
 }
+
+export interface AssignFee {
+  classId: string
+  amount: number
+  term: number
+  year: number
+  startDate: string
+  dueDate: string
+}
+
+export interface FeeProps {
+  id: string
+  amount: number
+  start_date: string
+  due_date: string
+  is_paid: boolean
+  invoice_no: string
+  first_name: string
+  last_name: string
+  parent_phone: string
+}

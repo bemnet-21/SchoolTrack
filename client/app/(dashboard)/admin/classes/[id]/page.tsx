@@ -133,7 +133,10 @@ const ClassDetailsPage = () => {
                     <tbody className='divide-y divide-gray-100'>
                         {students && students.length > 0 ? (
                             students.map((student, index) => (
-                                <tr key={index} className='hover:bg-gray-50/50 transition-colors'>
+                                <tr 
+                                key={index} 
+                                className='hover:bg-gray-50/50 transition-colors cursor-pointer'
+                                onClick={() => router.push(`/admin/students/${student.id}`)}>
                                     {/* Name Column */}
                                     <td className='px-4 md:px-6 py-4'>
                                         <div className='flex items-center gap-3'>

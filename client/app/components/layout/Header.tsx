@@ -1,14 +1,17 @@
 'use client'
 
+import { RootState } from '@/store'
 import { toggleSidebar } from '@/store/slices/sidebar.slice'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import { FaBell, FaSearch } from 'react-icons/fa'
 import { FiMenu, FiUser } from 'react-icons/fi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Header = () => {
     const dispatch = useDispatch()
+    const name = useSelector((state: RootState) => state.auth.user?.name)
+    const role = useSelector((state: RootState) => state.auth.user?.role)
     const pathName = usePathname()
 
     const getHeaderContent = () => {
@@ -68,8 +71,8 @@ const Header = () => {
                     <FiUser className="text-xl" />
                 </div>
                 <div className="hidden md:flex flex-col">
-                    <span className="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors">Admin</span>
-                    <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Super User</span>
+                    <span className="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{name}</span>
+                    <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{role}</span>
                 </div>
             </div>
         </div>

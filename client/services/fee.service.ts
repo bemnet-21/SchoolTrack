@@ -1,0 +1,10 @@
+import { AssignFee } from "@/interface";
+import api from "./api";
+
+export const assignFee = ({ classId, amount, term, year, startDate, dueDate } : AssignFee) => {
+    return api.post('/fees/assign', { classId, amount, term, year, startDate, dueDate });
+}
+
+export const getFees = (term: number, year: number) => {
+    return api.get('/fees', { params: { term, year } });
+}
