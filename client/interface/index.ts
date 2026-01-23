@@ -49,6 +49,12 @@ export interface Event {
   end_time: string
 }
 
+export interface AddEvent {
+  title: string
+  eventDate: string
+  startTime: string
+  endTime: string
+}
 export interface EventsCard {
   events: Event[]
 }
