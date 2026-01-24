@@ -2,30 +2,28 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ClassProps, GetPeriods, GetTimetable } from '@/interface' // Assuming you have ClassProps
-import { getAllClasses } from '@/services/class.service' // To populate class dropdown
+import { ClassProps, GetPeriods, GetTimetable } from '@/interface' 
+import { getAllClasses } from '@/services/class.service' 
 import { getTimetableForClass } from '@/services/timetable.service'
 import { FaClock, FaCalendarAlt, FaLayerGroup, FaBook, FaChalkboardTeacher, FaPlus, FaRegCalendarTimes, FaTimes } from 'react-icons/fa'
 import Pills from '@/app/components/Pills'
 import Link from 'next/link'
+import { formatTime } from '@/utils/formatTime'
 
 const TimetablePage = () => {
   const router = useRouter()
   
-  // --- State ---
   const [selectedClassId, setSelectedClassId] = useState<string>('')
   const [classes, setClasses] = useState<ClassProps[]>([])
   const [timetable, setTimetable] = useState<GetTimetable[] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  // --- Fetch Classes for Dropdown ---
   useEffect(() => {
     const fetchClasses = async () => {
         try {
             const res = await getAllClasses()
             setClasses(res.data.data || [])
-            // Automatically select the first class if available
             if (res.data.data && res.data.data.length > 0) {
                 setSelectedClassId(res.data.data[0].id)
             }
@@ -37,7 +35,6 @@ const TimetablePage = () => {
     fetchClasses()
   }, [])
 
-  // --- Fetch Timetable for Selected Class ---
   useEffect(() => {
     if (!selectedClassId) {
         setTimetable(null);
@@ -50,10 +47,10 @@ const TimetablePage = () => {
         setError(null)
         try {
             const res = await getTimetableForClass(selectedClassId)
-            setTimetable(res.data.data || []) // Backend sends data: rows (array of days)
+            setTimetable(res.data.data || []) 
         } catch (err: any) {
             if (err.response && err.response.status === 404) {
-                setTimetable([]); // No timetable set for this class
+                setTimetable([]); 
             } else {
                 console.error("Failed to fetch timetable", err)
                 setError(err.response?.data?.message || "Failed to load timetable.")
@@ -65,15 +62,6 @@ const TimetablePage = () => {
     fetchTimetable()
   }, [selectedClassId])
 
-  // Helper: Format Time (14:00 -> 2:00 PM)
-  const formatTime = (time: string) => {
-    if (!time) return ''
-    const [hours, minutes] = time.split(':')
-    const h = parseInt(hours, 10)
-    const ampm = h >= 12 ? 'PM' : 'AM'
-    const formattedHour = h % 12 || 12
-    return `${formattedHour}:${minutes}`
-  }
 
   return (
     <section className='w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-8 space-y-6'>
@@ -100,7 +88,7 @@ const TimetablePage = () => {
                     ))}
                 </select>
                 {/* Assign Timetable Button */}
-                <Link href={`/admin/timetable/assign?classId=${selectedClassId}`} className="w-full sm:w-auto">
+                <Link href={`/admin/timetable/assign`} className="w-full sm:w-auto">
                     <div className="w-full flex justify-center">
                         <Pills label='Assign Timetable' />
                     </div>
@@ -117,14 +105,12 @@ const TimetablePage = () => {
 
         {/* --- Content Area --- */}
         {loading ? (
-            // Loading Skeleton for Daily Cards
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
                 {[1, 2, 3, 4, 5].map(i => (
                     <div key={i} className="h-64 bg-gray-200 rounded-2xl"></div>
                 ))}
             </div>
         ) : timetable && timetable.length > 0 ? (
-            // Timetable Grid (Desktop: multi-column, Mobile: 1-column stack)
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {timetable.map((dayData) => (
                     <div key={dayData.day} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
@@ -167,11 +153,10 @@ const TimetablePage = () => {
                 <p className='text-gray-500 mb-6'>
                     {selectedClassId ? `No timetable set for this class.` : 'Please select a class to view its timetable.'}
                 </p>
-                {selectedClassId && ( // Show button only if a class is selected
-                    <Link href={`/admin/timetable/assign?classId=${selectedClassId}`}>
-                        <Pills label='Assign Timetable' />
-                    </Link>
-                )}
+                <Link href={`/admin/timetable/assign`}>
+                    <Pills label='Assign Timetable' />
+                </Link>
+                
             </div>
         )}
     </section>

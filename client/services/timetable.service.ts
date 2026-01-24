@@ -6,5 +6,5 @@ export const getTimetableForClass = (classId: string) => {
 }
 
 export const createTimetable = ({ classId, day, periods } : CreateTimetable) => {
-    return api.post('/timetable/creat-timetable', { classId, day, periods })
+    return api.post('/timetable/create-timetable', { classId, day, periods })
 }
