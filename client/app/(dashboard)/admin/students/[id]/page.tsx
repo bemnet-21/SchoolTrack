@@ -134,6 +134,15 @@ const StudentProfilePage = () => {
 
                     <div className="flex justify-between items-center group">
                         <div className="flex items-center gap-3 text-gray-500">
+                            <FaEnvelope className="text-gray-400" />
+                            <span className="font-medium text-sm">Email</span>
+                        </div>
+                        <span className="font-semibold text-gray-800 text-right max-w-50 truncate">
+                            {student.studentemail || "Not Provided"}
+                        </span>
+                    </div>
+                    <div className="flex justify-between items-center group">
+                        <div className="flex items-center gap-3 text-gray-500">
                             <FaMapMarkerAlt className="text-gray-400" />
                             <span className="font-medium text-sm">Address</span>
                         </div>
@@ -141,6 +150,13 @@ const StudentProfilePage = () => {
                             {student.studentaddress || "Not Provided"}
                         </span>
                     </div>
+                </div>
+                <div className="pt-6 border-t border-gray-100 place-self-center">
+                    <button className="py-2 px-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors text-sm shadow-sm shadow-blue-200"
+                    onClick={() => router.push(`/admin/students/${id}/edit-profile`)}
+                    >
+                        Edit Profile
+                    </button>
                 </div>
             </div>
 

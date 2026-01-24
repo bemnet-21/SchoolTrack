@@ -66,7 +66,7 @@ export const getTimetable = async (req, res) => {
     try {
         const results = await db.query(`
                 SELECT 
-                    t.day_of_week,
+                    t.day_of_week AS day,
                     JSON_AGG(
                         JSON_BUILD_OBJECT(
                             'periodNumber', t.period_number,

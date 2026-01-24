@@ -77,6 +77,7 @@ export interface StudentProps {
   studentLastName: string
   studentGender: string
   studentDob: string
+  studentAddress: string
   classId: string | null
   joined?: string
 }
@@ -85,6 +86,7 @@ export interface StudentDetail {
   id: string;
   studentfirstname: string;
   studentlastname: string;
+  studentemail: string;
   studentdob: string;
   studentgender: string;
   studentaddress: string | null;

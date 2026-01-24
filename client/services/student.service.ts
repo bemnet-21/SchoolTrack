@@ -16,3 +16,7 @@ export const getAllStudents = () => {
 export const getStudentProfile = ( studentId: string ) => {
     return api.get(`/students/profile/${studentId}`)
 }
+
+export const updateStudentProfile = (studentId: string, { studentDob, studentEmail, studentFirstName, studentLastName, studentGender, classId, parentEmail, parentName, parentPhone, studentAddress }:StudentProps) => {
+    return api.put(`/students/${studentId}`, { studentDob, studentEmail, studentFirstName, studentLastName, studentGender, classId, parentEmail, parentName, parentPhone, studentAddress })
+}
