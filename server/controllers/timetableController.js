@@ -58,3 +58,42 @@ export const createTimeTable = async (req, res) => {
         client.release()
     }
 }
+
+export const getTimetable = async (req, res) => {
+    const { classId } = req.params
+    if(!classId) return res.status(400).json({ message : "Class Id is missing" })
+
+    try {
+        const results = await db.query(`
+                SELECT 
+                    t.day_of_week,
+                    JSON_AGG(
+                        JSON_BUILD_OBJECT(
+                            'periodNumber', t.period_number,
+                            'subjectName', s.name,
+                            'startTime', t.start_time,
+                            'endTime', t.end_time,
+                            'teacherName', tr.name
+                        )
+                        ORDER BY t.period_number ASC
+                    ) AS periods
+
+                    FROM timetable t
+                    JOIN subject s ON s.id = t.subject_id
+                    JOIN teacher tr ON tr.id = t.teacher_id
+                    WHERE class_id = $1
+                    GROUP BY t.day_of_week
+            `, [classId])
+        if(results.rows.length === 0) {
+            return res.status(404).json({ message : `Timetable was not found for class ${classId}` })
+        }
+        res.status(200).json({
+            message : "Timetable found",
+            data: results.rows
+        })
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}
