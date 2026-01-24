@@ -183,3 +183,28 @@ export interface FeeProps {
   last_name: string
   parent_phone: string
 }
+
+export interface AddPeriods {
+  periodNumber: number
+  subjectId: string
+  teacherId: string
+  startTime: string
+  endTime: string
+}
+export interface CreateTimetable {
+  classId: string
+  day: string
+  periods: AddPeriods[]
+}
+
+export interface GetPeriods {
+  periodNumber: number
+  subjectName: string
+  teacherName: string
+  startTime: string
+  endTime: string
+}
+export interface GetTimetable {
+  day: string
+  periods: GetPeriods[]
+}

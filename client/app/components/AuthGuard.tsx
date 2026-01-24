@@ -35,7 +35,8 @@ const AuthGuard = ({ children, allowedRoles }: AuthGuardProps) => {
 
                 const currentTime = Date.now() / 1000;
                 if ((decodedUser as any).exp < currentTime) {
-                    throw new Error("Token expired");
+                    dispatch(logout())
+                    // throw new Error("Token expired");
                 }
 
                 dispatch(setCredentials({ user: decodedUser, token }));
