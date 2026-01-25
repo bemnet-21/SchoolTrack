@@ -123,20 +123,20 @@ export const updateStudent = async (req, res) => {
     const { studentId } = req.params
     if(!studentId) return res.status(400).json({ message : "Student Id is required" })
     
-    let { studentEmail, parentEmail,  parentName, parentPhone, studentFirstName, studentLastName, studentGender, studentDob, classId } = req.body
+    let { studentEmail, parentEmail,  parentName, parentPhone, studentFirstName, studentLastName, studentGender, studentDob, classId, studentAddress } = req.body
 
     if (classId === "NULL" || classId === "null") {
         classId = null;
     }
 
-    if (!studentEmail || !parentEmail || !parentName || !parentPhone || !studentFirstName || !studentLastName || !studentGender || !studentDob) {
+    if (!studentEmail || !parentEmail || !parentName || !parentPhone || !studentFirstName || !studentLastName || !studentGender || !studentDob || !studentAddress) {
         return res.status(400).json({ error: 'Missing fields' });
     }
 
     const client = await db.connect()
     try {
         await client.query('BEGIN')
-        const updatedStudent = await client.query(`UPDATE student SET first_name = $1, last_name = $2, gender = $3, dob= $4 WHERE id = $5 RETURNING *`, [ studentFirstName, studentLastName, studentGender, studentDob, studentId])
+        const updatedStudent = await client.query(`UPDATE student SET first_name = $1, last_name = $2, gender = $3, dob= $4, address = $5, student_email = $6 WHERE id = $7 RETURNING *`, [ studentFirstName, studentLastName, studentGender, studentDob, studentAddress, studentEmail,studentId])
 
         const studentMeta = await client.query(`SELECT parent_id, user_id FROM student WHERE id = $1`, [studentId])
         // const { parent_id: parentId, user_id: studentUserId } = studentMeta
@@ -240,9 +240,17 @@ export const getStudentProfile = async (req, res) => {
 
         const result = await db.query(`
             SELECT 
-                s.id, s.first_name AS studentFirstName, s.last_name AS studentLastName, s.dob AS studentDob, s.gender AS studentGender, s.address AS studentAddress,
+                s.id, 
+                s.first_name AS studentFirstName, 
+                s.last_name AS studentLastName, 
+                s.dob AS studentDob, 
+                s.gender AS studentGender, 
+                s.address AS studentAddress, 
+                s.student_email AS studentemail,
                 c.name AS class, c.grade AS grade, 
-                p.name AS parentName, p.phone AS parentPhone, p.email AS parentEmail
+                p.name AS parentName, 
+                p.phone AS parentPhone, 
+                p.email AS parentEmail
             FROM student s 
             LEFT JOIN class c ON s.class_id = c.id 
             LEFT JOIN parent p ON s.parent_id = p.id 
