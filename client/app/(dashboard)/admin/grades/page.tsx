@@ -9,7 +9,9 @@ import { FaClipboardList, FaFilter, FaSearch, FaExclamationCircle } from 'react-
 import { getGrades } from '@/services/grade.service'
 
 const GradesPage = () => {
+  // State
   const [classId, setClassId] = useState<string>('')
+  
   const [term, setTerm] = useState<number>(1) 
   
   const [classes, setClasses] = useState<ClassProps[]>([])
@@ -19,6 +21,7 @@ const GradesPage = () => {
   const [dataLoading, setDataLoading] = useState(true) 
   const [error, setError] = useState('')
 
+  // 1. Fetch Classes on Mount
   useEffect(() => {
     const fetchClasses = async () => {
       try {
@@ -26,9 +29,10 @@ const GradesPage = () => {
         const classList = res.data.data || []
         setClasses(classList)
         
-        // if (classList.length > 0) {
-        //     setClassId(classList[0].id)
-        // }
+        // Automatically select the first class to show data immediately
+        if (classList.length > 0) {
+            setClassId(classList[0].id)
+        }
       } catch (err) {
         console.error("Failed to load classes")
       } finally {
@@ -38,6 +42,7 @@ const GradesPage = () => {
     fetchClasses()
   }, [])
 
+  // 2. Fetch Grades when Filters Change
   useEffect(() => {
     if (!classId) return
 
@@ -49,7 +54,7 @@ const GradesPage = () => {
         setGrades(res.data.data || [])
       } catch (err: any) {
         if(err.response && err.response.status === 404) {
-            setGrades([])
+            setGrades([]) // Handle empty list gracefully
         } else {
             console.error(err)
             setError("Failed to fetch results.")
@@ -62,20 +67,20 @@ const GradesPage = () => {
     fetchGrades()
   }, [classId, term])
 
-  console.log("Grades: ", grades)
-  console.log("Classes: ", classes)
-
+  // --- Helper: Get All Unique Subjects for Table Header ---
   const allSubjects = Array.from(
     new Set(grades.flatMap(student => student.grades.map(s => s.subject)))
   ).sort();
 
+  // --- Helper: Render Score Cell with Color Coding ---
   const getScoreCell = (student: GetGrade, subjectName: string) => {
     const subjectData = student.grades.find(s => s.subject === subjectName);
     if (!subjectData) return <span className="text-gray-300">-</span>;
 
     let colorClass = "text-gray-700";
-    if (subjectData.grade === 'A' || subjectData.grade === 'A+') colorClass = "text-green-600 font-bold";
-    if (subjectData.grade === 'F') colorClass = "text-red-600 font-bold";
+    // Adjust logic based on your grading system
+    if (['A', 'A+'].includes(subjectData.grade)) colorClass = "text-green-600 font-bold";
+    if (['F', 'D'].includes(subjectData.grade)) colorClass = "text-red-600 font-bold";
 
     return (
         <div className="flex flex-col">
@@ -88,14 +93,20 @@ const GradesPage = () => {
   return (
     <section className='w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-8 space-y-6'>
         
+        {/* --- Header --- */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6'>
             <div className='flex flex-col'>
                 <h1 className='text-2xl md:text-3xl font-bold text-gray-800'>Student Grades</h1>
                 <p className='text-gray-500 text-sm'>View academic performance and marksheets.</p>
             </div>
-        
+            
+            {/* Added Link to Input Grades Page */}
+            <Link href="/admin/grades/assign">
+                <Pills label='Input Grades' />
+            </Link>
         </div>
 
+        {/* --- Filters --- */}
         <div className='bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-4'>
             <div className="flex-1">
                 <label className="text-xs font-bold text-gray-500 uppercase ml-1">Class</label>
@@ -118,13 +129,14 @@ const GradesPage = () => {
                     onChange={(e) => setTerm(Number(e.target.value))}
                     className='w-full mt-1 px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-blue-500 bg-gray-50'
                 >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                    <option value="1">Term 1</option>
+                    <option value="2">Term 2</option>
+                    <option value="3">Term 3</option>
                 </select>
             </div>
         </div>
 
+        {/* --- Content --- */}
         {loading || dataLoading ? (
              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-4 animate-pulse">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -133,7 +145,8 @@ const GradesPage = () => {
              </div>
         ) : grades.length > 0 ? (
             <>
-                <div className='bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
+                {/* --- DESKTOP TABLE --- */}
+                <div className='hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
                     <div className='overflow-x-auto'>
                         <table className='w-full text-left border-collapse'>
                             <thead>
@@ -189,12 +202,18 @@ const GradesPage = () => {
                     </div>
                 </div>
 
+                {/* --- MOBILE CARDS --- */}
                 <div className='md:hidden grid grid-cols-1 gap-4'>
                     {grades.map((student) => (
                         <div key={student.student_id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                            <h3 className="font-bold text-gray-800 text-lg mb-3 border-b border-gray-50 pb-2">
-                                {student.first_name} {student.last_name}
-                            </h3>
+                            <div className="flex justify-between items-center mb-3 border-b border-gray-50 pb-2">
+                                <h3 className="font-bold text-gray-800 text-lg">
+                                    {student.first_name} {student.last_name}
+                                </h3>
+                                <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
+                                    {student.overall_average}%
+                                </span>
+                            </div>
                             
                             <div className="grid grid-cols-2 gap-3">
                                 {student.grades.map((sub, idx) => (
@@ -214,14 +233,18 @@ const GradesPage = () => {
                 </div>
             </>
         ) : (
+            // --- Empty State ---
             <div className='flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 mx-auto max-w-lg text-center p-4'>
                 <div className='bg-blue-50 p-4 rounded-full mb-4'>
                     <FaClipboardList className='text-3xl text-blue-400' />
                 </div>
                 <h3 className='text-lg font-semibold text-gray-800'>No grades found</h3>
                 <p className='text-gray-500 mb-6'>
-                    No results uploaded for term {term} in this class yet.
+                    No results uploaded for {term} in this class yet.
                 </p>
+                <Link href="/admin/grades/assign">
+                    <Pills label='Input Grades' />
+                </Link>
             </div>
         )}
     </section>
