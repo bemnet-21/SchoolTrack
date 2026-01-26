@@ -239,3 +239,16 @@ export interface GetGrade {
   total: number
   grades: Grade[]
 }
+
+export interface SpecificClassInterface {
+  id: string
+  name: string
+  student_count: number
+}
+
+export interface TodayScheduleInterface {
+  subject: string
+  period_number: number
+  start_time: string
+  end_time: string
+}

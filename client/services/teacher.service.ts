@@ -16,3 +16,11 @@ export const getTeacherById = (teacherId: string) => {
 export const updateTeacherProfile = (teacherId: string, { name, teacherEmail, phone, subject }:UpdateTeacher) => {
     return api.put(`/teachers/${teacherId}`, { name, teacherEmail, phone, subject })
 }
+
+export const getClassOfTeacher = () => {
+    return api.get('/teachers/get-class')
+}
+
+export const getTodaySchedule = () => {
+    return api.get('/teachers/get-today-schedule')
+}
