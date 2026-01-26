@@ -194,20 +194,32 @@ export const getTeacher = async (req, res) => {
     }
 }
 
+// helper function
+const getTeacherId = async (userId) => {
+    const teacherData = await db.query(
+        `SELECT id FROM teacher WHERE user_id = $1`, 
+        [userId]
+    );
+    
+    if (teacherData.rows.length === 0) {
+        return null;
+    }
+
+    return teacherData.rows[0].id;
+}
 export const getClassForTeacher = async (req, res) => {
     try {
-        const teacherData = await db.query(`SELECT id FROM teacher WHERE user_id = $1`, [req.user.id])
-        if(teacherData.rows.length === 0) return res.status(404).json({ message : "No user was found" })
 
-        const teacherId = teacherData.rows[0].id
+        const teacherId = await getTeacherId(req.user.id)
         const classResult = await db.query(`
                 SELECT
                     c.name,
-                    COUNT(s.id) AS student_count
+                    c.id,
+                    COUNT(s.id)::integer AS student_count
                 FROM class c
                 JOIN student s ON s.class_id = c.id
                 WHERE c.teacher_id = $1
-                GROUP BY c.name
+                GROUP BY c.name, c.id
                 `, [teacherId])
         
         if(classResult.rows.length === 0) return res.status(404).json({ message : "No class was found" })
@@ -216,6 +228,41 @@ export const getClassForTeacher = async (req, res) => {
             message : "Class was found succuesfully",
             data: classResult.rows
         })
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}
+
+export const getTodaySchedule = async (req, res) => {
+    try {
+        const teacherId = await getTeacherId(req.user.id)
+        const date = new Date()
+        const today = date.toLocaleString('en-US', { weekday: 'long' })
+
+        const scheduleResult = await db.query(`
+                SELECT
+                    c.name,
+                    t.period_number,
+                    t.start_time,
+                    t.end_time,
+                    sub.name
+                FROM timetable t
+                JOIN class c ON c.id = t.class_id
+                JOIN subject sub ON sub.id = t.subject_id
+                WHERE t.teacher_id = $1 AND t.day_of_week = $2
+            `, [teacherId, today])
+        
+        if(scheduleResult.rows.length === 0) {
+            return res.status(404).json({ message : "No schedule for today" })
+        }
+
+        res.status(200).json({ 
+            message : "Schedule found succesfully",
+            data: scheduleResult.rows
+         })
+        
 
     } catch(err) {
         console.log(err)
