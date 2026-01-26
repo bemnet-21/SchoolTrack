@@ -6,7 +6,7 @@ export const addGrade = async (req, res) => {
 
     try {
         const userId = req.user.id
-        const teacherData = await db.query(`SELECT id FROM teacher WHERE user_id = $1`, [userId])
+        const teacherData = await db.query(`SELECT id, subject_id FROM teacher WHERE user_id = $1`, [userId])
 
         const teacherId = teacherData.rows[0].id
 
@@ -21,6 +21,9 @@ export const addGrade = async (req, res) => {
                         : (score >= 40 && score < 50) ? 'D'
                         : 'F'
 
+        if(teacherData.rows[0].subject_id !== subjectId) {
+            return res.status(403).json({ message : "You are not allowed for this subject" })
+        }
         const insertResults = await db.query(`
                 INSERT INTO grade
                     (student_id, subject_id, teacher_id, term, score, grade)
@@ -50,23 +53,26 @@ export const getGrade = async (req, res) => {
                     s.first_name,
                     s.last_name,
                     g.term,
+                    c.grade,
+                    SUM(g.score)::float AS total,
+                    ROUND(AVG(g.score)::numeric, 2)::float AS overall_average,
                     JSON_AGG(
                         JSON_BUILD_OBJECT(
                             'subject', sub.name,
                             'score', g.score,
                             'grade', g.grade
                         )
-                    ) AS results
+                    ) AS grades
                     FROM grade g
                     JOIN student s ON s.id = g.student_id
                     JOIN class c ON c.id = s.class_id
                     JOIN subject sub ON sub.id = g.subject_id
                     WHERE c.id = $1 AND g.term = $2
-                    GROUP BY s.id, s.first_name, s.last_name, g.term`, 
+                    GROUP BY s.id, s.first_name, s.last_name, g.term, c.grade`, 
                     [classId, term])
 
         if(results.rows.length === 0){
-            return res.statu(404).json({ message : "No grade was found" })
+            return res.status(404).json({ message : "No grade was found" })
         }
 
         res.status(200).json({ 

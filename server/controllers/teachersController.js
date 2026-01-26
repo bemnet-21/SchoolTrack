@@ -193,3 +193,32 @@ export const getTeacher = async (req, res) => {
         res.status(500).json({ message : "Internal server error" })
     }
 }
+
+export const getClassForTeacher = async (req, res) => {
+    try {
+        const teacherData = await db.query(`SELECT id FROM teacher WHERE user_id = $1`, [req.user.id])
+        if(teacherData.rows.length === 0) return res.status(404).json({ message : "No user was found" })
+
+        const teacherId = teacherData.rows[0].id
+        const classResult = await db.query(`
+                SELECT
+                    c.name,
+                    COUNT(s.id) AS student_count
+                FROM class c
+                JOIN student s ON s.class_id = c.id
+                WHERE c.teacher_id = $1
+                GROUP BY c.name
+                `, [teacherId])
+        
+        if(classResult.rows.length === 0) return res.status(404).json({ message : "No class was found" })
+        
+        res.status(200).json({
+            message : "Class was found succuesfully",
+            data: classResult.rows
+        })
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}
