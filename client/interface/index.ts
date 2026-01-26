@@ -137,6 +137,13 @@ export interface TeacherProps {
   subject_name: string | null
 }
 
+export interface UpdateTeacher {
+  name: string
+  teacherEmail: string
+  phone: string
+  subject: string
+}
+
 export interface TeacherDetail {
   teachername: string
   teacheremail: string
@@ -209,4 +216,26 @@ export interface GetPeriods {
 export interface GetTimetable {
   day: string
   periods: GetPeriods[]
+}
+
+export interface AddGrade {
+  studentId: string
+  subjectId: string
+  term: number
+  score: number
+}
+
+export interface Grade {
+  subject: string
+  score: number
+  grade: string
+}
+export interface GetGrade {
+  student_id: string
+  first_name: string
+  last_name: string
+  term: number
+  overall_average: number
+  total: number
+  grades: Grade[]
 }

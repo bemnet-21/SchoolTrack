@@ -1,4 +1,4 @@
-import { AddTeacherInterface } from "@/interface"
+import { AddTeacherInterface, UpdateTeacher } from "@/interface"
 import api from "./api"
 
 export const getAllTeachers = () => {
@@ -11,4 +11,8 @@ export const addTeacher = ({ name, teacherEmail, teacherPhone, subjectId } : Add
 
 export const getTeacherById = (teacherId: string) => {
     return api.get(`/teachers/${teacherId}`)
+}
+
+export const updateTeacherProfile = (teacherId: string, { name, teacherEmail, phone, subject }:UpdateTeacher) => {
+    return api.put(`/teachers/${teacherId}`, { name, teacherEmail, phone, subject })
 }
