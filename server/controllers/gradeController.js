@@ -38,3 +38,43 @@ export const addGrade = async (req, res) => {
         res.status(500).json({ message : "Internal server error" })
     }
 }
+
+export const getGrade = async (req, res) => {
+    try {
+        const { classId, term } = req.query
+        if(!classId || !term) return res.status(400).json({ message : "Class Id and term are required" })
+        
+        const results = await db.query(`
+                SELECT
+                    s.id AS student_id,
+                    s.first_name,
+                    s.last_name,
+                    g.term,
+                    JSON_AGG(
+                        JSON_BUILD_OBJECT(
+                            'subject', sub.name,
+                            'score', g.score,
+                            'grade', g.grade
+                        )
+                    ) AS results
+                    FROM grade g
+                    JOIN student s ON s.id = g.student_id
+                    JOIN class c ON c.id = s.class_id
+                    JOIN subject sub ON sub.id = g.subject_id
+                    WHERE c.id = $1 AND g.term = $2
+                    GROUP BY s.id, s.first_name, s.last_name, g.term`, 
+                    [classId, term])
+
+        if(results.rows.length === 0){
+            return res.statu(404).json({ message : "No grade was found" })
+        }
+
+        res.status(200).json({ 
+            message : "Grade was found succesfully",
+            data: results.rows
+         })
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
