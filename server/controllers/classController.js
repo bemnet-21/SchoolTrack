@@ -128,3 +128,35 @@ export const getAllClasses = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }  
 }
+
+export const assignSubjectsToClass = async (req, res) => {
+    const { classId, subjects } = req.body
+    if(!classId || !Array.isArray(subjects) || subjects.length === 0) {
+        return res.status(400).json({ message : "Missing required fields" })
+    }
+    // subjects = [
+    //     {
+    //         subjectId,
+    //         teacherId
+    //     }
+    // ]
+    const client = await db.connect()
+    try {
+        for(const item of subjects) {
+            await client.query('BEGIN')
+            const { subjectId, teacherId } = item
+            if(!subjectId || !teacherId) return res.status(400).json({ message : "Missing required fields" })
+            
+            await client.query(`INSERT INTO class_subjects(class_id, subject_id, teacher_id) VALUES ($1, $2, $3)`, [classId, subjectId, teacherId]) 
+        }
+
+        await client.query('COMMIT')
+        res.status(201).json({ message : "Subjects assigned to class successfully" })
+
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+
+}

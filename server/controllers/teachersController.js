@@ -244,10 +244,10 @@ export const getTodaySchedule = async (req, res) => {
         const scheduleResult = await db.query(`
                 SELECT
                     c.name,
-                    t.period_number,
+                    t.period_number::integer,
                     t.start_time,
                     t.end_time,
-                    sub.name
+                    sub.name AS subject
                 FROM timetable t
                 JOIN class c ON c.id = t.class_id
                 JOIN subject sub ON sub.id = t.subject_id
