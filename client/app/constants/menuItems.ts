@@ -19,6 +19,7 @@ export const adminMenuItems: MenuItem[] = [
 export const teacherMenuItems: MenuItem[] = [
   { name: "Dashboard", path: "/teacher", icon: FaHome },
   { name: "Classes", path: "/teacher/classes", icon: FaChalkboardTeacher },
+  { name: "Schedule", path: "/teacher/schedule", icon: FaCalendarAlt },
 //   { name: "Attendance", path: "/teacher/attendance", icon: FaCalendarAlt },
 ];
 

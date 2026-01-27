@@ -24,3 +24,7 @@ export const getClassOfTeacher = () => {
 export const getTodaySchedule = () => {
     return api.get('/teachers/get-today-schedule')
 }
+
+export const getClassesForTeacher = () => {
+    return api.get('/teachers/get-classes')
+}

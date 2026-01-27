@@ -252,3 +252,10 @@ export interface TodayScheduleInterface {
   start_time: string
   end_time: string
 }
+
+
+export interface TeacherClasses {
+  name: string
+  class_id: string
+  subject: string
+}
