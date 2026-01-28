@@ -220,7 +220,7 @@ export interface GetTimetable {
 
 export interface AddGrade {
   studentId: string
-  subjectId: string
+  classId: string
   term: number
   score: number
 }

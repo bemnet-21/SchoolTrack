@@ -6,6 +6,8 @@ import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { FaUserGraduate, FaArrowLeft, FaEllipsisV, FaBirthdayCake, FaMars, FaVenus } from 'react-icons/fa'
 import { formatDate } from '@/utils/formatTime' // Assuming you have this helper
+import Pills from '@/app/components/Pills'
+import Link from 'next/link'
 
 const Page = () => {
   const params = useParams()
@@ -41,11 +43,10 @@ const Page = () => {
   return (
     <section className='w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-8 space-y-6'>
         
-        {/* --- Navigation & Header --- */}
         <div className='flex flex-col gap-4'>
             <button 
                 onClick={() => router.back()} 
-                className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit font-medium'
+                className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit font-medium cursor-pointer'
             >
                 <FaArrowLeft /> Back to Classes
             </button>
@@ -60,7 +61,6 @@ const Page = () => {
             </div>
         </div>
 
-        {/* --- Content Area --- */}
         {loading ? (
              <div className="space-y-4 animate-pulse">
                 {[1, 2, 3, 4, 5].map(i => (
@@ -69,7 +69,6 @@ const Page = () => {
              </div>
         ) : students.length > 0 ? (
             <>
-                {/* === VIEW 1: DESKTOP TABLE (Hidden < 768px) === */}
                 <div className='hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
                     <div className='overflow-x-auto'>
                         <table className='w-full text-left border-collapse'>
@@ -107,9 +106,11 @@ const Page = () => {
                                             </span>
                                         </td>
                                         <td className='px-6 py-4 text-right'>
-                                            <button className='text-gray-400 hover:text-blue-600 transition-colors p-1'>
-                                                <FaEllipsisV />
-                                            </button>
+                                            <Link href={`/teacher/classes/${classId}/${student.id}`}>
+                                                <button className='text-gray-400 hover:text-blue-600 transition-colors p-1'>
+                                                    <Pills label='Add Grade' />
+                                                </button>
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}
@@ -118,11 +119,9 @@ const Page = () => {
                     </div>
                 </div>
 
-                {/* === VIEW 2: MOBILE CARDS (Hidden > 768px) === */}
                 <div className='md:hidden grid grid-cols-1 gap-4'>
                     {students.map((student) => (
                         <div key={student.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
-                            {/* Visual indicator for gender */}
                             <div className={`absolute top-0 left-0 w-1 h-full ${
                                 student.studentgender?.toLowerCase() === 'male' ? 'bg-blue-500' : 'bg-pink-500'
                             }`}></div>
