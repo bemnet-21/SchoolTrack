@@ -25,6 +25,10 @@ export const getTodaySchedule = () => {
     return api.get('/teachers/get-today-schedule')
 }
 
+export const getTeacherWeeklySchedule = () => {
+    return api.get('/teachers/get-weekly-schedule')
+}
+
 export const getClassesForTeacher = () => {
     return api.get('/teachers/get-classes')
 }

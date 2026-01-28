@@ -259,3 +259,15 @@ export interface TeacherClasses {
   class_id: string
   subject: string
 }
+
+export interface TeacherPeriod {
+  periodNumber: number
+  startTime: string
+  endTime: string
+  subject: string
+  class: string
+}
+export interface TeacherWeeklyScheduleInterface {
+  day: string
+  periods: TeacherPeriod[]
+}
