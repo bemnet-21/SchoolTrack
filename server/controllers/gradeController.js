@@ -1,14 +1,22 @@
 import db from '../db/index.js'
+import { getTeacherId } from './teachersController.js'
 
 export const addGrade = async (req, res) => {
-    const { studentId, subjectId, term, score } = req.body
-    if(!studentId || !subjectId || !term || !score) return res.status(400).json({ message : "Missing required fields" })
+    const { studentId, classId, term, score } = req.body
+    
+    if(!studentId || !classId || !term || !score) return res.status(400).json({ message : "Missing required fields" })
 
+    const client = await db.connect()
+    const teacherId = await getTeacherId(req.user.id)    //helper function from teachersController
     try {
-        const userId = req.user.id
-        const teacherData = await db.query(`SELECT id, subject_id FROM teacher WHERE user_id = $1`, [userId])
+        await client.query('BEGIN')
+        const subjectData = await client.query(`SELECT subject_id FROM class_subjects WHERE teacher_id = $1 AND class_id = $2`, [teacherId, classId])
 
-        const teacherId = teacherData.rows[0].id
+        if(subjectData.rows.length === 0) {
+            await client.query('ROLLBACK')
+            return res.status(404).json({ message : "Subject not found" })
+        }
+        const subjectId = subjectData.rows[0].subject_id
 
         const grade = score >= 85 ? 'A'
                         : (score >=80 && score < 85) ? 'A-'
@@ -21,15 +29,14 @@ export const addGrade = async (req, res) => {
                         : (score >= 40 && score < 50) ? 'D'
                         : 'F'
 
-        if(teacherData.rows[0].subject_id !== subjectId) {
-            return res.status(403).json({ message : "You are not allowed for this subject" })
-        }
-        const insertResults = await db.query(`
+        const insertResults = await client.query(`
                 INSERT INTO grade
                     (student_id, subject_id, teacher_id, term, score, grade)
                 VALUES
                     ($1, $2, $3, $4, $5, $6) RETURNING *
             `, [studentId, subjectId, teacherId, term, score, grade])
+
+        await client.query('COMMIT')
 
         res.status(201).json({ 
             message : "Graded added succesfully",
@@ -38,6 +45,7 @@ export const addGrade = async (req, res) => {
 
     } catch(err) {
         console.log(err)
+        await client.query('ROLLBACK')
         res.status(500).json({ message : "Internal server error" })
     }
 }

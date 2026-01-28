@@ -195,7 +195,7 @@ export const getTeacher = async (req, res) => {
 }
 
 // helper function
-const getTeacherId = async (userId) => {
+export const getTeacherId = async (userId) => {
     const teacherData = await db.query(
         `SELECT id FROM teacher WHERE user_id = $1`, 
         [userId]
@@ -270,6 +270,48 @@ export const getTodaySchedule = async (req, res) => {
     }
 }
 
+export const getTeacherWeeklySchedule = async(req, res) => {
+    try {
+        const teacherId = await getTeacherId(req.user.id)
+        
+        const scheduleResult = await db.query(`
+                SELECT
+                    t.day_of_week AS day,
+                    JSON_AGG(
+                        JSON_BUILD_OBJECT(
+                            'periodNumber',t.period_number::integer,
+                            'startTime',t.start_time,
+                            'endTime',t.end_time,
+                            'subject', sub.name,
+                            'class', c.name
+                        ) ORDER BY t.period_number ASC
+                    ) AS periods
+                    
+                    
+                    
+                FROM timetable t
+                JOIN class c ON c.id = t.class_id
+                JOIN subject sub ON sub.id = t.subject_id
+                WHERE t.teacher_id = $1
+                GROUP BY t.day_of_week
+            `, [teacherId])
+        
+        if(scheduleResult.rows.length === 0) {
+            return res.status(404).json({ message : "No schedule found" })
+        }
+
+        res.status(200).json({ 
+            message : "Schedule found succesfully",
+            data: scheduleResult.rows
+         })
+        
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}
+
 export const getClassesForTeacher = async (req, res) => {
     const teacherId = await getTeacherId(req.user.id)
 
@@ -283,6 +325,7 @@ export const getClassesForTeacher = async (req, res) => {
                 JOIN class c ON cs.class_id = c.id
                 JOIN subject sub ON cs.subject_id = sub.id
                 WHERE cs.teacher_id = $1
+                ORDER BY c.grade::integer ASC
             `, [teacherId])
 
         if(results.rows.length === 0) return res.status(404).json({ message : "Class not found" })

@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get('/', protect, authorizeRoles('ADMIN'), getAllStudents)
 router.post('/register', protect, authorizeRoles('ADMIN'), registerStudents)
-router.get('/class/:classId', protect, authorizeRoles('ADMIN'), getAllStudentsPerClass)
+router.get('/class/:classId', protect, authorizeRoles('ADMIN', 'TEACHER'), getAllStudentsPerClass)
 router.put('/:studentId', protect, authorizeRoles('ADMIN'), updateStudent)
 router.delete('/:studentId', protect, authorizeRoles('ADMIN'), deleteStudent)
 router.get('/profile/:studentId', protect, authorizeRoles('ADMIN', 'PARENT', 'STUDENT'), getStudentProfile)
