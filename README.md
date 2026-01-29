@@ -81,3 +81,21 @@ SchoolTrack is a comprehensive, full-stack School Management System designed to 
 
 ---
 
+## 🚧 Planned Modules (Roadmap)
+
+* 🎓 **Student Portal**
+
+  * View grades, attendance, timetable
+* 🧑‍🏫 **Teacher Portal**
+
+  * Manage grades and attendance
+* 👨‍👩‍👧 **Parent Portal**
+
+  * Monitor student performance
+* 🔔 Notifications & announcements
+* 📈 Advanced analytics & reports
+
+---
+
+
+
