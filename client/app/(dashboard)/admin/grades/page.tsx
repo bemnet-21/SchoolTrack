@@ -99,11 +99,6 @@ const GradesPage = () => {
                 <h1 className='text-2xl md:text-3xl font-bold text-gray-800'>Student Grades</h1>
                 <p className='text-gray-500 text-sm'>View academic performance and marksheets.</p>
             </div>
-            
-            {/* Added Link to Input Grades Page */}
-            <Link href="/admin/grades/assign">
-                <Pills label='Input Grades' />
-            </Link>
         </div>
 
         {/* --- Filters --- */}
@@ -242,9 +237,7 @@ const GradesPage = () => {
                 <p className='text-gray-500 mb-6'>
                     No results uploaded for {term} in this class yet.
                 </p>
-                <Link href="/admin/grades/assign">
-                    <Pills label='Input Grades' />
-                </Link>
+                
             </div>
         )}
     </section>

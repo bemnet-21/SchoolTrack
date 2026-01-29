@@ -58,7 +58,7 @@ const Page = () => {
                 <div className='bg-blue-50 p-3 rounded-full mb-3'>
                     <FaGraduationCap className='text-blue-600 text-4xl'/>
                 </div>
-                <h1 className='text-3xl font-bold text-gray-800 tracking-tight'>Bigstar</h1>
+                <h1 className='text-3xl font-bold text-gray-800 tracking-tight'>SchoolTrack</h1>
             </div>
 
             {/* Added onSubmit here, removed onClick from button */}

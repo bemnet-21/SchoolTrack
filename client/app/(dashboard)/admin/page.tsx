@@ -33,10 +33,18 @@ const page = () => {
   }
 
   const getPerformances = async (grade : string) => {
-    const res = await getStudentPerformance(grade)
-    const data = res.data.data
-
-    setPerformances(data.performance)
+    try {
+      const res = await getStudentPerformance(grade)
+      const data = res.data.data
+  
+      setPerformances(data.performance)
+    } catch(err: any) {
+      if(err.response && err.response.status === 404) {
+        setPerformances([])
+      } else {
+        console.log("Failed to fetch performances", err.message)
+      }
+    }
   }
 
   useEffect(() => {

@@ -43,9 +43,9 @@ const Sidebar = () => {
         
         <div className="p-6 flex items-center gap-2">
           <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold">
-              B
+              ST
           </div>
-          <span className="text-xl font-bold text-gray-800">placeholder</span>
+          <span className="text-xl font-bold text-gray-800">SchoolTrack</span>
         </div>
 
         <button onClick={handleSidebarClose} className="md:hidden place-self-end px-4 text-gray-500 cursor-pointer">

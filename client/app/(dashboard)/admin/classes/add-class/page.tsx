@@ -26,8 +26,12 @@ const AddClassPage = () => {
         try {
             const res = await getAllTeachers()
             setTeachers(res.data.data || [])
-        } catch (err) {
-            console.error("Failed to load teachers")
+        } catch (err: any) {
+            if(err.response && err.response.status === 404) {
+                setTeachers([])
+            } else {
+                console.error("Failed to load teachers ", err)
+            }
         }
     }
     fetchTeachers()

@@ -23,12 +23,11 @@ const page = () => {
   const [todaySchedule, setTodaySchedule] = useState<TodayScheduleInterface[]>([])
 
   const getClass = async () => {
-    const res = await getClassOfTeacher()
-    const data = res.data.data
-    setClassInfo(data[0])
-
+    
     try {
-
+      const res = await getClassOfTeacher()
+      const data = res.data.data
+      setClassInfo(data[0])
     } catch(err: any) {
       if(err.response && err.response.status === 404) {
         console.log("Class not found")
@@ -71,33 +70,66 @@ const page = () => {
         </div>
       </div>
 
-      <div className='w-full max-w-150 bg-white rounded-xl shadow-sm border-t-4 border-blue-600 p-6 flex flex-col justify-between hover:shadow-md transition-shadow'>
-        <div className='flex items-center gap-4 mb-6'>
-            <div className='w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-xl'>
-                <FaUsers />
-            </div>
-            <div>
-                <p className='text-xs font-bold text-gray-400 uppercase tracking-wider'>Classroom</p>
-                <h2 className='text-2xl font-bold text-gray-800'>{classInfo?.name}</h2>
-            </div>
-        </div>
-        <div className='flex flex-col gap-y-3 pt-4 border-t border-gray-100'>
-            <div className='flex items-center gap-3'>
-                <FaChalkboardTeacher className="text-gray-400" />
-                <div className='flex flex-col'>
-                    <span className='text-xs text-gray-500 font-medium'>Home Room Teacher</span>
-                    <span className='text-sm font-semibold text-gray-700'>{user?.name}</span> 
+      {
+        (classInfo) ? 
+          <div className='w-full max-w-150 bg-white rounded-xl shadow-sm border-t-4 border-blue-600 p-6 flex flex-col justify-between hover:shadow-md transition-shadow'>
+            <div className='flex items-center gap-4 mb-6'>
+                <div className='w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-xl'>
+                    <FaUsers />
+                </div>
+                <div>
+                    <p className='text-xs font-bold text-gray-400 uppercase tracking-wider'>Classroom</p>
+                    <h2 className='text-2xl font-bold text-gray-800'>{classInfo?.name}</h2>
                 </div>
             </div>
-            <div className='flex items-center gap-3'>
-                <FaPeopleGroup className="text-gray-400" />
-                <div className='flex flex-col'>
-                    <span className='text-xs text-gray-500 font-medium'>Student Count</span>
-                    <span className='text-sm font-semibold text-gray-700'>{classInfo?.student_count}</span> 
+            <div className='flex flex-col gap-y-3 pt-4 border-t border-gray-100'>
+                <div className='flex items-center gap-3'>
+                    <FaChalkboardTeacher className="text-gray-400" />
+                    <div className='flex flex-col'>
+                        <span className='text-xs text-gray-500 font-medium'>Home Room Teacher</span>
+                        <span className='text-sm font-semibold text-gray-700'>{user?.name}</span> 
+                    </div>
+                </div>
+                <div className='flex items-center gap-3'>
+                    <FaPeopleGroup className="text-gray-400" />
+                    <div className='flex flex-col'>
+                        <span className='text-xs text-gray-500 font-medium'>Student Count</span>
+                        <span className='text-sm font-semibold text-gray-700'>{classInfo?.student_count}</span> 
+                    </div>
                 </div>
             </div>
-        </div>
-      </div>
+          </div>
+          :
+          <div className='w-full max-w-150 bg-white rounded-xl shadow-sm border-t-4 border-gray-300 p-6 flex flex-col justify-between grayscale'>
+              <div className='flex items-center gap-4 mb-6'>
+                  <div className='w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-300 text-xl'>
+                      <FaUsers />
+                  </div>
+                  <div>
+                      <p className='text-xs font-bold text-gray-300 uppercase tracking-wider'>Classroom</p>
+                      <h2 className='text-2xl font-bold text-gray-300 italic'>Not Assigned</h2>
+                  </div>
+              </div>
+
+              <div className='flex flex-col gap-y-3 pt-4 border-t border-gray-50'>
+                  <div className='flex items-center gap-3 opacity-40'>
+                      <FaChalkboardTeacher className="text-gray-300" />
+                      <div className='flex flex-col'>
+                          <span className='text-xs text-gray-400 font-medium'>Home Room Teacher</span>
+                          <span className='text-sm font-semibold text-gray-400'>N/A</span> 
+                      </div>
+                  </div>
+                  <div className='flex items-center gap-3 opacity-40'>
+                      <FaPeopleGroup className="text-gray-300" />
+                      <div className='flex flex-col'>
+                          <span className='text-xs text-gray-400 font-medium'>Student Count</span>
+                          <span className='text-sm font-semibold text-gray-400'>0</span> 
+                      </div>
+                  </div>
+              </div>
+          </div>
+      }
+
 
       <div className='bg-white p-6 rounded-2xl shadow-sm border border-gray-100 w-full h-full flex flex-col'>
         

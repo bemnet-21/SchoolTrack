@@ -19,8 +19,12 @@ const TeachersPage = () => {
         setLoading(true)
         const res = await getAllTeachers()
         setTeachers(res.data.data || [])
-    } catch (error) {
-        console.error("Failed to fetch teachers", error)
+    } catch (error: any) {
+        if(error.response && error.response.status === 404) {
+            setTeachers([])
+        } else {
+            console.error("Failed to fetch teachers", error)
+        }
     } finally {
         setLoading(false)
     }
@@ -199,7 +203,7 @@ const TeachersPage = () => {
                 </div>
                 <h3 className='text-lg font-semibold text-gray-800'>No teachers found</h3>
                 <p className='text-gray-500 mb-6 text-center max-w-xs'>Get started by adding a new teacher to the system.</p>
-                <Link href="/admin/teachers/add">
+                <Link href="/admin/teachers/register">
                     <Pills label='Add Teacher' />
                 </Link>
             </div>

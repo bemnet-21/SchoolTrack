@@ -17,8 +17,12 @@ const ClassesPage = () => {
         const res = await getAllClasses()
         const data = res.data.data || [] 
         setClasses(data)
-    } catch (error) {
-        console.error("Failed to fetch classes", error)
+    } catch (error:any) {
+        if(error.response && error.response.status === 404) {
+            setClasses([])
+        } else {
+            console.error("Failed to fetch classes", error)
+        }
     } finally {
         setLoading(false)
     }
@@ -73,7 +77,9 @@ const ClassesPage = () => {
                 </div>
                 <h3 className='text-lg font-semibold text-gray-800'>No classes found</h3>
                 <p className='text-gray-500 mb-6'>Get started by adding a new class to the system.</p>
-                <Pills label='Create First Class' />
+                <Link href={'/admin/classes/add-class'}>
+                    <Pills label='Create First Class' />
+                </Link>
             </div>
         )}
         
