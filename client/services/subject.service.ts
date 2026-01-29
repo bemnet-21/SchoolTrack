@@ -7,3 +7,4 @@ export const getAllSubjects = () => {
 export const addSubject = (name: string) => {
     return api.post('/subjects', { name })
 }
+

@@ -1,9 +1,11 @@
 'use client'
 
+import Pills from '@/app/components/Pills'
 import { ClassProps, GetStudentsProps } from '@/interface'
 import { getClassDetail } from '@/services/class.service'
 import { getStudentsPerClass } from '@/services/student.service'
 import { formatDate } from '@/utils/formatTime'
+import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { FaArrowLeft, FaChalkboardTeacher, FaUserGraduate, FaLayerGroup } from 'react-icons/fa'
@@ -77,9 +79,9 @@ const ClassDetailsPage = () => {
                 <h1 className='text-2xl md:text-3xl font-bold text-gray-800 wrap-break-word'>{classDetail.name}</h1>
                 <span className='text-gray-500 text-sm md:text-base'>Section Overview</span>
             </div>
-            <span className='bg-blue-50 text-blue-600 px-4 py-2 rounded-full font-bold text-sm border border-blue-100 w-fit'>
-                {classDetail.grade}
-            </span>
+            <Link href={`/admin/classes/${classId}/assign-subjects`}>
+                <Pills label='Add Subjects' />
+            </Link>
         </div>
       </div>
 

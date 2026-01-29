@@ -271,3 +271,12 @@ export interface TeacherWeeklyScheduleInterface {
   day: string
   periods: TeacherPeriod[]
 }
+
+export interface SubjectsInfoInterface {
+  subjectId: string
+  teacherId: string
+}
+export interface AssignSubjectsToClassInterface {
+  classId: string
+  subjects: SubjectsInfoInterface[]
+}

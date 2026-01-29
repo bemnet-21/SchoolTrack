@@ -1,4 +1,4 @@
-import { AddClassInterface } from "@/interface"
+import { AddClassInterface, AssignSubjectsToClassInterface } from "@/interface"
 import api from "./api"
 
 export const getClassId = (grade : string) => {
@@ -15,4 +15,8 @@ export const getClassDetail = (id : string) => {
 
 export const addClass = ({ grade, name, teacherId }: AddClassInterface) => {
     return api.post('/class', { grade, name, teacherId })
+}
+
+export const assignSubjectsToClass = ({ classId, subjects }:AssignSubjectsToClassInterface) => {
+    return api.post('/class/assign-subjects', { classId, subjects })
 }
