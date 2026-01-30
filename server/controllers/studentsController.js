@@ -5,13 +5,13 @@ import crypto from 'crypto'
 
 // register students
 export const registerStudents = async (req, res) => {
-    let { studentEmail, parentEmail, parentName, parentPhone, studentFirstName, studentLastName, studentGender, studentDob, classId } = req.body
+    let { studentEmail, parentEmail, parentName, parentPhone, studentFirstName, studentLastName, studentGender, studentDob, classId, studentAddress } = req.body
 
     if (classId === "NULL" || classId === "null") {
         classId = null;
     }
 
-    if (!studentEmail || !parentEmail || !parentName || !parentPhone || !studentFirstName || !studentLastName || !studentGender || !studentDob) {
+    if (!studentEmail || !parentEmail || !parentName || !parentPhone || !studentFirstName || !studentLastName || !studentGender || !studentDob || !studentAddress) {
         return res.status(400).json({ error: 'Missing fields' });
     }
     
@@ -54,14 +54,15 @@ export const registerStudents = async (req, res) => {
         }
 
         // creating student
-        const newStudent = await client.query(`INSERT INTO student (first_name, last_name, dob, gender, class_id, parent_id, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *` , [
+        const newStudent = await client.query(`INSERT INTO student (first_name, last_name, dob, gender, class_id, parent_id, user_id, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *` , [
             studentFirstName,
             studentLastName,
             studentDob,
             studentGender,
             classId,
             parentId,
-            newStudentUserId
+            newStudentUserId,
+            studentAddress
         ])
 
         await client.query('COMMIT')
