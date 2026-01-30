@@ -78,7 +78,7 @@ const Page = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all duration-200 bg-gray-50 focus:bg-white'
-                    placeholder='name@example.com' 
+                    placeholder='admin@school.com' 
                   />
                 </div>
 
@@ -94,7 +94,7 @@ const Page = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all duration-200 bg-gray-50 focus:bg-white'
-                    placeholder='••••••••' 
+                    placeholder='admin123' 
                   />
                 </div>
                 {error && (
@@ -110,12 +110,6 @@ const Page = () => {
                     Login
                 </button>
 
-                <p className='text-center text-sm text-gray-500 mt-4'>
-                    Don't have an account?{' '}
-                    <a href="/register" className='font-semibold text-blue-600 hover:text-blue-700 hover:underline'>
-                        Sign up
-                    </a>
-                </p>
             </form>
         </div>
     </section>
