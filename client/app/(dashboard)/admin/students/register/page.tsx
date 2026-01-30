@@ -15,6 +15,7 @@ const RegisterStudentPage = () => {
   const [studentEmail, setStudentEmail] = useState<string>('') 
   const [dateOfBirth, setDateOfBirth] = useState<string>('')
   const [gender, setGender] = useState<string>('')
+  const [address, setAddress] = useState<string>('')
   
   const [grade, setGrade] = useState<number>(0)
   const [section, setSection] = useState<string>('') 
@@ -59,7 +60,8 @@ const RegisterStudentPage = () => {
         classId: classId || null, 
         parentName: parentName,
         parentPhone: parentPhone,
-        parentEmail: parentEmail
+        parentEmail: parentEmail,
+        studentAddress: address
     };
 
     try {
@@ -221,6 +223,7 @@ const RegisterStudentPage = () => {
                                 className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
                             />
                         </div>
+                        
                         <div className='space-y-2'>
                             <label className='text-sm font-medium text-gray-700'>Date of Birth</label>
                             <input 
@@ -243,6 +246,17 @@ const RegisterStudentPage = () => {
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
+                        </div>
+                        <div className='space-y-2'>
+                            <label className='text-sm font-medium text-gray-700'>Address</label>
+                            <input 
+                                type="text" 
+                                required
+                                placeholder='e.g. Addis Ababa'
+                                value={lastName}
+                                onChange={(e) => setAddress(e.target.value)}
+                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                            />
                         </div>
                     </div>
                 </div>
