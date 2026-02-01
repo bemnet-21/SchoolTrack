@@ -1,6 +1,7 @@
 import db from '../db/index.js'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
+// import { getClassId } from './classController.js'
 
 
 // register students
@@ -328,4 +329,51 @@ export const getAllStudents = async (req, res) => {
         console.log(err)
         res.status(500).json({ message : "Internal server error" })
     }
+}
+
+//helper function
+const getClassId = async (studentId) => {
+    const studentData = await db.query('SELECT class_id FROM student WHERE id = $1', [studentId])
+    if(studentData.rows.length === 0) return res.status(404).json({ message : "No student was found" })
+    
+    return studentData.rows[0].class_id
+}
+export const getTodaySchedule = async (req, res) => {
+    const { studentId, day } = req.query
+    if(!studentId || !day) return res.status(400).json({ message : "Student Id is required" })
+    
+    const classId = await getClassId(studentId)
+    
+    try {
+         const scheduleResult = await db.query(`
+                 SELECT
+                     t.day_of_week AS day,
+                     JSON_AGG(
+                         JSON_BUILD_OBJECT(
+                             'periodNumber', t.period_number,
+                             'startTime', t.start_time,
+                             'endTime', t.end_time,
+                             'subject', sub.name
+                         )
+     
+                     ) AS periods
+                 FROM timetable t
+                 JOIN subject sub ON sub.id = t.subject_id
+                 WHERE class_id = $1 AND day_of_week = $2
+                 GROUP BY t.day_of_week
+             `, [classId, day])
+     
+         if(scheduleResult.rows.length === 0) return res.status(404).json({ message : "No schedule was found for today" })
+     
+         res.status(200).json({ 
+             message: "Schedule was found",
+             data: scheduleResult.rows
+          })
+
+     } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+     }
+    
+    
 }
