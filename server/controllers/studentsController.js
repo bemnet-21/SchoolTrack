@@ -347,21 +347,14 @@ export const getTodaySchedule = async (req, res) => {
     try {
          const scheduleResult = await db.query(`
                  SELECT
-                     t.day_of_week AS day,
-                     JSON_AGG(
-                         JSON_BUILD_OBJECT(
-                             'period_number', t.period_number,
-                             'start_time', t.start_time,
-                             'end_time', t.end_time,
-                             'subject', sub.name
-                         )
-     
-                     ) AS periods
-                 FROM timetable t
-                 JOIN subject sub ON sub.id = t.subject_id
-                 WHERE class_id = $1 AND day_of_week = $2
-                 GROUP BY t.day_of_week
-             `, [classId, day])
+                    t.period_number::integer,
+                    t.start_time,
+                    t.end_time,
+                    sub.name AS subject
+                FROM timetable t
+                JOIN subject sub ON sub.id = t.subject_id
+                WHERE t.class_id = $1 AND t.day_of_week = $2
+            `, [classId, day])
      
          if(scheduleResult.rows.length === 0) return res.status(404).json({ message : "No schedule was found for today" })
      
