@@ -350,9 +350,9 @@ export const getTodaySchedule = async (req, res) => {
                      t.day_of_week AS day,
                      JSON_AGG(
                          JSON_BUILD_OBJECT(
-                             'periodNumber', t.period_number,
-                             'startTime', t.start_time,
-                             'endTime', t.end_time,
+                             'period_number', t.period_number,
+                             'start_time', t.start_time,
+                             'end_time', t.end_time,
                              'subject', sub.name
                          )
      
