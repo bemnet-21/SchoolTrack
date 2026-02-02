@@ -4,8 +4,11 @@ import React from 'react'
 import { FaClock, FaBookOpen } from 'react-icons/fa'
 
 const ScheduleCard = ({ subject, period_number, start_time, end_time }: TodayScheduleInterface) => {
+  console.log(start_time)
   const startTime = formatTime(start_time)
   const endTime = formatTime(end_time)
+
+
 
   return (
     <div className='w-full bg-white p-4 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500 flex items-center justify-between hover:shadow-md transition-shadow duration-200'>

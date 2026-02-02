@@ -20,3 +20,7 @@ export const getStudentProfile = ( studentId: string ) => {
 export const updateStudentProfile = (studentId: string, { studentDob, studentEmail, studentFirstName, studentLastName, studentGender, classId, parentEmail, parentName, parentPhone, studentAddress }:StudentProps) => {
     return api.put(`/students/${studentId}`, { studentDob, studentEmail, studentFirstName, studentLastName, studentGender, classId, parentEmail, parentName, parentPhone, studentAddress })
 }
+
+export const getTodaySchedule = (day: string) => {
+    return api.get(`/students/get-today-schedule?day=${day}`)
+}
