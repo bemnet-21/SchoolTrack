@@ -332,17 +332,17 @@ export const getAllStudents = async (req, res) => {
 }
 
 //helper function
-const getClassId = async (studentId) => {
-    const studentData = await db.query('SELECT class_id FROM student WHERE id = $1', [studentId])
-    if(studentData.rows.length === 0) return res.status(404).json({ message : "No student was found" })
+const getClassId = async (userId) => {
+    const studentData = await db.query('SELECT class_id FROM student WHERE user_id = $1', [userId])
+    if(studentData.rows.length === 0) return null
     
     return studentData.rows[0].class_id
 }
 export const getTodaySchedule = async (req, res) => {
-    const { studentId, day } = req.query
-    if(!studentId || !day) return res.status(400).json({ message : "Student Id is required" })
+    const { day } = req.query
+    if(!day) return res.status(400).json({ message : "Day is required" })
     
-    const classId = await getClassId(studentId)
+    const classId = await getClassId(req.user.id)
     
     try {
          const scheduleResult = await db.query(`
