@@ -103,7 +103,7 @@ export const getGradeForStudent = async (req, res) => {
         const gradeResults = await db.query(`
                 SELECT
                     sub.name AS subject,
-                    g.score,
+                    g.score::integer,
                     g.grade,
                     t.name AS teacher
                 FROM grade g
