@@ -338,6 +338,14 @@ const getClassId = async (userId) => {
     
     return studentData.rows[0].class_id
 }
+
+//helper function
+export const getStudentId = async (userId) => {
+    const studentData = await db.query('SELECT id FROM student WHERE user_id = $1', [userId])
+    if(studentData.rows.length === 0) return null
+
+    return studentData.rows[0].id
+}
 export const getTodaySchedule = async (req, res) => {
     const { day } = req.query
     if(!day) return res.status(400).json({ message : "Day is required" })

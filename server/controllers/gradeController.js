@@ -1,4 +1,5 @@
 import db from '../db/index.js'
+import { getStudentId } from './studentsController.js'
 import { getTeacherId } from './teachersController.js'
 
 export const addGrade = async (req, res) => {
@@ -90,5 +91,35 @@ export const getGrade = async (req, res) => {
     } catch(err) {
         console.log(err)
         res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+export const getGradeForStudent = async (req, res) => {
+    const { term } = req.query
+    const studentId = await getStudentId(req.user.id)
+    if(!studentId || !term) return res.status(400).json({ message : "Student Id and term are required" })
+
+    try {
+        const gradeResults = await db.query(`
+                SELECT
+                    sub.name AS subject,
+                    g.score,
+                    g.grade,
+                    t.name AS teacher
+                FROM grade g
+                JOIN subject sub ON sub.id = g.subject_id
+                JOIN teacher t ON t.id = g.teacher_id
+                WHERE student_id = $1 AND term = $2
+            `, [studentId, term])
+        if(gradeResults.rows.length === 0) return res.status(404).json({ message : "No grade was found" })
+        
+        res.status(200).json({ 
+            message : "Grade found",
+            data: gradeResults.rows
+         })
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
     }
 }
