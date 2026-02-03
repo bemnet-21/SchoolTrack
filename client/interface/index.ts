@@ -280,3 +280,10 @@ export interface AssignSubjectsToClassInterface {
   classId: string
   subjects: SubjectsInfoInterface[]
 }
+
+export interface StudentsGradeInterface {
+  subject: string
+  score: number
+  grade: string
+  teacher: string
+}
