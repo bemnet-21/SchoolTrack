@@ -5,7 +5,7 @@ import { createTimeTable, getTimetable } from '../controllers/timetableControlle
 
 const router = express.Router()
 
-router.get('/:classId', protect, authorizeRoles('ADMIN'), getTimetable)
+router.get('/:classId', protect, authorizeRoles('ADMIN','STUDENT'), getTimetable)
 router.post('/create-timetable', protect, authorizeRoles('ADMIN'), createTimeTable)
 
 export default router

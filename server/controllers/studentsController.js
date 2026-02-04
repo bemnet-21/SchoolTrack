@@ -332,7 +332,7 @@ export const getAllStudents = async (req, res) => {
 }
 
 //helper function
-const getClassId = async (userId) => {
+export const getClassId = async (userId) => {
     const studentData = await db.query('SELECT class_id FROM student WHERE user_id = $1', [userId])
     if(studentData.rows.length === 0) return null
     
@@ -378,3 +378,4 @@ export const getTodaySchedule = async (req, res) => {
     
     
 }
+

@@ -1,5 +1,6 @@
 import db from '../db/index.js'
 import format from "pg-format"
+import { getClassId } from './studentsController.js'
 
 export const createTimeTable = async (req, res) => {
     const { classId, day, periods } = req.body
@@ -60,7 +61,13 @@ export const createTimeTable = async (req, res) => {
 }
 
 export const getTimetable = async (req, res) => {
-    const { classId } = req.params
+
+    let { classId } = req.params
+
+    if(req.user.role === "STUDENT") {
+        classId = await getClassId(req.user.id)
+    } 
+    
     if(!classId) return res.status(400).json({ message : "Class Id is missing" })
 
     try {
