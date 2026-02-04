@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ClassProps, GetPeriods, GetTimetable } from '@/interface' 
 import { getAllClasses } from '@/services/class.service' 
-import { getTimetableForClass } from '@/services/timetable.service'
+import { getTimetable } from '@/services/timetable.service'
 import { FaClock, FaCalendarAlt, FaLayerGroup, FaBook, FaChalkboardTeacher, FaPlus, FaRegCalendarTimes, FaTimes } from 'react-icons/fa'
 import Pills from '@/app/components/Pills'
 import Link from 'next/link'
@@ -46,7 +46,7 @@ const TimetablePage = () => {
         setLoading(true)
         setError(null)
         try {
-            const res = await getTimetableForClass(selectedClassId)
+            const res = await getTimetable(selectedClassId)
             setTimetable(res.data.data || []) 
         } catch (err: any) {
             if (err.response && err.response.status === 404) {

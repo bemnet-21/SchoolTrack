@@ -56,7 +56,6 @@ const StudentGradesPage = () => {
           <p className='text-gray-500 text-sm'>Track your performance and progress across terms.</p>
         </div>
 
-        {/* Term Switcher (Segmented Control) */}
         <div className='bg-gray-100 p-1.5 rounded-2xl flex items-center gap-1 w-full md:w-auto'>
             {[1, 2, 3].map((t) => (
                 <button
@@ -74,7 +73,6 @@ const StudentGradesPage = () => {
         </div>
       </div>
 
-      {/* --- Summary Bar --- */}
       {!loading && grades.length > 0 && (
         <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
             <div className='bg-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-blue-100 flex items-center gap-4'>
@@ -89,7 +87,6 @@ const StudentGradesPage = () => {
         </div>
       )}
 
-      {/* --- Grades View --- */}
       {loading ? (
           <div className='space-y-4 animate-pulse'>
               {[1, 2, 3, 4].map(i => (
@@ -98,7 +95,6 @@ const StudentGradesPage = () => {
           </div>
       ) : grades.length > 0 ? (
           <>
-            {/* === DESKTOP TABLE (Hidden on Mobile < 768px) === */}
             <div className='hidden md:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden'>
                 <table className='w-full text-left border-collapse'>
                     <thead>
@@ -133,7 +129,6 @@ const StudentGradesPage = () => {
                 </table>
             </div>
 
-            {/* === MOBILE CARDS (Visible on 393px) === */}
             <div className='md:hidden flex flex-col gap-4'>
                 {grades.map((item, index) => (
                     <div key={index} className='bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex justify-between items-center'>
