@@ -21,7 +21,7 @@ const Header = () => {
             return <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>;
         }
 
-        // Students (Search Bar)
+        // Students
        if(pathName?.startsWith('/admin/students')) {
             if(pathName.includes('/register')) return <h1 className="text-2xl font-bold text-gray-800">Register Student</h1>;
             return <h1 className="text-2xl font-bold text-gray-800">Students</h1>;
@@ -73,8 +73,24 @@ const Header = () => {
             return <h1 className="text-2xl font-bold text-gray-800">Profile</h1>;
         }
 
+        //student dashboard
+        if(pathName === '/student') {
+            return <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>;
+        }
+        //student grades
+        if(pathName?.startsWith('/student/grades')) {
+            return <h1 className="text-2xl font-bold text-gray-800">Grades</h1>;
+        }
 
-        return <h1 className="text-2xl font-bold text-gray-800">Bigstar</h1>;
+        //student schedule
+        if(pathName?.startsWith('/student/schedule')) {
+            return <h1 className="text-2xl font-bold text-gray-800">Schedule</h1>;
+        }
+
+
+
+
+        return <h1 className="text-2xl font-bold text-gray-800">SchoolTrack</h1>;
     }
 
   return (
