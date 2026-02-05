@@ -40,7 +40,7 @@ export const registerStudents = async (req, res) => {
             // creating user for parent
             generatedParentPassword = crypto.randomBytes(4).toString('hex')
             const hashedParentPassword = await bcrypt.hash(generatedParentPassword, 10)
-            const userParentResult = await client.query(`INSERT INTO users (email, password, role, must_change_password) VALUES ($1, $2, 'PARENT', 'TRUE') RETURNING id`, [parentEmail, hashedParentPassword])
+            const userParentResult = await client.query(`INSERT INTO users (email, password, role, must_change_password, name) VALUES ($1, $2, 'PARENT', 'TRUE', $3) RETURNING id`, [parentEmail, hashedParentPassword, parentName])
     
             const newParentUserId = userParentResult.rows[0].id
     
@@ -277,44 +277,7 @@ export const getStudentProfile = async (req, res) => {
     }
 }
 
-export const getParentChildren = async (req, res) => {
-    try {
-        const user = req.user
 
-
-        // 1. Find the Parent Profile ID using the User ID
-        const parentMeta = await db.query(`SELECT id FROM parent WHERE user_id = $1`, [user.id])
-        
-        if (parentMeta.rows.length === 0) {
-            return res.status(404).json({ message: "Parent profile not found" })
-        }
-        const parentId = parentMeta.rows[0].id
-
-        const result = await db.query(`
-            SELECT 
-                s.id, 
-                s.first_name, 
-                s.last_name, 
-                s.gender, 
-                c.name AS class_name, 
-                c.grade 
-            FROM student s
-            LEFT JOIN class c ON s.class_id = c.id
-            WHERE s.parent_id = $1
-            ORDER BY s.first_name ASC`, 
-            [parentId]
-        )
-
-        res.status(200).json({ 
-            message: "Children Found",
-            data: result.rows 
-        })
-
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Internal Server Error" })
-    }
-}
 
 export const getAllStudents = async (req, res) => {
     try {

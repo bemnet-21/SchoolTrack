@@ -12,6 +12,7 @@ import eventRoutes from './routes/eventRoutes.js'
 import feeRoutes from './routes/feeRoutes.js'
 import timetableRoutes from './routes/timetableRoutes.js'
 import gradeRoutes from './routes/gradeRoutes.js'
+import parentRoutes from './routes/parentRoutes.js'
 
 
 dotenv.config({ quiet: true })
@@ -38,6 +39,7 @@ app.use('/api/v1/events', eventRoutes)
 app.use('/api/v1/fees', feeRoutes)
 app.use('/api/v1/timetable', timetableRoutes)
 app.use('/api/v1/grade', gradeRoutes)
+app.use('/api/v1/parents', parentRoutes)
 
 
 
