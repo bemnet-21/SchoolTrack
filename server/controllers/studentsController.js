@@ -55,7 +55,7 @@ export const registerStudents = async (req, res) => {
         }
 
         // creating student
-        const newStudent = await client.query(`INSERT INTO student (first_name, last_name, dob, gender, class_id, parent_id, user_id, address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *` , [
+        const newStudent = await client.query(`INSERT INTO student (first_name, last_name, dob, gender, class_id, parent_id, user_id, address, student_email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *` , [
             studentFirstName,
             studentLastName,
             studentDob,
@@ -63,7 +63,8 @@ export const registerStudents = async (req, res) => {
             classId,
             parentId,
             newStudentUserId,
-            studentAddress
+            studentAddress,
+            studentEmail
         ])
 
         await client.query('COMMIT')
