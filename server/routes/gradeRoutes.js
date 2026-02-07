@@ -8,6 +8,6 @@ const router = express.Router()
 
 router.get('/get-grades', protect, authorizeRoles('ADMIN'), getGrade)
 router.post('/add-grade', protect, authorizeRoles('TEACHER'), addGrade)
-router.get('/student-get-grade', protect, authorizeRoles('STUDENT'), getGradeForStudent)
+router.get('/student-get-grade', protect, authorizeRoles('STUDENT', 'PARENT'), getGradeForStudent)
 
 export default router

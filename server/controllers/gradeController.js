@@ -1,4 +1,5 @@
 import db from '../db/index.js'
+import { getParentId } from './parentController.js'
 import { getStudentId } from './studentsController.js'
 import { getTeacherId } from './teachersController.js'
 
@@ -94,12 +95,35 @@ export const getGrade = async (req, res) => {
     }
 }
 
+
 export const getGradeForStudent = async (req, res) => {
-    const { term } = req.query
-    const studentId = await getStudentId(req.user.id)
-    if(!studentId || !term) return res.status(400).json({ message : "Student Id and term are required" })
+    const { term, studentId: queryStudentId } = req.query;
+    let targetStudentId;
 
     try {
+        if (req.user.role === 'PARENT') {
+            const parentId = await getParentId(req.user.id);
+            targetStudentId = queryStudentId;
+            if(!targetStudentId) return res.status(400).json({ message : "Missing required fields" })
+
+            const checkChild = await db.query(
+                'SELECT id FROM student WHERE id = $1 AND parent_id = $2', 
+                [targetStudentId, parentId]
+            );
+
+            if (checkChild.rows.length === 0) {
+                return res.status(403).json({ message: "Access Denied: Student not linked to your account." });
+            }
+        } else if (req.user.role === 'STUDENT') {
+            targetStudentId = await getStudentId(req.user.id);
+        } else {
+            targetStudentId = queryStudentId;
+        }
+
+        if (!targetStudentId || !term) {
+            return res.status(400).json({ message: "Student ID and term are required" });
+        }
+
         const gradeResults = await db.query(`
                 SELECT
                     sub.name AS subject,
@@ -109,17 +133,17 @@ export const getGradeForStudent = async (req, res) => {
                 FROM grade g
                 JOIN subject sub ON sub.id = g.subject_id
                 JOIN teacher t ON t.id = g.teacher_id
-                WHERE student_id = $1 AND term = $2
-            `, [studentId, term])
-        if(gradeResults.rows.length === 0) return res.status(404).json({ message : "No grade was found" })
-        
-        res.status(200).json({ 
-            message : "Grade found",
-            data: gradeResults.rows
-         })
+                WHERE g.student_id = $1 AND g.term = $2
+                ORDER BY sub.name ASC
+            `, [targetStudentId, term]);
 
-    } catch(err) {
-        console.log(err)
-        res.status(500).json({ message : "Internal server error" })
+        res.status(200).json({ 
+            message: "Grades retrieved",
+            data: gradeResults.rows
+        });
+
+    } catch (err) {
+        console.error("Get Student Grades Error:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
