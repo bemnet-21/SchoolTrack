@@ -13,11 +13,11 @@ export const getChildren = async (req, res) => {
     try {
         const studentResult = await db.query(`
                 SELECT
-                    s.id,
+                    s.id AS student_id,
                     s.first_name,
                     s.last_name,
-                    c.name,
-                    p.name
+                    c.name AS class_name,
+                    p.name AS parent_name
                 FROM student s
                 JOIN class c ON c.id = s.class_id
                 JOIN parent p ON p.id = $1
