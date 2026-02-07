@@ -8,3 +8,7 @@ export const assignFee = ({ classId, amount, term, year, startDate, dueDate } : 
 export const getFees = (term: number, year: number) => {
     return api.get('/fees', { params: { term, year } });
 }
+
+export const getUnpaidFeeForStudent = (studentId: string) => {
+    return api.get(`/fees/get-unpaid?studentId=${studentId}`)
+}

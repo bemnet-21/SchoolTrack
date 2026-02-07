@@ -1,6 +1,6 @@
 import { MenuItem } from "@/interface";
 import { FaUserGraduate, FaChalkboardTeacher, FaUserShield, FaHome, FaCalendarAlt, FaBook, FaCalendarWeek, FaClipboardList } from "react-icons/fa";
-import { FaFileInvoiceDollar } from "react-icons/fa6";
+import { FaChildren, FaFileInvoiceDollar } from "react-icons/fa6";
 
 
 
@@ -29,3 +29,10 @@ export const studentMenuItems: MenuItem[] = [
   // { name: "Attendance", path: "/student/attendance", icon: FaCalendarAlt },
   { name: "Schedule", path: "/student/schedule", icon: FaCalendarAlt },
 ];
+
+export const parentMenuItems: MenuItem[] = [
+  { name: "Dashboard", path:"/parent", icon: FaHome },
+  { name: "My Children", path: "/parent/children", icon: FaChildren },
+  { name: "Fees", path: "/admin/fees", icon: FaFileInvoiceDollar },
+  
+]

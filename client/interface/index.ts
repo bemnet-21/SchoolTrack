@@ -287,3 +287,35 @@ export interface StudentsGradeInterface {
   grade: string
   teacher: string
 }
+
+export interface GetChildrenInterface {
+  student_id: string
+  first_name: string
+  last_name: string
+  class_name: string
+  parent_name: string
+}
+
+export interface ChildCardInterface {
+  student: StudentDetail
+  isLoading: boolean
+}
+
+export interface UnpaidFeeDetailInterface {
+  term: number
+  year: number
+  start_date: string
+  due_date: string
+  invoice_no: string
+  amount: number
+}
+
+export interface FeeCardProps {
+  fee: UnpaidFeeDetailInterface
+  isLoading: boolean
+}
+
+export interface GradeCardProps {
+  grades: StudentsGradeInterface[]
+  isLoading: boolean
+}

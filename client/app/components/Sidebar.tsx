@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { adminMenuItems, studentMenuItems, teacherMenuItems } from "../constants/menuItems";
+import { adminMenuItems, parentMenuItems, studentMenuItems, teacherMenuItems } from "../constants/menuItems";
 import { FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/auth.slice";
@@ -23,6 +23,7 @@ const Sidebar = () => {
   let menuItems = studentMenuItems;
   if (role === 'admin') menuItems = adminMenuItems;
   if (role === 'teacher') menuItems = teacherMenuItems;
+  if (role === 'parent') menuItems = parentMenuItems
 
   const handleLogout = () => {
     localStorage.clear();

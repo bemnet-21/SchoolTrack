@@ -9,6 +9,6 @@ export const getGrades = (classId: string, term: number) => {
     return api.get(`/grade/get-grades/?classId=${classId}&term=${term}`)
 }
 
-export const getGradeForStudent = (term: number) => {
-    return api.get(`/grade/student-get-grade/?term=${term}`)
+export const getGradeForStudent = (term: number, studentId?:string) => {
+    return api.get(`/grade/student-get-grade/?term=${term}&studentId=${studentId}`)
 }

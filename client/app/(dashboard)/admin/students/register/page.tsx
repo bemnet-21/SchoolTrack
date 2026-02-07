@@ -253,7 +253,7 @@ const RegisterStudentPage = () => {
                                 type="text" 
                                 required
                                 placeholder='e.g. Addis Ababa'
-                                value={lastName}
+                                value={address}
                                 onChange={(e) => setAddress(e.target.value)}
                                 className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
                             />
