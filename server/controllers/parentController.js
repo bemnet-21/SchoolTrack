@@ -1,6 +1,6 @@
 import db from '../db/index.js'
 
-const getParentId = async (userId) => {
+export const getParentId = async (userId) => {
     const parentResult = await db.query('SELECT id FROM parent WHERE user_id = $1', [userId])
     if(parentResult.rows.length === 0) return null
 

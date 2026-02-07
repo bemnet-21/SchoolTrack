@@ -1,4 +1,5 @@
 import db from '../db/index.js';
+import { getParentId } from './parentController.js';
 
 export const assignFees = async (req, res) => {
     const { term, year, amount, startDate, dueDate, classId } = req.body;
@@ -72,5 +73,52 @@ export const getFeesByTerm = async (req, res) => {
     } catch(err) {
         console.log(err)
         res.status(500).json({ message: 'Internal server error.' });
+    }
+}
+
+
+export const getUnpaidFeeForStudent = async (req, res) => {
+    const { studentId } = req.query;
+    
+    try {
+        const parentId = await getParentId(req.user.id);
+        console.log(parentId)
+        
+        if (!studentId || !parentId) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        
+        const childCheck = await db.query(
+            'SELECT id FROM student WHERE id = $1 AND parent_id = $2',
+            [studentId, parentId]
+        );
+
+        if (childCheck.rows.length === 0) {
+            return res.status(403).json({ message: "Unauthorized: This student is not linked to your account." });
+        }
+
+        const feeResult = await db.query(`
+                SELECT
+                    id,
+                    term,
+                    year,
+                    invoice_no,
+                    amount::float, 
+                    due_date,      
+                    start_date
+                FROM fee
+                WHERE student_id = $1 AND is_paid = false
+                ORDER BY due_date ASC
+            `, [studentId]);
+
+        res.status(200).json({
+            message: "Unpaid fees retrieved successfully",
+            data: feeResult.rows
+        });
+
+    } catch (err) {
+        console.error("Get Unpaid Fees Error:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
