@@ -32,7 +32,7 @@ export const studentMenuItems: MenuItem[] = [
 
 export const parentMenuItems: MenuItem[] = [
   { name: "Dashboard", path:"/parent", icon: FaHome },
-  { name: "My Children", path: "/parent/children", icon: FaChildren },
+  { name: "My Children", path: "/parent/my-children", icon: FaChildren },
   { name: "Fees", path: "/admin/fees", icon: FaFileInvoiceDollar },
   
 ]
