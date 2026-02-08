@@ -7,6 +7,7 @@ import { getStudentProfile } from '@/services/student.service'
 import React, { useEffect, useState } from 'react'
 import { FaUserFriends, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const MyChildrenPage = () => {
   
@@ -72,12 +73,12 @@ const MyChildrenPage = () => {
         // --- THE CARD GRID ---
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'>
           {childrenDetails.map((student) => (
-            <div key={student.id} className='w-full'>
+            <Link href={`/parent/my-children/${student.id}`} key={student.id} className='w-full'>
                 <ChildCard 
                   student={student} 
                   isLoading={false} 
                 />
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
