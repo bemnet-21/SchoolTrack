@@ -122,3 +122,44 @@ export const getUnpaidFeeForStudent = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+
+export const getFeeForChildren = async (req, res) => {
+    try {
+        const parentId = await getParentId(req.user.id);
+        const { isPaid } = req.query; 
+
+        if (!parentId || isPaid === undefined) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const query = `
+            SELECT
+                f.id,
+                f.term,
+                f.year,
+                f.invoice_no,
+                f.amount::float, 
+                f.due_date,      
+                f.start_date,
+                f.is_paid,
+                s.first_name AS student_first_name,
+                s.last_name AS student_last_name
+            FROM fee f
+            JOIN student s ON f.student_id = s.id
+            WHERE s.parent_id = $1 AND f.is_paid = $2
+            ORDER BY f.due_date ASC
+        `;
+
+        const results = await db.query(query, [parentId, isPaid]);
+
+        res.status(200).json({
+            message: `Retrieved ${isPaid === 'true' ? 'paid' : 'unpaid'} fees`,
+            data: results.rows
+        });
+
+    } catch (err) {
+        console.error("Get children fees error:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
