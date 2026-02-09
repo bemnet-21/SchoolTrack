@@ -319,3 +319,16 @@ export interface GradeCardProps {
   grades: StudentsGradeInterface[]
   isLoading: boolean
 }
+
+export interface StudentFeeCardProps {
+  id: string
+  term: number
+  year: number
+  invoice_no: string
+  amount: number
+  due_date: string
+  start_date: string
+  is_paid: boolean
+  student_first_name: string
+  student_last_name: string
+}

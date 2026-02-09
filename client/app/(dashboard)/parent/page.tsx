@@ -12,6 +12,7 @@ import { getUnpaidFeeForStudent } from '@/services/fee.service'
 import FeeCard from '@/app/components/FeeCard'
 import { getGradeForStudent } from '@/services/grade.service'
 import GradeCard from '@/app/components/GradeCard'
+import Link from 'next/link'
 
 const ParentDashboard = () => {
   const { user } = useSelector((state: RootState) => state.auth)
@@ -113,9 +114,9 @@ const ParentDashboard = () => {
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 w-full items-start'>
         <div className='flex flex-col gap-3'>
           <p className='text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2'>Student Profile</p>
-          <div className='min-h-30'>
+          <Link href={`/parent/my-children/${childId}`} className='min-h-30'>
               {childDetail && <ChildCard student={childDetail} isLoading={isDetailLoading} />}
-          </div>
+          </Link>
         </div>
 
         <div className='flex flex-col gap-3'>

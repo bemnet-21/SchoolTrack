@@ -12,3 +12,7 @@ export const getFees = (term: number, year: number) => {
 export const getUnpaidFeeForStudent = (studentId: string) => {
     return api.get(`/fees/get-unpaid?studentId=${studentId}`)
 }
+
+export const getChildrenFee = (isPaid: boolean) => {
+    return api.get(`/fees/get-fee-for-children?isPaid=${isPaid}`)
+}
