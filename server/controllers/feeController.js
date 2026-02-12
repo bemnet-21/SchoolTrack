@@ -163,3 +163,44 @@ export const getFeeForChildren = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const payFee = async (req, res) => {
+    const { amount } = req.body;
+
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+        return res.status(400).json({ message: "Invalid amount" });
+    }
+
+    try {
+        const response = await fetch(
+        "https://api.chapa.co/v1/transaction/initialize",
+        {
+            method: "POST",
+            headers: {
+            Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            amount: amount.toString(),
+            currency: "ETB",
+            tx_ref: crypto.randomUUID(),
+            return_url: "https://yourapp.com/success",
+            }),
+        }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+        return res.status(response.status).json({
+            message: "Payment initialization failed",
+            error: data,
+        });
+        }
+
+        res.status(200).json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};

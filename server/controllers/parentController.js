@@ -19,7 +19,7 @@ export const getChildren = async (req, res) => {
                     s.grade,
                     s.student_email,
                     c.name AS class_name,
-                    p.name AS parent_name,
+                    p.name AS parent_name
                     
                 FROM student s
                 JOIN class c ON c.id = s.class_id
