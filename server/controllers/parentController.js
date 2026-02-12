@@ -16,7 +16,7 @@ export const getChildren = async (req, res) => {
                     s.id AS student_id,
                     s.first_name,
                     s.last_name,
-                    s.grade,
+                    c.grade,
                     s.student_email,
                     c.name AS class_name,
                     p.name AS parent_name
