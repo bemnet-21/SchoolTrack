@@ -5,6 +5,16 @@
 
 SchoolTrack is a comprehensive, full-stack School Management System designed to streamline academic operations. It features a robust role-based access control (RBAC) system for **Admins, Teachers, Students, and Parents**, ensuring a personalized and secure experience for every user type.
 
+## 🚀 Live Demo
+
+[Click here to view the live demo](https://school-admin-orcin.vercel.app/)
+
+### Demo credentials to login
+* admin -> email: admin@school.com password: admin123
+* student -> email: william@student.com password: william123
+* teacher -> email: janey@teacher.com password: janey123
+* parent -> email: royce@parent.com password: royce123
+
 ## 🚀 Key Features
 
 ### 🔐 Authentication & Security
