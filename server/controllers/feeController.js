@@ -164,7 +164,7 @@ export const getFeeForChildren = async (req, res) => {
     }
 };
 
-export const payFee = async (req, res) => {
+export const initializePayment = async (req, res) => {
     const { amount } = req.body;
 
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
