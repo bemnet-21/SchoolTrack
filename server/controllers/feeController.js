@@ -164,14 +164,23 @@ export const getFeeForChildren = async (req, res) => {
     }
 };
 
+
+
 export const initializePayment = async (req, res) => {
-    const { amount } = req.body;
+    const { amount, email, phone, first_name, last_name, invoiceNo } = req.body;
 
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
         return res.status(400).json({ message: "Invalid amount" });
     }
 
     try {
+        const { rows } = await db.query('SELECT invoice_no FROM fee WHERE invoice_no = $1', [invoiceNo]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Invoice not found" });
+        }
+        const invoice = rows[0].invoice_no
+
+        const tx_ref = `${invoice}-${Date.now()}`;
         const response = await fetch(
         "https://api.chapa.co/v1/transaction/initialize",
         {
@@ -183,8 +192,22 @@ export const initializePayment = async (req, res) => {
             body: JSON.stringify({
             amount: amount.toString(),
             currency: "ETB",
-            tx_ref: crypto.randomUUID(),
+            tx_ref: tx_ref,
+            callback_url: "https://schooladmin-wtgo.onrender.com/api/v1/fees/webhook",
             return_url: "https://yourapp.com/success",
+            customer: {
+                email,
+                phone_number: phone, // ✅ correct key
+                first_name,
+                last_name
+            },
+            meta: {
+                invoice_no: invoice
+            },
+            customizations: {
+                title: "School Fee Payment",
+                description: `Payment for invoice ${invoiceNo}`,
+            }
             }),
         }
         );
@@ -198,9 +221,61 @@ export const initializePayment = async (req, res) => {
         });
         }
 
+        
+
         res.status(200).json(data);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const verifyPayment = async (req, res) => {
+    const { tx_ref } = req.params;
+    try {
+        const response = await fetch(
+        `https://api.chapa.co/v1/transaction/verify/${tx_ref}`,
+        {
+            method: "GET",
+            headers: {
+            Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
+            },
+        }
+        );
+        const verifyData = await response.json();
+        if(verifyData.status === 'success' && verifyData.data.status === 'success') {
+            const invoiceNo = verifyData.data.meta.invoice_no;
+            await db.query('UPDATE fee SET is_paid = true WHERE invoice_no = $1', [invoiceNo]);
+            return res.status(200).json(verifyData);
+        } else {
+            return res.status(400).json({ message: "Payment verification failed", data: verifyData });
+        }
+    } catch (err) {
+        console.error("Verify payment error:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const chapaWebhook = async (req, res) => {
+    try {
+        const signature = req.headers['x-chapa-signature'];
+        const secretHash = process.env.CHAPA_WEBHOOK_KEY;
+        if(!signature || signature !== secretHash) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const { tx_ref, status, meta} = req.body;
+        if(status === 'success') {
+            const invoiceNo = meta?.invoice_no;
+            if(invoiceNo) {
+                await db.query('UPDATE fee SET is_paid = true WHERE invoice_no = $1', [invoiceNo]);
+                console.log(`WEBHOOK: Invoice ${invoiceNo} marked as paid. `)
+            }
+        }
+        res.status(200).json({ message: "Webhook received" });
+
+    } catch(err) {
+        console.error("Chapa webhook error:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
