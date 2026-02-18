@@ -248,7 +248,7 @@ export const initializePayment = async (req, res) => {
 
 
 
-export const chapaWebhook = async (req, res) => {
+// export const chapaWebhook = async (req, res) => {
     console.log("WEBHOOK: ", req.query)
     try {
         const { trx_ref } = req.query
@@ -296,4 +296,12 @@ export const chapaWebhook = async (req, res) => {
         console.error("Chapa webhook error:", err);
         res.status(500).json({ message: "Internal server error" });
     }
-}
+// }
+
+export const chapaWebhook = async (req, res) => {
+  console.log("QUERY:", req.query);
+  console.log("BODY:", req.body);
+  console.log("HEADERS:", req.headers);
+
+  res.status(200).send("Webhook received");
+};
