@@ -248,60 +248,46 @@ export const initializePayment = async (req, res) => {
 
 
 
-// export const chapaWebhook = async (req, res) => {
-//     console.log("WEBHOOK: ", req.query)
-//     try {
-//         const { trx_ref } = req.query
-//         if(!trx_ref) return res.status(400).json({ message: "Transaction reference is required" });
-
-//         const verifyResponse = await fetch(
-//             `https://api.chapa.co/v1/transaction/verify/${trx_ref}`,
-//             {
-//                 method: "GET",
-//                 headers: {
-//                     Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
-//                 },
-//             }
-//         );
-//         const verifyData = await verifyResponse.json();
-//         if(verifyData.ok && verifyData.status === 'success' && verifyData.data.status === 'success') {
-//             await db.query(`
-//                 UPDATE payment
-//                 SET status = 'success',
-//                     chapa_ref_id = $1,
-//                     payment_method = $2
-//                     paid_at = NOW()
-//                 WHERE tx_ref = $3
-//             `, [verifyData.data.reference, verifyData.data.payment_method, trx_ref]);
-
-//             await db.query(`
-//                 UPDATE fee
-//                 SET is_paid = true
-//                 WHERE invoice_no = $1
-//             `, [verifyData.data.meta.invoice_no]);
-
-//             return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
-//         }
-
-//         await db.query(`
-//             UPDATE payment
-//             SET status = 'failed'
-//             WHERE tx_ref = $1
-//             AND status = 'pending'
-//         `, [trx_ref]);
-
-//         return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
-
-//     } catch(err) {
-//         console.error("Chapa webhook error:", err);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
 export const chapaWebhook = async (req, res) => {
-  console.log("QUERY:", req.query);
-  console.log("BODY:", req.body);
-  console.log("HEADERS:", req.headers);
+    try {
 
-  res.status(200).send("Webhook received");
+        const { tx_ref, status, reference, payment_method, meta } = req.body;
+
+        if (!tx_ref) {
+        return res.status(400).json({ message: "tx_ref is required" });
+        }
+
+        if (status === "success") {
+
+            await db.query(`
+                UPDATE payment
+                SET status = 'success',
+                    chapa_ref_id = $1,
+                    payment_method = $2,
+                    paid_at = NOW()
+                WHERE tx_ref = $3
+                AND status = 'pending'
+            `, [reference, payment_method, tx_ref]);
+
+            await db.query(`
+                UPDATE fee
+                SET is_paid = true
+                WHERE invoice_no = $1
+            `, [meta.invoice_no]);
+        } else {
+        await db.query(`
+            UPDATE payment
+            SET status = 'failed'
+            WHERE tx_ref = $1
+            AND status = 'pending'
+        `, [tx_ref]);
+        }
+
+        return res.status(200).json({ message: "Webhook processed" });
+
+    } catch (err) {
+        console.error("Webhook error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };
+
