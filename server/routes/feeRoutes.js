@@ -1,7 +1,7 @@
 import express from 'express';
 import {protect} from '../middleware/authMiddleware.js';
 import {authorizeRoles} from '../middleware/roleMiddleware.js';
-import { assignFees, chapaWebhook, getFeeForChildren, getFeesByTerm, getUnpaidFeeForStudent, initializePayment, verifyPayment } from '../controllers/feeController.js';
+import { assignFees, chapaWebhook, getFeeForChildren, getFeesByTerm, getUnpaidFeeForStudent, initializePayment } from '../controllers/feeController.js';
 
 const router = express.Router();
 
@@ -11,6 +11,5 @@ router.get('/get-fee-for-children', protect, authorizeRoles('PARENT'), getFeeFor
 router.post('/assign', protect, authorizeRoles('ADMIN'), assignFees);
 router.post('/initialize-payment', protect, authorizeRoles('PARENT'), initializePayment)
 router.post('/webhook', chapaWebhook)
-router.get('/verify-payment/:tx_ref', verifyPayment)
 
 export default router;
