@@ -1,13 +1,25 @@
 'use client'
 
 import { FeeCardProps } from '@/interface'
+import { initializePayment } from '@/services/fee.service'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { formatDate } from '@/utils/formatTime'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { FaFileInvoiceDollar, FaCalendarAlt, FaMoneyBillWave, FaExclamationCircle } from 'react-icons/fa'
 
 const FeeCard = ({ fee, isLoading }: FeeCardProps) => {
-  
+  const handleInitialization = async () => {
+    try {
+      const res = await initializePayment(fee.id)
+      const paymentUrl = res.data.data.checkout_url
+      console.log("URL", paymentUrl)
+      window.location.href = paymentUrl
+
+    } catch(err) {
+      console.log("Failed to initialize payment")
+    }
+  }
   
 
   if (isLoading) {
@@ -84,7 +96,7 @@ const FeeCard = ({ fee, isLoading }: FeeCardProps) => {
         </div>
 
         {/* Mobile Action (Prompt to pay) */}
-        <button className='w-full mt-2 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black active:scale-95 transition-all shadow-lg shadow-gray-200'>
+        <button className='w-full mt-2 py-3 bg-gray-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black active:scale-95 transition-all shadow-lg shadow-gray-200' onClick={handleInitialization}>
             Proceed to Payment
         </button>
 

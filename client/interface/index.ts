@@ -308,6 +308,7 @@ export interface UnpaidFeeDetailInterface {
   due_date: string
   invoice_no: string
   amount: number
+  id: string
 }
 
 export interface FeeCardProps {

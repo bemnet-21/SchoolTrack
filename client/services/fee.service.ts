@@ -16,3 +16,7 @@ export const getUnpaidFeeForStudent = (studentId: string) => {
 export const getChildrenFee = (isPaid: boolean) => {
     return api.get(`/fees/get-fee-for-children?isPaid=${isPaid}`)
 }
+
+export const initializePayment = (feeId: string) => {
+    return api.post('/fees/initialize-payment', { feeId });
+}
