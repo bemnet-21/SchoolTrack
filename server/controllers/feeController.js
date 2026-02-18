@@ -167,20 +167,34 @@ export const getFeeForChildren = async (req, res) => {
 
 
 export const initializePayment = async (req, res) => {
-    const { amount, email, phone, first_name, last_name, invoiceNo } = req.body;
+    // const { amount, email, phone, first_name, last_name, invoiceNo } = req.body;
+    const { feeId } = req.body;
+    if(!feeId) return res.status(400).json({ message: "Fee ID is required" });
 
-    if (!amount || isNaN(amount) || Number(amount) <= 0) {
-        return res.status(400).json({ message: "Invalid amount" });
-    }
+
+    // if (!amount || isNaN(amount) || Number(amount) <= 0) {
+    //     return res.status(400).json({ message: "Invalid amount" });
+    // }
 
     try {
-        const { rows } = await db.query('SELECT invoice_no FROM fee WHERE invoice_no = $1', [invoiceNo]);
-        if (rows.length === 0) {
-            return res.status(404).json({ message: "Invoice not found" });
-        }
-        const invoice = rows[0].invoice_no
+        const feeResult = await db.query(`
+                SELECT
+                    f.amount,
+                    f.invoice_no,
+                    s.first_name,
+                    s.last_name,
+                    s.student_email AS email,
+                    p.phone AS phone
+                FROM fee f
+                JOIN student s ON f.student_id = s.id
+                JOIN parent p ON s.parent_id = p.id
+                WHERE f.id = $1
+            `, [feeId]);
+        if (feeResult.rows.length === 0) return res.status(404).json({ message: "Fee not found" });
+        const { amount, invoice_no: invoiceNo, email, phone, first_name, last_name } = feeResult.rows[0];
+        
 
-        const tx_ref = `${invoice}-${Date.now()}`;
+        const tx_ref = `${invoiceNo}-${Date.now()}`;
         const response = await fetch(
         "https://api.chapa.co/v1/transaction/initialize",
         {
@@ -197,12 +211,12 @@ export const initializePayment = async (req, res) => {
             return_url: "https://yourapp.com/success",
             customer: {
                 email,
-                phone_number: phone, // ✅ correct key
+                phone_number: phone, 
                 first_name,
                 last_name
             },
             meta: {
-                invoice_no: invoice
+                invoice_no: invoiceNo
             },
             customizations: {
                 title: "School Fee Payment",
