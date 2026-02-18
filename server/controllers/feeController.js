@@ -195,7 +195,7 @@ export const initializePayment = async (req, res) => {
                 INSERT INTO payment
                 (fee_id, tx_ref, amount, status)
                 VALUES ($1, $2, $3, $4)
-            `, [feeId, tx_ref, amount, 'initialized'])
+            `, [feeId, tx_ref, amount, 'pending'])
 
         const response = await fetch(
         "https://api.chapa.co/v1/transaction/initialize",
@@ -210,7 +210,7 @@ export const initializePayment = async (req, res) => {
             currency: "ETB",
             tx_ref: tx_ref,
             callback_url: "https://schooladmin-wtgo.onrender.com/api/v1/fees/webhook",
-            return_url: "https://yourapp.com/success",
+            return_url: "https://school-admin-orcin.vercel.app/parent/fees",
             customer: {
                 email,
                 phone_number: phone, 
@@ -249,12 +249,13 @@ export const initializePayment = async (req, res) => {
 
 
 export const chapaWebhook = async (req, res) => {
+    console.log("WEBHOOK: ", req.query)
     try {
-        const { tx_ref } = req.query
-        if(!tx_ref) return res.status(400).json({ message: "Transaction reference is required" });
+        const { trx_ref } = req.query
+        if(!trx_ref) return res.status(400).json({ message: "Transaction reference is required" });
 
         const verifyResponse = await fetch(
-            `https://api.chapa.co/v1/transaction/verify/${tx_ref}`,
+            `https://api.chapa.co/v1/transaction/verify/${trx_ref}`,
             {
                 method: "GET",
                 headers: {
@@ -263,15 +264,15 @@ export const chapaWebhook = async (req, res) => {
             }
         );
         const verifyData = await verifyResponse.json();
-        if(verifyData.response.ok && verifyData.status === 'success' && verifyData.data.status === 'success') {
+        if(verifyData.ok && verifyData.status === 'success' && verifyData.data.status === 'success') {
             await db.query(`
                 UPDATE payment
-                SET status = 'success'
-                    chapa_ref_id = $1
+                SET status = 'success',
+                    chapa_ref_id = $1,
                     payment_method = $2
                     paid_at = NOW()
                 WHERE tx_ref = $3
-            `, [verifyData.data.reference, verifyData.data.payment_method, tx_ref]);
+            `, [verifyData.data.reference, verifyData.data.payment_method, trx_ref]);
 
             await db.query(`
                 UPDATE fee
@@ -287,7 +288,7 @@ export const chapaWebhook = async (req, res) => {
             SET status = 'failed'
             WHERE tx_ref = $1
             AND status = 'pending'
-        `, [tx_ref]);
+        `, [trx_ref]);
 
         return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
 
