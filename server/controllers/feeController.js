@@ -167,14 +167,10 @@ export const getFeeForChildren = async (req, res) => {
 
 
 export const initializePayment = async (req, res) => {
-    // const { amount, email, phone, first_name, last_name, invoiceNo } = req.body;
     const { feeId } = req.body;
     if(!feeId) return res.status(400).json({ message: "Fee ID is required" });
 
 
-    // if (!amount || isNaN(amount) || Number(amount) <= 0) {
-    //     return res.status(400).json({ message: "Invalid amount" });
-    // }
 
     try {
         const feeResult = await db.query(`
@@ -195,6 +191,12 @@ export const initializePayment = async (req, res) => {
         
 
         const tx_ref = `${invoiceNo}-${Date.now()}`;
+        await db.query(`
+                INSERT INTO payment
+                (fee_id, tx_ref, amount, status)
+                VALUES ($1, $2, $3, $4)
+            `, [feeId, tx_ref, amount, 'initialized'])
+
         const response = await fetch(
         "https://api.chapa.co/v1/transaction/initialize",
         {
@@ -244,49 +246,50 @@ export const initializePayment = async (req, res) => {
     }
 };
 
-export const verifyPayment = async (req, res) => {
-    const { tx_ref } = req.params;
-    try {
-        const response = await fetch(
-        `https://api.chapa.co/v1/transaction/verify/${tx_ref}`,
-        {
-            method: "GET",
-            headers: {
-            Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
-            },
-        }
-        );
-        const verifyData = await response.json();
-        if(verifyData.status === 'success' && verifyData.data.status === 'success') {
-            const invoiceNo = verifyData.data.meta.invoice_no;
-            await db.query('UPDATE fee SET is_paid = true WHERE invoice_no = $1', [invoiceNo]);
-            return res.status(200).json(verifyData);
-        } else {
-            return res.status(400).json({ message: "Payment verification failed", data: verifyData });
-        }
-    } catch (err) {
-        console.error("Verify payment error:", err);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
+
 
 export const chapaWebhook = async (req, res) => {
     try {
-        const signature = req.headers['x-chapa-signature'];
-        const secretHash = process.env.CHAPA_WEBHOOK_KEY;
-        if(!signature || signature !== secretHash) {
-            return res.status(401).json({ message: "Unauthorized" });
+        const { tx_ref } = req.query
+        if(!tx_ref) return res.status(400).json({ message: "Transaction reference is required" });
+
+        const verifyResponse = await fetch(
+            `https://api.chapa.co/v1/transaction/verify/${tx_ref}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
+                },
+            }
+        );
+        const verifyData = await verifyResponse.json();
+        if(verifyData.response.ok && verifyData.status === 'success' && verifyData.data.status === 'success') {
+            await db.query(`
+                UPDATE payment
+                SET status = 'success'
+                    chapa_ref_id = $1
+                    payment_method = $2
+                    paid_at = NOW()
+                WHERE tx_ref = $3
+            `, [verifyData.data.reference, verifyData.data.payment_method, tx_ref]);
+
+            await db.query(`
+                UPDATE fee
+                SET is_paid = true
+                WHERE invoice_no = $1
+            `, [verifyData.data.meta.invoice_no]);
+
+            return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
         }
 
-        const { tx_ref, status, meta} = req.body;
-        if(status === 'success') {
-            const invoiceNo = meta?.invoice_no;
-            if(invoiceNo) {
-                await db.query('UPDATE fee SET is_paid = true WHERE invoice_no = $1', [invoiceNo]);
-                console.log(`WEBHOOK: Invoice ${invoiceNo} marked as paid. `)
-            }
-        }
-        res.status(200).json({ message: "Webhook received" });
+        await db.query(`
+            UPDATE payment
+            SET status = 'failed'
+            WHERE tx_ref = $1
+            AND status = 'pending'
+        `, [tx_ref]);
+
+        return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
 
     } catch(err) {
         console.error("Chapa webhook error:", err);
