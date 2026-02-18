@@ -249,53 +249,53 @@ export const initializePayment = async (req, res) => {
 
 
 // export const chapaWebhook = async (req, res) => {
-    console.log("WEBHOOK: ", req.query)
-    try {
-        const { trx_ref } = req.query
-        if(!trx_ref) return res.status(400).json({ message: "Transaction reference is required" });
+//     console.log("WEBHOOK: ", req.query)
+//     try {
+//         const { trx_ref } = req.query
+//         if(!trx_ref) return res.status(400).json({ message: "Transaction reference is required" });
 
-        const verifyResponse = await fetch(
-            `https://api.chapa.co/v1/transaction/verify/${trx_ref}`,
-            {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
-                },
-            }
-        );
-        const verifyData = await verifyResponse.json();
-        if(verifyData.ok && verifyData.status === 'success' && verifyData.data.status === 'success') {
-            await db.query(`
-                UPDATE payment
-                SET status = 'success',
-                    chapa_ref_id = $1,
-                    payment_method = $2
-                    paid_at = NOW()
-                WHERE tx_ref = $3
-            `, [verifyData.data.reference, verifyData.data.payment_method, trx_ref]);
+//         const verifyResponse = await fetch(
+//             `https://api.chapa.co/v1/transaction/verify/${trx_ref}`,
+//             {
+//                 method: "GET",
+//                 headers: {
+//                     Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
+//                 },
+//             }
+//         );
+//         const verifyData = await verifyResponse.json();
+//         if(verifyData.ok && verifyData.status === 'success' && verifyData.data.status === 'success') {
+//             await db.query(`
+//                 UPDATE payment
+//                 SET status = 'success',
+//                     chapa_ref_id = $1,
+//                     payment_method = $2
+//                     paid_at = NOW()
+//                 WHERE tx_ref = $3
+//             `, [verifyData.data.reference, verifyData.data.payment_method, trx_ref]);
 
-            await db.query(`
-                UPDATE fee
-                SET is_paid = true
-                WHERE invoice_no = $1
-            `, [verifyData.data.meta.invoice_no]);
+//             await db.query(`
+//                 UPDATE fee
+//                 SET is_paid = true
+//                 WHERE invoice_no = $1
+//             `, [verifyData.data.meta.invoice_no]);
 
-            return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
-        }
+//             return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
+//         }
 
-        await db.query(`
-            UPDATE payment
-            SET status = 'failed'
-            WHERE tx_ref = $1
-            AND status = 'pending'
-        `, [trx_ref]);
+//         await db.query(`
+//             UPDATE payment
+//             SET status = 'failed'
+//             WHERE tx_ref = $1
+//             AND status = 'pending'
+//         `, [trx_ref]);
 
-        return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
+//         return res.redirect("https://school-admin-orcin.vercel.app/parent/fees")
 
-    } catch(err) {
-        console.error("Chapa webhook error:", err);
-        res.status(500).json({ message: "Internal server error" });
-    }
+//     } catch(err) {
+//         console.error("Chapa webhook error:", err);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
 // }
 
 export const chapaWebhook = async (req, res) => {
