@@ -28,6 +28,10 @@ app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
 
+app.get('/cron', (req, res) => {
+    res.status(200).send("Server is alive...")
+})
+
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/students', studentsRoutes)
 app.use('/api/v1/teachers', teachersRoutes)
