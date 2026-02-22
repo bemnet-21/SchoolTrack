@@ -160,9 +160,12 @@ const TeacherProfilePage = () => {
                             {teacher.subject || "Not Assigned"}
                         </span>
                     </div>
-                    <div className="pt-6 border-t border-gray-100 place-self-center">
-                        <button className="py-2 px-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors text-sm shadow-sm shadow-blue-200">
+                    <div className="w-full flex justify-between pt-6 border-t border-gray-100 place-self-center">
+                        <button className="py-2 px-4 rounded-lg bg-mainBlue text-white font-medium hover:bg-blue-700 transition-colors text-sm shadow-sm shadow-blue-200" onClick={() => router.push(`/admin/teachers/${teacherId}/edit-profile`)}>
                             Edit Profile
+                        </button>
+                        <button className="py-2 px-4 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors text-sm shadow-sm shadow-blue-200">
+                            Remove Teacher
                         </button>
                     </div>
                 </div>

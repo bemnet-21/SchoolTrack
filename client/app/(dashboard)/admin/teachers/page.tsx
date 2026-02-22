@@ -92,7 +92,7 @@ const TeachersPage = () => {
                                     <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Subject</th>
                                     <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Email</th>
                                     <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Phone</th>
-                                    <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right'>Actions</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody className='divide-y divide-gray-100'>
@@ -133,11 +133,7 @@ const TeachersPage = () => {
                                                 {teacher.phone}
                                             </div>
                                         </td>
-                                        <td className='px-6 py-4 text-right'>
-                                            <button className='text-gray-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors'>
-                                                <FaEllipsisV />
-                                            </button>
-                                        </td>
+                                        
                                     </tr>
                                 ))}
                             </tbody>
@@ -160,9 +156,7 @@ const TeachersPage = () => {
                                         <p className='text-xs text-gray-400'>ID: {teacher.id}</p>
                                     </div>
                                 </div>
-                                <button className='text-gray-400 p-1'>
-                                    <FaEllipsisV />
-                                </button>
+                                
                             </div>
 
                             {/* Divider */}

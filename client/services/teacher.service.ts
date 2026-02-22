@@ -10,11 +10,11 @@ export const addTeacher = ({ name, teacherEmail, teacherPhone, subjectId } : Add
 }
 
 export const getTeacherById = (teacherId: string) => {
-    return api.get(`/teachers/${teacherId}`)
+    return api.get(`/teachers/profile/${teacherId}`)
 }
 
-export const updateTeacherProfile = (teacherId: string, { name, teacherEmail, phone, subject }:UpdateTeacher) => {
-    return api.put(`/teachers/${teacherId}`, { name, teacherEmail, phone, subject })
+export const updateTeacherProfile = (teacherId: string, { name, teacherEmail, phone, subjectId }:UpdateTeacher) => {
+    return api.put(`/teachers/${teacherId}`, { name, teacherEmail, phone, subjectId })
 }
 
 export const getClassOfTeacher = () => {
@@ -32,3 +32,4 @@ export const getTeacherWeeklySchedule = () => {
 export const getClassesForTeacher = () => {
     return api.get('/teachers/get-classes')
 }
+

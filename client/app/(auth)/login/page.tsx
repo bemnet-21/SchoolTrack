@@ -12,12 +12,14 @@ const Page = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('')
+    setLoading(true)
     
     try {
       const res = await login({ email, password });
@@ -27,7 +29,7 @@ const Page = () => {
         localStorage.setItem('token', data.token);
         
         
-        router.push('/change-password'); 
+        router.push('/change-password');
         return; 
       }
 
@@ -47,7 +49,9 @@ const Page = () => {
       } else {
         setError("An unexpected error occured.")
       }
-    }
+
+      setLoading(false)
+    } 
   }
 
   return (
@@ -105,9 +109,12 @@ const Page = () => {
                 
                 <button 
                     type="submit"
-                    className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95'
+                    className='w-full flex justify-center items-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95'
                 >
-                    Login
+                  {
+                    loading ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />) 
+                      : ("Login")}
                 </button>
 
             </form>

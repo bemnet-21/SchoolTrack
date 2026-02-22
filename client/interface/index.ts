@@ -141,7 +141,7 @@ export interface UpdateTeacher {
   name: string
   teacherEmail: string
   phone: string
-  subject: string
+  subjectId: string
 }
 
 export interface TeacherDetail {
