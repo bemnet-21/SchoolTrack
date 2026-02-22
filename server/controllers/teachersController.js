@@ -150,9 +150,9 @@ export const getTeacher = async (req, res) => {
             const userId = req.user.id
             const result = await db.query(`
                 SELECT 
-                    t.name, 
-                    t.email, 
-                    t.phone, 
+                    t.name AS teacherName, 
+                    email AS teacherEmail, 
+                    phone AS teacherPhone, 
                     s.name AS subject 
                 FROM teacher t 
                 JOIN subject s 
@@ -171,9 +171,9 @@ export const getTeacher = async (req, res) => {
             
             if(!teacherId) return res.status(400).json({ message : "Teacher ID is required" })
             const result = await db.query(`SELECT 
-                    t.name, 
-                    t.email, 
-                    t.phone, 
+                    t.name AS teacherName, 
+                    email AS teacherEmail, 
+                    phone AS teacherPhone, 
                     s.name AS subject 
                 FROM teacher t 
                 JOIN subject s 

@@ -16,5 +16,4 @@ router.get('/get-today-schedule', protect, authorizeRoles('TEACHER'), getTodaySc
 router.get('/get-weekly-schedule', protect, authorizeRoles('TEACHER'), getTeacherWeeklySchedule)
 router.delete('/:teacherId', protect, authorizeRoles('ADMIN'), deleteTeacher)
 router.put('/:teacherId', protect, authorizeRoles('ADMIN'), updateTeacher)
-router.get('/:teacherId', protect, authorizeRoles('ADMIN'), getTeacher)
 export default router
