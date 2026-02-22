@@ -98,8 +98,8 @@ export const deleteTeacher = async (req, res) => {
 export const updateTeacher = async (req, res) => {
     const { teacherId } = req.params
     if(!teacherId) return res.status(400).json({ message : "Teacher Id is required" })
-    const { name, teacherEmail, subject, phone } = req.body
-    if(!name || !teacherEmail || !subject || !phone) {
+    const { name, teacherEmail, subjectId, phone } = req.body
+    if(!name || !teacherEmail || !subjectId || !phone) {
         return res.status(400).json({ message : "Missing Fields" })
     }
     const client = await db.connect()
@@ -113,7 +113,7 @@ export const updateTeacher = async (req, res) => {
         }
         const userId = teacherMeta.rows[0].user_id
 
-        await client.query(`UPDATE teacher SET email = $1, name = $2, phone = $3, subject = $4 WHERE id = $5`, [teacherEmail, name, phone, subject, teacherId])
+        await client.query(`UPDATE teacher SET email = $1, name = $2, phone = $3, subject_id = $4 WHERE id = $5`, [teacherEmail, name, phone, subjectId, teacherId])
         await client.query(`UPDATE users SET email = $1 WHERE id = $2`, [teacherEmail, userId])
         await client.query('COMMIT')
 
@@ -123,7 +123,7 @@ export const updateTeacher = async (req, res) => {
                 name,
                 email: teacherEmail,
                 phone,
-                subject
+                subjectId
             }
         })
 
@@ -150,9 +150,9 @@ export const getTeacher = async (req, res) => {
             const userId = req.user.id
             const result = await db.query(`
                 SELECT 
-                    t.name AS teacherName, 
-                    email AS teacherEmail, 
-                    phone AS teacherPhone, 
+                    t.name, 
+                    t.email, 
+                    t.phone, 
                     s.name AS subject 
                 FROM teacher t 
                 JOIN subject s 
@@ -171,9 +171,9 @@ export const getTeacher = async (req, res) => {
             
             if(!teacherId) return res.status(400).json({ message : "Teacher ID is required" })
             const result = await db.query(`SELECT 
-                    t.name AS teacherName, 
-                    email AS teacherEmail, 
-                    phone AS teacherPhone, 
+                    t.name, 
+                    t.email, 
+                    t.phone, 
                     s.name AS subject 
                 FROM teacher t 
                 JOIN subject s 
