@@ -36,9 +36,9 @@ const EditTeacherPage = () => {
         const teacherData = teacherRes.data.data
         const subjectData = subjectRes.data.data
 
-        setName(teacherData.name || '')
-        setTeacherEmail(teacherData.email || '')
-        setPhone(teacherData.phone || '')
+        setName(teacherData.teachername || '')
+        setTeacherEmail(teacherData.teacheremail || '')
+        setPhone(teacherData.teacherphone || '')
         const matchingSub = subjectData.find((s: any) => s.name === teacherData.subject || s.id === teacherData.subject_id)
         setSubjectId(matchingSub ? matchingSub.id : '')
 
@@ -80,7 +80,6 @@ const EditTeacherPage = () => {
     }
   }
 
-  console.log("name", name)
   if (loading) {
     return (
       <div className="w-full max-w-3xl mx-auto p-8 space-y-6 animate-pulse">

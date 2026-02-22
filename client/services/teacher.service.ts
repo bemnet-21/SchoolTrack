@@ -33,3 +33,7 @@ export const getClassesForTeacher = () => {
     return api.get('/teachers/get-classes')
 }
 
+export const removeTeacher = (teacherId: string) => {
+    return api.delete(`/teachers/${teacherId}`)
+}
+
