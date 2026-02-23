@@ -339,6 +339,32 @@ export const getClassesForTeacher = async (req, res) => {
         console.log(err)
         res.status(500).json({ message : "Internal server error" })
     }
+}
 
+export const searchTeacher = async (req, res) => {
+    const searchQuery = req.query.query
+    if(!searchQuery) return res.status(400).json({ message : "Query is required" })
 
+    try {
+        const result = await db.query(`
+                SELECT
+                    t.id, 
+                    t.name, 
+                    t.email, 
+                    t.phone, 
+                    s.name as subject_name
+                FROM teacher t
+                JOIN subject s ON s.id = t.subject_id
+                WHERE t.name ILIKE $1 
+                    OR CAST(t.id AS TEXT) ILIKE $2 
+                    OR t.phone ILIKE $3
+            `, [`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`])
+        
+        if(result.rows.length === 0) return res.json({ message : "Not found" })
+        
+        res.json(result.rows)
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
 }
