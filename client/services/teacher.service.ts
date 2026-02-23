@@ -37,3 +37,6 @@ export const removeTeacher = (teacherId: string) => {
     return api.delete(`/teachers/${teacherId}`)
 }
 
+export const searchTeachers = (query: string) => {
+    return api.get(`/teachers/search?query=${query}`)
+}
