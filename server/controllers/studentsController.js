@@ -282,7 +282,18 @@ export const getStudentProfile = async (req, res) => {
 
 export const getAllStudents = async (req, res) => {
     try {
-        const results = await db.query(`SELECT s.id, s.first_name AS studentFirstName, s.last_name AS studentLastName, s.dob AS studentDob, s.gender AS studentGender, s.created_at AS joined, c.name AS class FROM student s LEFT JOIN class c ON s.class_id = c.id ORDER BY CAST(c.grade AS INTEGER) ASC, s.first_name ASC`)
+        const results = await db.query(`
+            SELECT 
+                s.id, 
+                s.first_name AS studentFirstName, 
+                s.last_name AS studentLastName, 
+                s.dob AS studentDob, 
+                s.gender AS studentGender, 
+                s.created_at AS joined, 
+                c.name AS class 
+            FROM student s 
+            LEFT JOIN class c ON s.class_id = c.id 
+            ORDER BY CAST(c.grade AS INTEGER) ASC, s.first_name ASC`)
         
         res.status(200).json({ 
             message : "Students found",
@@ -343,3 +354,35 @@ export const getTodaySchedule = async (req, res) => {
     
 }
 
+export const searchStudents = async (req, res) => {
+    const searchQuery = req.query.query
+    if(!searchQuery) return res.status(400).json({ message : "Query is required" })
+
+    try {
+        const result = await db.query(`
+                SELECT
+                    s.id, 
+                    s.first_name AS studentFirstName, 
+                    s.last_name AS studentLastName, 
+                    s.dob AS studentDob, 
+                    s.gender AS studentGender, 
+                    s.created_at AS joined, 
+                    c.name AS class
+                FROM student s
+                LEFT JOIN class c ON c.id = s.class_id
+                LEFT JOIN parent p ON p.id = s.parent_id
+                WHERE s.first_name ILIKE $1
+                    OR s.last_name ILIKE $2
+                    OR CAST(s.id AS TEXT) ILIKE $3
+                    OR p.phone ILIKE $4
+            `, [`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`])
+
+        if(result.rows.length === 0) return res.json({ message : "Not Found" })
+            
+        res.json(result.rows)
+
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}
