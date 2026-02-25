@@ -24,3 +24,7 @@ export const updateStudentProfile = (studentId: string, { studentDob, studentEma
 export const getTodaySchedule = (day: string) => {
     return api.get(`/students/get-today-schedule?day=${day}`)
 }
+
+export const searchStudents = (query: string) => {
+    return api.get(`/students/search?query=${query}`)
+}

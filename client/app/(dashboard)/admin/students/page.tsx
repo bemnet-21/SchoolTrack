@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { GetStudentsProps } from '@/interface'
-import { getAllStudents } from '@/services/student.service'
+import { getAllStudents, searchStudents } from '@/services/student.service'
 import { formatDate } from '@/utils/formatTime'
 import Pills from '@/app/components/Pills'
 import { FaUserGraduate, FaSearch, FaEllipsisV, FaBirthdayCake, FaLayerGroup } from 'react-icons/fa'
@@ -15,7 +15,7 @@ const StudentsPage = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const fetchStudents = async () => {
+  const fetchAll = async () => {
     try {
         setLoading(true)
         const res = await getAllStudents()
@@ -27,14 +27,38 @@ const StudentsPage = () => {
     }
   }
 
-  useEffect(() => {
-    fetchStudents()
-  }, [])
+  const performSearch = async (query: string) => {
+    try {
+        setLoading(true)
+        const res = await searchStudents(query)
 
-  const filteredStudents = students.filter(student => 
-    student.studentfirstname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.studentlastname?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+        if(Array.isArray(res.data)) {
+            setStudents(res.data)
+        } else {
+            setStudents([])
+        }
+
+    } catch(err) {
+        console.error("Searching failed", err)
+        setStudents([])
+    } finally {
+        setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+      const delayDebounceFn = setTimeout(() => {
+        if (searchTerm.trim()) {
+          performSearch(searchTerm)
+        } else {
+          fetchAll() 
+        }
+      }, 500)
+  
+      return () => clearTimeout(delayDebounceFn)
+    }, [searchTerm])
+
+  
 
   return (
     <section className='w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-8 space-y-6'>
@@ -81,7 +105,7 @@ const StudentsPage = () => {
                     ))}
                 </div>
              </div>
-        ) : filteredStudents.length > 0 ? (
+        ) : students.length > 0 ? (
             <>
                 <div className='hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
                     <div className='overflow-x-auto'>
@@ -92,11 +116,10 @@ const StudentsPage = () => {
                                     <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Gender</th>
                                     <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Class</th>
                                     <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Date of Birth</th>
-                                    <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right'>Actions</th>
                                 </tr>
                             </thead>
                             <tbody className='divide-y divide-gray-100'>
-                                {filteredStudents.map((student) => (
+                                {students.map((student) => (
                                     <tr 
                                         key={student.id} 
                                         className='hover:bg-gray-50/50 transition-colors group cursor-pointer'
@@ -141,12 +164,6 @@ const StudentsPage = () => {
                                             {formatDate(student.studentdob)}
                                         </td>
 
-                                        {/* Actions */}
-                                        <td className='px-6 py-4 text-right'>
-                                            <button className='text-gray-400 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors'>
-                                                <FaEllipsisV />
-                                            </button>
-                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -155,7 +172,7 @@ const StudentsPage = () => {
                 </div>
 
                 <div className='md:hidden grid grid-cols-1 gap-4'>
-                    {filteredStudents.map((student) => (
+                    {students.map((student) => (
                         <div key={student.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 relative">
                             
                             {/* Card Header */}

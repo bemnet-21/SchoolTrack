@@ -14,7 +14,6 @@ const TeachersPage = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
-  // 1. Function to get ALL teachers (Initial Load or Empty Search)
   const fetchAll = async () => {
     try {
         setLoading(true)
@@ -27,14 +26,11 @@ const TeachersPage = () => {
     }
   }
 
-  // 2. Function to Search (Called when user types)
   const performSearch = async (query: string) => {
     try {
         setLoading(true)
         const res = await searchTeachers(query)
         
-        // Handle your backend specific response logic
-        // Backend returns array on success, or { message: "Not found" } object
         if (Array.isArray(res.data)) {
             setTeachers(res.data)
         } else {
@@ -48,18 +44,15 @@ const TeachersPage = () => {
     }
   }
 
-  // 3. Debounce Logic using useEffect
   useEffect(() => {
-    // Set a timer to run the search after 500ms
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim()) {
         performSearch(searchTerm)
       } else {
-        fetchAll() // If search is cleared, show all teachers again
+        fetchAll() 
       }
     }, 500)
 
-    // Cleanup function: If user types again before 500ms, cancel previous timer
     return () => clearTimeout(delayDebounceFn)
   }, [searchTerm])
 

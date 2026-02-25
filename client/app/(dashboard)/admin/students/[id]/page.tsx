@@ -5,7 +5,7 @@ import { getStudentProfile } from '@/services/student.service';
 import { formatDate } from '@/utils/formatTime'; // Ensure you have this
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import { FaUser, FaPhone, FaEnvelope, FaBirthdayCake, FaArrowLeft, FaGraduationCap, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaUser, FaPhone, FaEnvelope, FaBirthdayCake, FaArrowLeft, FaGraduationCap, FaMapMarkerAlt, FaEdit, FaTrash, FaExclamationTriangle } from 'react-icons/fa'
 
 const StudentProfilePage = () => {
   const params = useParams()
@@ -14,6 +14,9 @@ const StudentProfilePage = () => {
 
   const [student, setStudent] = useState<StudentDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [deleting, setDeleting] = useState(false)
+  
 
   useEffect(() => {
     if (!id || Array.isArray(id)) return;
@@ -34,6 +37,10 @@ const StudentProfilePage = () => {
     getStudent(id)
   }, [id])
 
+  const handleRemove = async () => {
+
+  }
+
   // --- Loading State ---
   if (loading) {
     return (
@@ -52,7 +59,7 @@ const StudentProfilePage = () => {
     return (
         <div className="flex flex-col items-center justify-center h-[60vh] text-center">
             <h2 className="text-xl font-bold text-gray-800">Student Not Found</h2>
-            <button onClick={() => router.back()} className="text-blue-600 hover:underline mt-2">
+            <button onClick={() => router.back()} className="text-blue-600 hover:underline mt-2 cursor-pointer">
                 Go Back
             </button>
         </div>
@@ -61,11 +68,43 @@ const StudentProfilePage = () => {
 
   return (
     <section className='w-full max-w-5xl mx-auto p-4 md:p-8 space-y-8'>
-        
+        {showDeleteModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 border border-gray-100">
+                    <div className="p-6 text-center">
+                        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                            <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+                        </div>
+                        <h3 className="text-lg leading-6 font-bold text-gray-900">Remove Teacher?</h3>
+                        <p className="text-sm text-gray-500 mt-2">
+                            Are you sure you want to remove <span className="font-bold text-gray-800">{`${student.studentfirstname} ${student.studentlastname}`}</span>? This action cannot be undone and will revoke their system access immediately.
+                        </p>
+                    </div>
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-3">
+                        <button
+                            type="button"
+                            disabled={deleting}
+                            onClick={handleRemove}
+                            className="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2.5 bg-red-600 text-base font-bold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm disabled:opacity-50 transition-all"
+                        >
+                            {deleting ? 'Removing...' : 'Yes, Remove'}
+                        </button>
+                        <button
+                            type="button"
+                            disabled={deleting}
+                            onClick={() => setShowDeleteModal(false)}
+                            className="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2.5 bg-white text-base font-bold text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm transition-all"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
         {/* --- Back Button --- */}
         <button 
             onClick={() => router.push('/admin/students/')} 
-            className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit font-medium'
+            className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit font-medium cursor-pointer'
         >
             <FaArrowLeft /> Back to Directory
         </button>
@@ -151,11 +190,18 @@ const StudentProfilePage = () => {
                         </span>
                     </div>
                 </div>
-                <div className="pt-6 border-t border-gray-100 place-self-center">
-                    <button className="py-2 px-4 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors text-sm shadow-sm shadow-blue-200"
-                    onClick={() => router.push(`/admin/students/${id}/edit-profile`)}
+                <div className="w-full flex justify-between gap-x-12 pt-6 border-t border-gray-100 place-self-center">
+                    <button 
+                        className="flex-1 py-3 px-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2 active:scale-95"
+                        onClick={() => router.push(`/admin/students/${id}/edit-profile`)}
                     >
-                        Edit Profile
+                        <FaEdit /> Edit Profile
+                    </button>
+                    <button
+                        className="flex-1 py-3 px-4 rounded-xl bg-white border-2 border-red-100 text-red-500 font-bold hover:bg-red-50 hover:border-red-200 transition-all text-sm flex items-center justify-center gap-2 active:scale-95"
+                        onClick={() => setShowDeleteModal(true)} 
+                    >
+                        <FaTrash /> Remove
                     </button>
                 </div>
             </div>
