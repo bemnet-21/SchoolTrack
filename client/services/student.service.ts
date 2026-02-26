@@ -28,3 +28,7 @@ export const getTodaySchedule = (day: string) => {
 export const searchStudents = (query: string) => {
     return api.get(`/students/search?query=${query}`)
 }
+
+export const deleteStudent = (studentId: string) => {
+    return api.delete(`/students/${studentId}`)
+}

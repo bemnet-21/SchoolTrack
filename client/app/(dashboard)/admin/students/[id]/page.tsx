@@ -1,7 +1,7 @@
 'use client'
 
 import { StudentDetail } from '@/interface';
-import { getStudentProfile } from '@/services/student.service';
+import { deleteStudent, getStudentProfile } from '@/services/student.service';
 import { formatDate } from '@/utils/formatTime'; // Ensure you have this
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -38,7 +38,17 @@ const StudentProfilePage = () => {
   }, [id])
 
   const handleRemove = async () => {
-
+    if (!id || Array.isArray(id)) return
+    setDeleting(true)
+    try {
+        await deleteStudent(id)
+        router.push('/admin/students')
+    } catch(err) {
+        console.error("Failed to delete", err)
+        alert("Failed to delete student, try again later")
+        setDeleting(false)
+        setShowDeleteModal(false)
+    }
   }
 
   // --- Loading State ---
