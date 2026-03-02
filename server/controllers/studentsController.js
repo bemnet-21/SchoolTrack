@@ -386,3 +386,34 @@ export const searchStudents = async (req, res) => {
         res.status(500).json({ message : "Internal server error" })
     }
 }
+
+export const getTermCourse = async (req, res) => {
+    let { studentId, term, year } = req.query
+    if(!term || !year) return res.status(400).json({ message : "Missing required fields" })
+
+    if(!studentId) {
+        if(req.user.role === "STUDENT") {
+            const studentResult = await db.query('SELECT id FROM student WHERE user_id = $1', [req.user.id])
+            if(studentResult.rows[0].length === 0) return res.json({ message : "Student was not found" })
+            studentId = studentResult.rows[0].id
+        } else {
+            return res.status(400).json({ message : "Missing required fields" })
+        }
+    }
+    
+    try {
+        const results = await db.query(`
+                SELECT
+                    sub.name AS subject
+                FROM student s
+                JOIN class_subjects cs ON cs.class_id = s.class_id
+                JOIN subject sub ON sub.id = cs.subject_id
+                WHERE s.id = $1
+            `, [studentId])
+
+        res.status(200).json(results.rows)
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({ message : "Internal server error" })
+    }
+}

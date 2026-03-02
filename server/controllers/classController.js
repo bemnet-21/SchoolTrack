@@ -130,7 +130,7 @@ export const getAllClasses = async (req, res) => {
 }
 
 export const assignSubjectsToClass = async (req, res) => {
-    const { classId, subjects } = req.body
+    const { classId, subjects, term } = req.body
     if(!classId || !Array.isArray(subjects) || subjects.length === 0) {
         return res.status(400).json({ message : "Missing required fields" })
     }
@@ -142,12 +142,14 @@ export const assignSubjectsToClass = async (req, res) => {
     // ]
     const client = await db.connect()
     try {
+        const date = new Date()
+        const year = date.getFullYear()
         for(const item of subjects) {
             await client.query('BEGIN')
             const { subjectId, teacherId } = item
             if(!subjectId || !teacherId) return res.status(400).json({ message : "Missing required fields" })
             
-            await client.query(`INSERT INTO class_subjects(class_id, subject_id, teacher_id) VALUES ($1, $2, $3)`, [classId, subjectId, teacherId]) 
+            await client.query(`INSERT INTO class_subjects(class_id, subject_id, teacher_id, term, year) VALUES ($1, $2, $3, $4, $5)`, [classId, subjectId, teacherId, term, year]) 
         }
 
         await client.query('COMMIT')

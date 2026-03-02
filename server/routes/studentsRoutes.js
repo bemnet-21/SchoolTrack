@@ -1,7 +1,7 @@
 import express from 'express'
 import { protect } from '../middleware/authMiddleware.js'
 import { authorizeRoles } from '../middleware/roleMiddleware.js'
-import { deleteStudent, getAllStudentsPerClass, getStudentProfile, getTodaySchedule, registerStudents, searchStudents, updateStudent } from '../controllers/studentsController.js'
+import { deleteStudent, getAllStudentsPerClass, getStudentProfile, getTermCourse, getTodaySchedule, registerStudents, searchStudents, updateStudent } from '../controllers/studentsController.js'
 import { getAllStudents } from '../controllers/studentsController.js'
 
 const router = express.Router()
@@ -9,6 +9,7 @@ const router = express.Router()
 router.get('/', protect, authorizeRoles('ADMIN'), getAllStudents)
 router.post('/register', protect, authorizeRoles('ADMIN'), registerStudents)
 router.get('/get-today-schedule', protect, authorizeRoles('STUDENT'), getTodaySchedule)
+router.get('/get-term-courses', protect, authorizeRoles('ADMIN', 'STUDENT'), getTermCourse)
 router.get('/class/:classId', protect, authorizeRoles('ADMIN', 'TEACHER'), getAllStudentsPerClass)
 router.get('/search', protect, authorizeRoles('ADMIN'), searchStudents)
 router.put('/:studentId', protect, authorizeRoles('ADMIN'), updateStudent)
