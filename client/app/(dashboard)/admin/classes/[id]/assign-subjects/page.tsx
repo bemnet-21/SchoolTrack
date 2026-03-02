@@ -28,7 +28,9 @@ const AssignSubjectsPage = () => {
   const [dataLoading, setDataLoading] = useState(true)
   const [error, setError] = useState('')
 
-  // 1. Fetch available data on mount
+  const [term, setTerm] = useState<number>(1)
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -44,7 +46,6 @@ const AssignSubjectsPage = () => {
     fetchData()
   }, [])
 
-  // 2. Add subject-teacher pair to local list
   const addToList = () => {
     if (!subjectId || !teacherId) return
     
@@ -57,7 +58,6 @@ const AssignSubjectsPage = () => {
     const newItem: SubjectsInfoInterface = { subjectId, teacherId }
     setSubjectsList([...subjectsList, newItem])
     
-    // Reset local selection for next entry
     setSubjectId('')
     setTeacherId('')
   }
@@ -79,7 +79,8 @@ const AssignSubjectsPage = () => {
 
     const payload: AssignSubjectsToClassInterface = {
         classId,
-        subjects: subjectsList
+        subjects: subjectsList,
+        term,
     }
 
     try {
@@ -142,11 +143,25 @@ const AssignSubjectsPage = () => {
                         {availableTeachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
                 </div>
+                <div className='lg:col-span-2 space-y-2'>
+                    <label className='text-xs font-bold text-gray-600 ml-1'>Term</label>
+                    <select 
+                        value={term} 
+                        onChange={(e) => setTerm(Number(e.target.value))}
+                        className='w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none text-sm'
+                    >
+                        <option value="">Select Term</option>
+                        {/* {availableTeachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)} */}
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
 
                 {/* Add to List Button */}
                 <button 
                     onClick={addToList}
-                    disabled={!subjectId || !teacherId}
+                    disabled={!subjectId || !teacherId || !term}
                     className='w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 disabled:bg-gray-100 disabled:text-gray-300 transition-all flex items-center justify-center gap-2'
                 >
                     <FaPlus /> <span className='md:hidden lg:inline'>Add</span>

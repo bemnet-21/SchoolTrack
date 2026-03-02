@@ -279,6 +279,7 @@ export interface SubjectsInfoInterface {
 export interface AssignSubjectsToClassInterface {
   classId: string
   subjects: SubjectsInfoInterface[]
+  term: number
 }
 
 export interface StudentsGradeInterface {

@@ -17,6 +17,6 @@ export const addClass = ({ grade, name, teacherId }: AddClassInterface) => {
     return api.post('/class', { grade, name, teacherId })
 }
 
-export const assignSubjectsToClass = ({ classId, subjects }:AssignSubjectsToClassInterface) => {
-    return api.post('/class/assign-subjects', { classId, subjects })
+export const assignSubjectsToClass = ({ classId, subjects, term }:AssignSubjectsToClassInterface) => {
+    return api.post('/class/assign-subjects', { classId, subjects, term })
 }

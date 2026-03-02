@@ -297,7 +297,7 @@ const RegisterStudentPage = () => {
                             </select>
                         </div>
                         <div className='space-y-2 md:col-span-2'>
-                            <label className='text-sm font-medium text-gray-700'>Student Email (Optional)</label>
+                            <label className='text-sm font-medium text-gray-700'>Student Email</label>
                             <input 
                                 type="email" 
                                 placeholder='student@school.com'
