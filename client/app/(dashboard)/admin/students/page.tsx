@@ -78,7 +78,7 @@ const StudentsPage = () => {
                         placeholder="Search students..." 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                        className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-mutedOrange focus:ring-1 focus:ring-mutedOrange transition-all"
                     />
                 </div>
                 {/* Add Button */}
@@ -127,7 +127,7 @@ const StudentsPage = () => {
                                         {/* Name */}
                                         <td className='px-6 py-4'>
                                             <div className='flex items-center gap-3'>
-                                                <div className='w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm'>
+                                                <div className='w-10 h-10 rounded-full bg-lightOrange flex items-center justify-center text-mutedOrange font-bold text-sm'>
                                                     {(student.studentfirstname?.[0] || 'U')}{(student.studentlastname?.[0] || '')}
                                                 </div>
                                                 <div>
@@ -141,7 +141,7 @@ const StudentsPage = () => {
                                         <td className='px-6 py-4'>
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                                 student.studentgender.toLowerCase() === 'male' 
-                                                ? 'bg-blue-50 text-blue-700' 
+                                                ? 'bg-lightOrange text-mutedOrange' 
                                                 : 'bg-pink-50 text-pink-700'
                                             }`}>
                                                 {student.studentgender}

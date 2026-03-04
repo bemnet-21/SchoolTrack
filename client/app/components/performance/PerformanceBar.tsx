@@ -2,13 +2,13 @@ import { Performance } from '@/interface'
 import React from 'react'
 
 const SUBJECT_COLORS: Record<string, string> = {
-  "Mathematics": "bg-blue-600",
-  "Science": "bg-emerald-500",
-  "English": "bg-purple-600",
-  "History": "bg-amber-500",
-  "Physics": "bg-pink-500",
-  "Geography": "bg-cyan-500",
-  "default": "bg-mainBlue" 
+  // "Mathematics": "bg-blue-600",
+  // "Science": "bg-emerald-500",
+  // "English": "bg-purple-600",
+  // "History": "bg-amber-500",
+  // "Physics": "bg-pink-500",
+  // "Geography": "bg-cyan-500",
+  "default": "bg-charcoal" 
 };
 
 const PerformanceBar = ({ subject, average } : Performance) => {

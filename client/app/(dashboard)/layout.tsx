@@ -13,7 +13,7 @@ export default function DashboardLayout({
       <AuthGuard>
           <div className="flex h-screen">
               <Sidebar />
-              <main className="w-full overflow-y-auto bg-bgGray md:ml-64">
+              <main className="w-full overflow-y-auto bg-backgroundBase md:ml-64">
                 <Header />
                 {children}
               </main>

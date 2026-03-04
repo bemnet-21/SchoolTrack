@@ -2,10 +2,29 @@
 
 import { getClassId } from '@/services/class.service'
 import { registerStudent } from '@/services/student.service'
-import React, { useEffect, useState } from 'react'
-import { FaUser, FaGraduationCap, FaPhone, FaSave, FaTimes, FaCheckCircle, FaCopy } from 'react-icons/fa'
+import React, { Fragment, useEffect, useState } from 'react'
+import { FaUser, FaGraduationCap, FaPhone, FaSave, FaTimes, FaCheckCircle, FaCopy, FaChevronDown, FaCheck } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { RegistrationSuccessData } from '@/interface'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
+
+const sections = [
+  { id: 'A', name: 'Section A' },
+  { id: 'B', name: 'Section B' },
+  { id: 'C', name: 'Section C' },
+]
+
+const grades = [
+    { id: 9, name: 'Grade 9' },
+    { id: 10, name: 'Grade 10' },
+    { id: 11, name: 'Grade 11' },
+    { id: 12, name: 'Grade 12' },
+]
+
+const genders = [
+    { id: 'Male', name: 'Male' },
+    { id: 'Female', name: 'Female' },
+]
 
 const RegisterStudentPage = () => {
   const router = useRouter();
@@ -176,8 +195,8 @@ const RegisterStudentPage = () => {
         )}
 
         <div className='mb-8'>
-            <h1 className='text-4xl font-bold text-gray-800'>Register New Student</h1>
-            <p className='text-gray-500 mt-1'>Enter the student details, academic placement, and parent contacts.</p>
+            <h1 className='text-4xl font-bold text-textPrimary'>Register New Student</h1>
+            <p className='text-textSecondary mt-1'>Enter the student details, academic placement, and parent contacts.</p>
         </div>
 
         {error && (
@@ -187,75 +206,106 @@ const RegisterStudentPage = () => {
             </div>
         )}
 
-        <form onSubmit={handleSubmit} className='bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
+        <form onSubmit={handleSubmit} className='bg-white rounded-2xl shadow-sm border border-borderColor overflow-hidden'>
             
-            <div className='h-1.5 w-full bg-blue-600'></div>
+            <div className='h-1.5 w-full bg-mutedOrange'></div>
 
             <div className='p-8 space-y-8'>
                 
                 {/*  1. Student Identity  */}
                 <div className='space-y-4'>
-                    <div className='flex items-center gap-2 pb-2 border-b border-gray-100'>
-                        <FaUser className='text-blue-600' />
-                        <h2 className='text-lg font-semibold text-gray-800'>Student Identity</h2>
+                    <div className='flex items-center gap-2 pb-2 border-b border-borderColor'>
+                        <FaUser className='text-mutedOrange' />
+                        <h2 className='text-lg font-semibold text-textPrimary'>Student Identity</h2>
                     </div>
                     
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>First Name</label>
+                            <label className='text-sm font-medium text-textPrimary'>First Name</label>
                             <input 
                                 type="text" 
                                 required
                                 placeholder='e.g. John'
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Last Name</label>
+                            <label className='text-sm font-medium text-textPrimary'>Last Name</label>
                             <input 
                                 type="text" 
                                 required
                                 placeholder='e.g. Doe'
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                         
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Date of Birth</label>
+                            <label className='text-sm font-medium text-textPrimary'>Date of Birth</label>
                             <input 
                                 type="date" 
                                 required
                                 value={dateOfBirth}
                                 onChange={(e) => setDateOfBirth(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-600'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all text-textSecondary'
                             />
                         </div>
+
+                        {/* Gender Dropdown */}
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Gender</label>
-                            <select 
-                                required
-                                value={gender}
-                                onChange={(e) => setGender(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all bg-white text-gray-600'
-                            >
-                                <option value="">Select gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
+                            <label className='text-sm font-medium text-textPrimary'>Gender</label>
+                            <Listbox value={gender} onChange={setGender}>
+                                <div className="relative">
+                                    <ListboxButton className="relative w-full cursor-default rounded-lg bg-white py-3 pl-4 pr-10 text-left border border-borderColor focus:outline-none focus:ring-2 focus:ring-mutedOrange sm:text-sm">
+                                        <span className={`block truncate ${gender ? 'text-textPrimary' : 'text-textSecondary'}`}>
+                                            {gender || "Select Gender"}
+                                        </span>
+                                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <FaChevronDown className="h-4 w-4 text-mutedOrange" aria-hidden="true" />
+                                        </span>
+                                    </ListboxButton>
+                                    <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                        <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                                            {genders.map((g) => (
+                                                <ListboxOption
+                                                    key={g.id}
+                                                    value={g.id}
+                                                    className={({ focus }) =>
+                                                        `relative cursor-default select-none py-2 pl-10 pr-4 transition-colors ${
+                                                            focus ? 'bg-lightOrange text-mutedOrange' : 'text-textPrimary'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected }) => (
+                                                        <>
+                                                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{g.name}</span>
+                                                            {selected && (
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-mutedOrange">
+                                                                    <FaCheck className="h-3 w-3" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </ListboxOption>
+                                            ))}
+                                        </ListboxOptions>
+                                    </Transition>
+                                </div>
+                            </Listbox>
                         </div>
+
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Address</label>
+                            <label className='text-sm font-medium text-textPrimary'>Address</label>
                             <input 
                                 type="text" 
                                 required
                                 placeholder='e.g. Addis Ababa'
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                     </div>
@@ -263,47 +313,106 @@ const RegisterStudentPage = () => {
 
                 {/*  2. Academic Details  */}
                 <div className='space-y-4'>
-                    <div className='flex items-center gap-2 pb-2 border-b border-gray-100'>
-                        <FaGraduationCap className='text-blue-600' />
-                        <h2 className='text-lg font-semibold text-gray-800'>Academic Details</h2>
+                    <div className='flex items-center gap-2 pb-2 border-b border-borderColor'>
+                        <FaGraduationCap className='text-mutedOrange' />
+                        <h2 className='text-lg font-semibold text-textPrimary'>Academic Details</h2>
                     </div>
 
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                        {/* Grade Level Dropdown */}
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Grade Level</label>
-                            <select 
-                                required
-                                value={grade}
-                                onChange={(e) => setGrade(Number(e.target.value))}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all bg-white text-gray-600'
-                            >
-                                <option value={0}>Select Grade</option>
-                                <option value={9}>Grade 9</option>
-                                <option value={10}>Grade 10</option>
-                                <option value={11}>Grade 11</option>
-                                <option value={12}>Grade 12</option>
-                            </select>
+                            <label className='text-sm font-medium text-textPrimary'>Grade Level</label>
+                            <Listbox value={grade} onChange={setGrade}>
+                                <div className="relative">
+                                    <ListboxButton className="relative w-full cursor-default rounded-lg bg-white py-3 pl-4 pr-10 text-left border border-borderColor focus:outline-none focus:ring-2 focus:ring-mutedOrange sm:text-sm">
+                                        <span className={`block truncate ${grade > 0 ? 'text-textPrimary' : 'text-textSecondary'}`}>
+                                            {grade > 0 ? `Grade ${grade}` : "Select Grade"}
+                                        </span>
+                                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <FaChevronDown className="h-4 w-4 text-mutedOrange" aria-hidden="true" />
+                                        </span>
+                                    </ListboxButton>
+                                    <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                        <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                                            {grades.map((g) => (
+                                                <ListboxOption
+                                                    key={g.id}
+                                                    value={g.id}
+                                                    className={({ focus }) =>
+                                                        `relative cursor-default select-none py-2 pl-10 pr-4 transition-colors ${
+                                                            focus ? 'bg-lightOrange text-mutedOrange' : 'text-textPrimary'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected }) => (
+                                                        <>
+                                                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{g.name}</span>
+                                                            {selected && (
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-mutedOrange">
+                                                                    <FaCheck className="h-3 w-3" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </ListboxOption>
+                                            ))}
+                                        </ListboxOptions>
+                                    </Transition>
+                                </div>
+                            </Listbox>
                         </div>
-                        <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Section</label>
-                            <select 
-                                value={section}
-                                onChange={(e) => setSection(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all bg-white text-gray-600'
-                            >
-                                <option value="">Select Section</option>
-                                <option value="A">Section A</option>
-                                <option value="B">Section B</option>
-                            </select>
+
+                        {/* Section Dropdown */}
+                        <div className="w-full space-y-2">
+                            <label className="text-sm font-medium text-textPrimary">Section</label>
+                            <Listbox value={section} onChange={setSection}>
+                                <div className="relative">
+                                    <ListboxButton className="relative w-full cursor-default rounded-lg bg-white py-3 pl-4 pr-10 text-left border border-borderColor focus:outline-none focus:ring-2 focus:ring-mutedOrange sm:text-sm">
+                                        <span className={`block truncate ${section ? 'text-textPrimary' : 'text-textSecondary'}`}>
+                                            {section ? `Section ${section}` : "Select Section"}
+                                        </span>
+                                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <FaChevronDown className="h-4 w-4 text-mutedOrange" aria-hidden="true" />
+                                        </span>
+                                    </ListboxButton>
+                                    <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                        <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                                            {sections.map((s) => (
+                                                <ListboxOption
+                                                    key={s.id}
+                                                    value={s.id}
+                                                    className={({ focus }) =>
+                                                        `relative cursor-default select-none py-2 pl-10 pr-4 transition-colors ${
+                                                            focus ? 'bg-lightOrange text-mutedOrange' : 'text-textPrimary'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected }) => (
+                                                        <>
+                                                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{s.name}</span>
+                                                            {selected && (
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-mutedOrange">
+                                                                    <FaCheck className="h-3 w-3" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </ListboxOption>
+                                            ))}
+                                        </ListboxOptions>
+                                    </Transition>
+                                </div>
+                            </Listbox>
                         </div>
+
                         <div className='space-y-2 md:col-span-2'>
-                            <label className='text-sm font-medium text-gray-700'>Student Email</label>
+                            <label className='text-sm font-medium text-textPrimary'>Student Email</label>
                             <input 
                                 type="email" 
                                 placeholder='student@school.com'
                                 value={studentEmail}
                                 onChange={(e) => setStudentEmail(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                     </div>
@@ -311,61 +420,61 @@ const RegisterStudentPage = () => {
 
                 {/*  3. Parent/Guardian  */}
                 <div className='space-y-4'>
-                    <div className='flex items-center gap-2 pb-2 border-b border-gray-100'>
-                        <FaPhone className='text-blue-600' />
-                        <h2 className='text-lg font-semibold text-gray-800'>Parent/Guardian Contacts</h2>
+                    <div className='flex items-center gap-2 pb-2 border-b border-borderColor'>
+                        <FaPhone className='text-mutedOrange' />
+                        <h2 className='text-lg font-semibold text-textPrimary'>Parent/Guardian Contacts</h2>
                     </div>
 
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Guardian Name</label> 
+                            <label className='text-sm font-medium text-textPrimary'>Guardian Name</label> 
                             <input 
                                 type="text" 
                                 required
                                 placeholder='Enter name'
                                 value={parentName}
                                 onChange={(e) => setParentName(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                         <div className='space-y-2'>
-                            <label className='text-sm font-medium text-gray-700'>Guardian Phone</label>
+                            <label className='text-sm font-medium text-textPrimary'>Guardian Phone</label>
                             <input 
                                 type="tel" 
                                 required
                                 placeholder='Enter phone number'
                                 value={parentPhone}
                                 onChange={(e) => setParentPhone(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                         <div className='space-y-2 md:col-span-2'>
-                            <label className='text-sm font-medium text-gray-700'>Guardian Email</label>
+                            <label className='text-sm font-medium text-textPrimary'>Guardian Email</label>
                             <input 
                                 type="email" 
                                 required
                                 placeholder='parent@example.com'
                                 value={parentEmail}
                                 onChange={(e) => setParentEmail(e.target.value)}
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                                className='w-full px-4 py-3 rounded-lg border border-borderColor focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             />
                         </div>
                     </div>
                 </div>
 
                 {/*  Footer Buttons  */}
-                <div className='pt-6 border-t border-gray-100 flex flex-col-reverse md:flex-row justify-end gap-3'>
+                <div className='pt-6 border-t border-borderColor flex flex-col-reverse md:flex-row justify-end gap-3'>
                     <button 
                         type="button"
                         onClick={() => router.back()}
-                        className='px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2'
+                        className='px-6 py-2.5 rounded-lg border border-borderColor text-textSecondary font-medium hover:bg-backgroundBase transition-colors flex items-center justify-center gap-2'
                     >
                         <FaTimes /> Cancel
                     </button>
                     <button 
                         type="submit"
                         disabled={loading}
-                        className={`px-6 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`px-6 py-2.5 rounded-lg bg-mutedOrange text-white font-medium hover:opacity-90 shadow-lg shadow-mutedOrange/20 transition-all flex items-center justify-center gap-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {loading ? 'Registering...' : <><FaSave /> Register Student</>}
                     </button>

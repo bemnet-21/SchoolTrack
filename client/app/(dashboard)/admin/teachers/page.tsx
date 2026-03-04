@@ -62,7 +62,7 @@ const TeachersPage = () => {
         <div className='flex flex-col lg:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6'>
             <div className='flex flex-col'>
                 <h1 className='text-2xl md:text-3xl font-bold text-gray-800'>Teacher Directory</h1>
-                <p className='text-gray-500 text-sm'>Manage your teaching staff, subjects, and contact details.</p>
+                <p className='text-textSecondary text-sm'>Manage your teaching staff, subjects, and contact details.</p>
             </div>
             
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -73,7 +73,7 @@ const TeachersPage = () => {
                         placeholder="Search by Name, ID, Phone..." 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-mutedOrange focus:ring-1 focus:ring-mutedOrange"
                     />
                 </div>
                 <Link href="/admin/teachers/register" className="w-full sm:w-auto">
@@ -97,19 +97,16 @@ const TeachersPage = () => {
              </div>
         ) : teachers.length > 0 ? (
             <>
-                {/* 
-                   👇 UPDATE: We map over 'teachers' directly now.
-                   We don't need 'filteredTeachers' anymore because the API does the filtering.
-                */}
+                
                 <div className='hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
                     <div className='overflow-x-auto'>
                         <table className='w-full text-left border-collapse'>
                             <thead>
                                 <tr className='bg-gray-50 border-b border-gray-100'>
-                                    <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Teacher Name</th>
-                                    <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Subject</th>
-                                    <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Email</th>
-                                    <th className='px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider'>Phone</th>
+                                    <th className='px-6 py-4 text-xs font-bold text-textSecondary uppercase tracking-wider'>Teacher Name</th>
+                                    <th className='px-6 py-4 text-xs font-bold text-textSecondary uppercase tracking-wider'>Subject</th>
+                                    <th className='px-6 py-4 text-xs font-bold text-textSecondary uppercase tracking-wider'>Email</th>
+                                    <th className='px-6 py-4 text-xs font-bold text-textSecondary uppercase tracking-wider'>Phone</th>
                                 </tr>
                             </thead>
                             <tbody className='divide-y divide-gray-100'>
@@ -120,7 +117,7 @@ const TeachersPage = () => {
                                     onClick={() => router.push(`/admin/teachers/${teacher.id}`)}>
                                         <td className='px-6 py-4'>
                                             <div className='flex items-center gap-3'>
-                                                <div className='w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm'>
+                                                <div className='w-10 h-10 rounded-full bg-lightOrange flex items-center justify-center text-mutedOrange font-bold text-sm'>
                                                     {teacher.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
                                                 </div>
                                                 <div>
@@ -131,7 +128,7 @@ const TeachersPage = () => {
                                         </td>
                                         <td className='px-6 py-4'>
                                             {teacher.subject_name ? (
-                                                <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700'>
+                                                <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-lightOrange text-mutedOrange'>
                                                     {teacher.subject_name}
                                                 </span>
                                             ) : (
@@ -176,7 +173,7 @@ const TeachersPage = () => {
                             <div className="h-px bg-gray-100 w-full mb-3"></div>
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-xs font-medium text-gray-500 uppercase">Subject</span>
+                                    <span className="text-xs font-medium text-textSecondary uppercase">Subject</span>
                                     {teacher.subject_name ? (
                                         <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700'>
                                             {teacher.subject_name}
@@ -205,7 +202,7 @@ const TeachersPage = () => {
                     <FaChalkboardTeacher className='text-3xl text-gray-400' />
                 </div>
                 <h3 className='text-lg font-semibold text-gray-800'>No teachers found</h3>
-                <p className='text-gray-500 mb-6 text-center max-w-xs'>
+                <p className='text-textSecondary mb-6 text-center max-w-xs'>
                     {searchTerm ? `No results for "${searchTerm}"` : "Get started by adding a new teacher."}
                 </p>
                 {!searchTerm && (

@@ -3,7 +3,7 @@
 import PerformanceCard from '@/app/components/performance/PerformanceCard'
 import Pills from '@/app/components/Pills'
 import SummaryCard from '@/app/components/SummaryCard'
-import UpcomingEventsCard from '@/app/components/UpcomingEventsCard'
+import UpcomingEventsCard from '@/app/components/Event/UpcomingEventsCard'
 import { Event, EventsCard, Performance, Stats } from '@/interface'
 import {  getDashboardStats, getStudentPerformance } from '@/services/dashboard.service'
 import { getAllEvents } from '@/services/event.service'
@@ -54,11 +54,11 @@ const page = () => {
   }, [])
 
   return (
-    <section className='flex flex-col w-full gap-y-8 py-8 px-8 lg:px-16'>
+    <section className='flex flex-col  w-full gap-y-8 py-8 px-8 lg:px-16'>
       <div className='flex flex-col gap-y-4 w-full lg:justify-between gap-x-4 items-center lg:flex-row'>
         <div className='flex flex-col flex-1'>
           <h1 className='text-3xl font-bold'>{`Welcome Back, ${user?.name}!`}</h1>
-          <h2 className='text-xl text-gray-400'>Here's a summary of your school's activity</h2>
+          <h2 className='text-xl text-textSecondary'>Here's a summary of your school's activity</h2>
         </div>
         <div className='flex flex-wrap gap-3 shrink-0 lg:justify-end'>
           <Link href='/admin/students/register'>
@@ -73,10 +73,10 @@ const page = () => {
         </div>
       </div>
       <div className='place-self-center xl:place-self-auto grid gap-y-4 gap-x-8  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
-        {statsData && <SummaryCard title='Total Students' icon={FaUsers} value={statsData.totalStudents} iconClassName='text-3xl text-mainBlue' iconBgColor='bg-mainBlue'/>}
-        {statsData && <SummaryCard title='Total Teachers' icon={FaUsers} value={statsData.totalTeachers} iconClassName='text-3xl text-[#12B982]' iconBgColor='bg-[#12B982]'/>}
+        {statsData && <SummaryCard title='Total Students' icon={FaUsers} value={statsData.totalStudents} iconClassName='text-3xl text-mutedOrange' iconBgColor='bg-lightOrange'/>}
+        {statsData && <SummaryCard title='Total Teachers' icon={FaUsers} value={statsData.totalTeachers} iconClassName='text-3xl text-mutedOrange' iconBgColor='bg-lightOrange'/>}
         <div className="sm:col-span-2 md:col-span-1 lg:col-span-2 xl:col-span-1 flex justify-center w-full">
-            {statsData && <SummaryCard title='Total Classes' icon={FaNoteSticky} value={statsData.totalClasses} iconClassName='text-3xl text-[#A855F7]' iconBgColor='bg-[#A855F7]' />}
+            {statsData && <SummaryCard title='Total Classes' icon={FaNoteSticky} value={statsData.totalClasses} iconClassName='text-3xl text-mutedOrange' iconBgColor='bg-lightOrange' />}
         </div>
       </div>
 

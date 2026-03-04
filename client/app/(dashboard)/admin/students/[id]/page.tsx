@@ -69,7 +69,7 @@ const StudentProfilePage = () => {
     return (
         <div className="flex flex-col items-center justify-center h-[60vh] text-center">
             <h2 className="text-xl font-bold text-gray-800">Student Not Found</h2>
-            <button onClick={() => router.back()} className="text-blue-600 hover:underline mt-2 cursor-pointer">
+            <button onClick={() => router.back()} className="text-mutedOrange hover:underline mt-2 cursor-pointer">
                 Go Back
             </button>
         </div>
@@ -114,7 +114,7 @@ const StudentProfilePage = () => {
         {/* --- Back Button --- */}
         <button 
             onClick={() => router.push('/admin/students/')} 
-            className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit font-medium cursor-pointer'
+            className='flex items-center gap-2 text-gray-500 hover:text-mutedOrange transition-colors w-fit font-medium cursor-pointer'
         >
             <FaArrowLeft /> Back to Directory
         </button>
@@ -122,10 +122,10 @@ const StudentProfilePage = () => {
         {/* --- Profile Header --- */}
         <div className='bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden'>
             {/* Background Decoration */}
-            <div className="absolute top-0 left-0 w-full h-24 bg-linear-to-r from-blue-500 to-indigo-600 opacity-10"></div>
+            <div className="absolute top-0 left-0 w-full h-24 bg-linear-to-r from-mutedOrange to-lightOrange opacity-30"></div>
 
             {/* Avatar */}
-            <div className='w-24 h-24 md:w-32 md:h-32 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center text-4xl font-bold text-indigo-600 z-10'>
+            <div className='w-24 h-24 md:w-32 md:h-32 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center text-4xl font-bold text-mutedOrange z-10'>
                 {student.studentfirstname?.[0]}{student.studentlastname?.[0]}
             </div>
 
@@ -135,16 +135,16 @@ const StudentProfilePage = () => {
                     {student.studentfirstname} {student.studentlastname}
                 </h1>
                 <div className='flex flex-wrap justify-center md:justify-start gap-3 mt-3'>
-                    <span className='px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold border border-blue-100'>
+                    <span className='px-3 py-1 bg-lightCharcoal text-white rounded-full text-sm font-semibold border border-blue-100'>
                         ID: {student.id}
                     </span>
-                    <span className='px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-semibold border border-indigo-100'>
+                    <span className='px-3 py-1 bg-lightCharcoal text-white rounded-full text-sm font-semibold border border-indigo-100'>
                         {student.class || "Unassigned"}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${
                         student.studentgender.toLowerCase() === 'male' 
-                        ? 'bg-blue-50 text-blue-600 border-blue-100' 
-                        : 'bg-pink-50 text-pink-600 border-pink-100'
+                        ? 'bg-lightCharcoal text-white' 
+                        : 'bg-pink-50 text-pink-600 '
                     }`}>
                         {student.studentgender}
                     </span>
@@ -158,7 +158,7 @@ const StudentProfilePage = () => {
             {/* 1. Academic & Personal Info */}
             <div className='bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 h-full'>
                 <div className='flex items-center gap-3 mb-6 pb-4 border-b border-gray-100'>
-                    <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <div className="bg-lightOrange p-2 rounded-lg text-mutedOrange">
                         <FaGraduationCap size={20} />
                     </div>
                     <h2 className='text-xl font-bold text-gray-800'>Academic & Personal</h2>
@@ -202,7 +202,7 @@ const StudentProfilePage = () => {
                 </div>
                 <div className="w-full flex justify-between gap-x-12 pt-6 border-t border-gray-100 place-self-center">
                     <button 
-                        className="flex-1 py-3 px-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2 active:scale-95"
+                        className="flex-1 py-3 px-4 rounded-xl bg-mutedOrange text-white font-bold hover:bg-hoverMutedOrange transition-all text-sm shadow-lg shadow-lightOrange flex items-center justify-center gap-2 active:scale-95"
                         onClick={() => router.push(`/admin/students/${id}/edit-profile`)}
                     >
                         <FaEdit /> Edit Profile
@@ -219,7 +219,7 @@ const StudentProfilePage = () => {
             {/* 2. Parent / Guardian Info */}
             <div className='bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 h-full'>
                 <div className='flex items-center gap-3 mb-6 pb-4 border-b border-gray-100'>
-                    <div className="bg-green-100 p-2 rounded-lg text-green-600">
+                    <div className="bg-lightOrange p-2 rounded-lg text-mutedOrange">
                         <FaUser size={20} />
                     </div>
                     <h2 className='text-xl font-bold text-gray-800'>Parent / Guardian</h2>

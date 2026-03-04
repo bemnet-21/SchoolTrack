@@ -16,7 +16,7 @@ const EventCard = ({ title, event_date, start_time, end_time } : Event) => {
   return (
     <div className='flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-gray-50 hover:border-gray-100 transition-all duration-200 cursor-default group'>
         
-        <div className='flex flex-col items-center justify-center w-14 h-14 bg-blue-50 text-blue-600 rounded-xl shrink-0 group-hover:bg-blue-100 transition-colors'>
+        <div className='flex flex-col items-center justify-center w-14 h-14 bg-lightOrange text-mutedOrange rounded-xl shrink-0 group-hover:bg-blue-100 transition-colors'>
             <span className='text-xl font-bold leading-none'>{day}</span>
             <span className='text-[10px] font-bold uppercase mt-0.5 tracking-wide'>{month}</span>
         </div>

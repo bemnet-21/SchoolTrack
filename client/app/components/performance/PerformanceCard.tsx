@@ -12,7 +12,7 @@ const PerformanceCard = ({ performance, grade }: PerformanceCardProps) => {
         
         <div className='flex items-center justify-between mb-6'>
             <div className='flex items-center gap-2'>
-                <div className='bg-purple-50 p-2 rounded-lg text-purple-600'>
+                <div className='bg-lightOrange p-2 rounded-lg text-mutedOrange'>
                     <FaChartLine />
                 </div>
                 <h2 className='text-lg font-bold text-gray-800'>Performance</h2>

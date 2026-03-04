@@ -11,7 +11,7 @@ const UpcomingEvents = ({ events }: EventsCard) => {
         
         <div className='flex items-center justify-between mb-6'>
             <div className='flex items-center gap-2'>
-                <div className='bg-blue-50 p-2 rounded-lg text-blue-600'>
+                <div className='bg-lightOrange p-2 rounded-lg text-mutedOrange'>
                     <FaCalendarAlt />
                 </div>
                 <h2 className='text-lg font-bold text-gray-800'>Upcoming Events</h2>

@@ -94,12 +94,12 @@ const Header = () => {
     }
 
   return (
-   <header className="w-full h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 shadow-sm">
+   <header className="w-full h-20 bg-white border-b border-borderColor flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 shadow-sm">
         
         <div className='flex gap-4 items-center flex-1'>    
             <button 
                 onClick={() => dispatch(toggleSidebar())}
-                className="p-2 -ml-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors md:hidden focus:outline-none"
+                className="p-2 -ml-2 rounded-lg text-textPrimary hover:bg-blue-50 transition-colors md:hidden focus:outline-none"
             >
                 <FiMenu className="text-2xl" />
             </button>
@@ -113,7 +113,7 @@ const Header = () => {
             <div className="h-8 w-px bg-gray-200 hidden sm:block"></div>
 
             <Link href={`/${role?.toLowerCase()}/me`} className='flex items-center gap-3 cursor-pointer group'>
-                <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300'>
+                <div className='w-10 h-10 bg-lightCharcoal rounded-full flex items-center justify-center text-white group-hover:bg-charcoal group-hover:text-mutedOrange transition-all duration-300'>
                     <FiUser className="text-xl" />
                 </div>
                 <div className="hidden md:flex flex-col">

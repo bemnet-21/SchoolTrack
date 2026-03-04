@@ -81,7 +81,7 @@ const TeacherProfilePage = () => {
         <div className="flex flex-col items-center justify-center h-[50vh] text-center p-4">
             <h2 className="text-xl font-bold text-gray-800">Teacher Not Found</h2>
             <p className="text-gray-500 mt-2">The requested teacher profile does not exist.</p>
-            <button onClick={() => router.back()} className="text-blue-600 hover:underline mt-4 font-medium">
+            <button onClick={() => router.back()} className="text-mutedOrange hover:underline mt-4 font-medium">
                 Go Back
             </button>
         </div>
@@ -127,15 +127,15 @@ const TeacherProfilePage = () => {
 
         <button 
             onClick={() => router.push('/admin/teachers')} 
-            className='flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors w-fit font-bold text-xs uppercase tracking-widest'
+            className='flex items-center gap-2 text-gray-500 hover:text-mutedOrange transition-colors w-fit font-bold text-xs uppercase tracking-widest'
         >
             <FaArrowLeft /> Back to Directory
         </button>
 
         <div className='bg-white rounded-4xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden'>
-            <div className="absolute top-0 left-0 w-full h-24 bg-linear-to-r from-teal-500 to-emerald-600 opacity-10"></div>
+            <div className="absolute top-0 left-0 w-full h-24 bg-linear-to-r from-mutedOrange to-lightOrange opacity-30"></div>
 
-            <div className='w-24 h-24 md:w-28 md:h-28 rounded-4xl bg-white border-4 border-white shadow-lg flex items-center justify-center text-3xl md:text-4xl font-black text-teal-600 z-10 shrink-0'>
+            <div className='w-24 h-24 md:w-28 md:h-28 rounded-4xl bg-white border-4 border-white shadow-lg flex items-center justify-center text-3xl md:text-4xl font-black text-mutedOrange z-10 shrink-0'>
                 {getInitials(teacher.teachername)}
             </div>
 
@@ -144,11 +144,11 @@ const TeacherProfilePage = () => {
                     {teacher.teachername}
                 </h1>
                 <div className='flex flex-wrap justify-center sm:justify-start gap-3 mt-3'>
-                    <span className='inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-bold border border-teal-100 uppercase tracking-wide'>
+                    <span className='inline-flex items-center gap-1.5 px-3 py-1 bg-lightCharcoal text-white rounded-full text-xs font-bold border border-teal-100 uppercase tracking-wide'>
                         <FaChalkboardTeacher /> Teacher
                     </span>
                     {teacher.subject ? (
-                        <span className='inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-bold border border-purple-100 uppercase tracking-wide'>
+                        <span className='inline-flex items-center gap-1.5 px-3 py-1 bg-lightCharcoal text-white rounded-full text-xs font-bold border border-purple-100 uppercase tracking-wide'>
                             <FaBook /> {teacher.subject}
                         </span>
                     ) : (
@@ -164,15 +164,15 @@ const TeacherProfilePage = () => {
             
             <div className='bg-white p-6 rounded-4xl shadow-sm border border-gray-100 h-full flex flex-col'>
                 <div className='flex items-center gap-3 mb-6 pb-4 border-b border-gray-50'>
-                    <div className="bg-blue-50 p-2 rounded-xl text-blue-600">
+                    <div className="bg-lightOrange p-2 rounded-xl text-mutedOrange">
                         <FaEnvelope size={18} />
                     </div>
                     <h2 className='text-lg font-bold text-gray-800 uppercase tracking-wide'>Contact Info</h2>
                 </div>
 
                 <div className='space-y-4 flex-1'>
-                    <div className="group flex items-start gap-4 p-4 bg-gray-50 rounded-2xl hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
-                        <div className="bg-white p-2 rounded-xl shadow-sm text-gray-400 group-hover:text-blue-500 transition-colors">
+                    <div className="group flex items-start gap-4 p-4 bg-gray-50 rounded-2xl hover:bg-lightOrange transition-colors border border-transparent hover:border-lightOrange">
+                        <div className="bg-white p-2 rounded-xl shadow-sm text-gray-400 group-hover:text-mutedOrange transition-colors">
                             <FaEnvelope />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -181,8 +181,8 @@ const TeacherProfilePage = () => {
                         </div>
                     </div>
 
-                    <div className="group flex items-start gap-4 p-4 bg-gray-50 rounded-2xl hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
-                        <div className="bg-white p-2 rounded-xl shadow-sm text-gray-400 group-hover:text-blue-500 transition-colors">
+                    <div className="group flex items-start gap-4 p-4 bg-gray-50 rounded-2xl hover:bg-lightOrange transition-colors border border-transparent hover:border-lightOrange">
+                        <div className="bg-white p-2 rounded-xl shadow-sm text-gray-400 group-hover:text-mutedOrange transition-colors">
                             <FaPhone />
                         </div>
                         <div className="flex-1">
@@ -195,7 +195,7 @@ const TeacherProfilePage = () => {
 
             <div className='bg-white p-6 rounded-4xl shadow-sm border border-gray-100 h-full flex flex-col'>
                 <div className='flex items-center gap-3 mb-6 pb-4 border-b border-gray-50'>
-                    <div className="bg-purple-50 p-2 rounded-xl text-purple-600">
+                    <div className="bg-lightOrange p-2 rounded-xl text-mutedOrange">
                         <FaUser size={18} />
                     </div>
                     <h2 className='text-lg font-bold text-gray-800 uppercase tracking-wide'>Professional Details</h2>
@@ -206,7 +206,7 @@ const TeacherProfilePage = () => {
                         <span className="text-gray-500 text-sm font-bold flex items-center gap-2">
                             <FaBook className="text-gray-300" /> Main Subject
                         </span>
-                        <span className="font-bold text-right bg-purple-50 px-3 py-1 rounded-lg text-sm text-purple-700">
+                        <span className="font-bold text-right bg-lightOrange px-3 py-1 rounded-lg text-sm text-mutedOrange">
                             {teacher.subject || "Not Assigned"}
                         </span>
                     </div>
@@ -223,7 +223,7 @@ const TeacherProfilePage = () => {
 
                 <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
                     <button 
-                        className="flex-1 py-3 px-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2 active:scale-95"
+                        className="flex-1 py-3 px-4 rounded-xl bg-mutedOrange text-white font-bold hover:bg-hoverMutedOrange transition-all text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2 active:scale-95"
                         onClick={() => router.push(`/admin/teachers/${teacherId}/edit-profile`)}
                     >
                         <FaEdit /> Edit Profile
