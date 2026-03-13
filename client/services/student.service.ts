@@ -32,3 +32,7 @@ export const searchStudents = (query: string) => {
 export const deleteStudent = (studentId: string) => {
     return api.delete(`/students/${studentId}`)
 }
+
+export const getTermCourse = (term:number, year:number, studentId?:string, ) => {
+    return api.get(`/students/get-term-courses?term=${term}&year=${year}&studentId=${studentId}`)
+}

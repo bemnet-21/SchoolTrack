@@ -178,7 +178,7 @@ const StudentsPage = () => {
                             {/* Card Header */}
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3">
-                                    <div className='w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg'>
+                                    <div className='w-12 h-12 rounded-full bg-lightOrange flex items-center justify-center text-mutedOrange font-bold text-lg'>
                                         {(student.studentfirstname?.[0] || 'U')}{(student.studentlastname?.[0] || '')}
                                     </div>
                                     <div>
@@ -186,7 +186,7 @@ const StudentsPage = () => {
                                             {student.studentfirstname} {student.studentlastname}
                                         </h3>
                                         <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
-                                            student.studentgender.toLowerCase() === 'male' ? 'bg-blue-50 text-blue-600' : 'bg-pink-50 text-pink-600'
+                                            student.studentgender.toLowerCase() === 'male' ? 'bg-lightOrange text-mutedOrange' : 'bg-pink-50 text-pink-600'
                                         }`}>
                                             {student.studentgender}
                                         </span>

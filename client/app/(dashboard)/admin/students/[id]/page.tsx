@@ -1,21 +1,41 @@
 'use client'
 
-import { StudentDetail } from '@/interface';
-import { deleteStudent, getStudentProfile } from '@/services/student.service';
+import { StudentDetail, TermCourseInteface } from '@/interface';
+import { deleteStudent, getStudentProfile, getTermCourse } from '@/services/student.service';
 import { formatDate } from '@/utils/formatTime'; // Ensure you have this
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
-import { FaUser, FaPhone, FaEnvelope, FaBirthdayCake, FaArrowLeft, FaGraduationCap, FaMapMarkerAlt, FaEdit, FaTrash, FaExclamationTriangle } from 'react-icons/fa'
+import React, { Fragment, useEffect, useState } from 'react'
+import { FaUser, FaPhone, FaEnvelope, FaBirthdayCake, FaArrowLeft, FaGraduationCap, FaMapMarkerAlt, FaEdit, FaTrash, FaExclamationTriangle, FaChevronDown, FaCheck } from 'react-icons/fa'
 
 const StudentProfilePage = () => {
   const params = useParams()
   const router = useRouter()
-  const id = params?.id
+  let id = params?.id
+  const date = new Date()
+  const currentYear = date.getFullYear()
+  const terms = [1, 2, 3];
+  const years = [...Array(5)].map((_, i) => currentYear - i);
 
   const [student, setStudent] = useState<StudentDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [deleting, setDeleting] = useState(false)
+  const [termCourses, setTermCourses] = useState<TermCourseInteface[]>([])
+  const [term, setTerm] = useState<number>(1)
+  const [year, setYear] = useState<number>(currentYear)
+
+  const getCourse = async (term: number, year: number, studentId?: string) => {
+	const res = await getTermCourse(term, year, studentId)
+	const data = res.data.data
+
+	setTermCourses(data)
+  }
+  useEffect(() => {
+	if(!id || Array.isArray(id)) id = ""
+	getCourse(term, year, id)
+  }, [term, year])
+  console.log("Subjects", termCourses)
   
 
   useEffect(() => {
@@ -25,7 +45,6 @@ const StudentProfilePage = () => {
         try {
             setLoading(true)
             const res = await getStudentProfile(studentId)
-            // Handle potentially nested data
             setStudent(res.data.data || res.data)
         } catch (error) {
             console.error("Failed to load student profile", error)
@@ -111,7 +130,6 @@ const StudentProfilePage = () => {
                 </div>
             </div>
         )}
-        {/* --- Back Button --- */}
         <button 
             onClick={() => router.push('/admin/students/')} 
             className='flex items-center gap-2 text-gray-500 hover:text-mutedOrange transition-colors w-fit font-medium cursor-pointer'
@@ -119,17 +137,13 @@ const StudentProfilePage = () => {
             <FaArrowLeft /> Back to Directory
         </button>
 
-        {/* --- Profile Header --- */}
         <div className='bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden'>
-            {/* Background Decoration */}
             <div className="absolute top-0 left-0 w-full h-24 bg-linear-to-r from-mutedOrange to-lightOrange opacity-30"></div>
 
-            {/* Avatar */}
             <div className='w-24 h-24 md:w-32 md:h-32 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center text-4xl font-bold text-mutedOrange z-10'>
                 {student.studentfirstname?.[0]}{student.studentlastname?.[0]}
             </div>
 
-            {/* Header Info */}
             <div className='flex-1 space-y-6 text-center md:text-left z-10 pt-2'>
                 <h1 className='text-3xl md:text-4xl font-bold text-gray-900'>
                     {student.studentfirstname} {student.studentlastname}
@@ -152,10 +166,8 @@ const StudentProfilePage = () => {
             </div>
         </div>
 
-        {/* --- Details Grid --- */}
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             
-            {/* 1. Academic & Personal Info */}
             <div className='bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 h-full'>
                 <div className='flex items-center gap-3 mb-6 pb-4 border-b border-gray-100'>
                     <div className="bg-lightOrange p-2 rounded-lg text-mutedOrange">
@@ -216,7 +228,6 @@ const StudentProfilePage = () => {
                 </div>
             </div>
 
-            {/* 2. Parent / Guardian Info */}
             <div className='bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 h-full'>
                 <div className='flex items-center gap-3 mb-6 pb-4 border-b border-gray-100'>
                     <div className="bg-lightOrange p-2 rounded-lg text-mutedOrange">
@@ -253,6 +264,138 @@ const StudentProfilePage = () => {
                 </div>
             </div>
 
+        </div>
+
+        {/* --- Academic Courses Section --- */}
+        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div className="flex items-center gap-3">
+                    <div className="bg-lightOrange p-2 rounded-lg text-mutedOrange">
+                        <FaGraduationCap size={20} />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800">Enrolled Courses</h2>
+                </div>
+
+                
+				<div className="flex items-center gap-2">
+            {/* Term Selector */}
+					<div className="w-32">
+						<Listbox value={term} onChange={setTerm}>
+							<div className="relative">
+								<ListboxButton className="relative w-full cursor-default rounded-xl bg-backgroundBase py-2.5 pl-4 pr-10 text-left border border-borderColor focus:outline-none focus:ring-2 focus:ring-mutedOrange sm:text-sm transition-all">
+									<span className="block truncate text-textPrimary font-semibold">
+										Term {term}
+									</span>
+									<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+										<FaChevronDown className="h-3 w-3 text-mutedOrange" aria-hidden="true" />
+									</span>
+								</ListboxButton>
+								<Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+									<ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+										{terms.map((t) => (
+											<ListboxOption
+												key={t}
+												value={t}
+												className={({ focus }) =>
+													`relative cursor-default select-none py-2 pl-10 pr-4 transition-colors ${
+														focus ? 'bg-lightOrange text-mutedOrange' : 'text-textPrimary'
+													}`
+												}
+											>
+												{({ selected }) => (
+													<>
+														<span className={`block truncate ${selected ? 'font-bold' : 'font-normal'}`}>
+															Term {t}
+														</span>
+														{selected && (
+															<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-mutedOrange">
+																<FaCheck className="h-3 w-3" aria-hidden="true" />
+															</span>
+														)}
+													</>
+												)}
+											</ListboxOption>
+										))}
+									</ListboxOptions>
+								</Transition>
+							</div>
+						</Listbox>
+					</div>
+
+					{/* Year Selector */}
+					<div className="w-32">
+						<Listbox value={year} onChange={setYear}>
+							<div className="relative">
+								<ListboxButton className="relative w-full cursor-default rounded-xl bg-backgroundBase py-2.5 pl-4 pr-10 text-left border border-borderColor focus:outline-none focus:ring-2 focus:ring-mutedOrange sm:text-sm transition-all">
+									<span className="block truncate text-textPrimary font-semibold">
+										{year}
+									</span>
+									<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+										<FaChevronDown className="h-3 w-3 text-mutedOrange" aria-hidden="true" />
+									</span>
+								</ListboxButton>
+								<Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+									<ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+										{years.map((y) => (
+											<ListboxOption
+												key={y}
+												value={y}
+												className={({ focus }) =>
+													`relative cursor-default select-none py-2 pl-10 pr-4 transition-colors ${
+														focus ? 'bg-lightOrange text-mutedOrange' : 'text-textPrimary'
+													}`
+												}
+											>
+												{({ selected }) => (
+													<>
+														<span className={`block truncate ${selected ? 'font-bold' : 'font-normal'}`}>
+															{y}
+														</span>
+														{selected && (
+															<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-mutedOrange">
+																<FaCheck className="h-3 w-3" aria-hidden="true" />
+															</span>
+														)}
+													</>
+												)}
+											</ListboxOption>
+										))}
+									</ListboxOptions>
+								</Transition>
+							</div>
+						</Listbox>
+					</div>
+				</div>
+				{/*  */}
+            </div>
+
+            {termCourses.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {termCourses.map((item, index) => (
+                        <div 
+                            key={index} 
+                            className="group p-5 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-lightOrange transition-all duration-200 flex items-center gap-4"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-mutedOrange shadow-sm group-hover:bg-mutedOrange group-hover:text-white transition-colors">
+                                <span className="font-bold">{index + 1}</span>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-800 group-hover:text-mutedOrange transition-colors">
+                                    {item.subject}
+                                </h3>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-gray-100 rounded-3xl">
+                    <div className="bg-gray-50 p-4 rounded-full mb-4">
+                        <FaGraduationCap size={32} className="text-gray-300" />
+                    </div>
+                    <p className="text-gray-500 font-medium text-center">No courses found for Term {term}, {year}</p>
+                    <p className="text-sm text-gray-400 text-center">Contact administration to assign subjects.</p>
+                </div>
+            )}
         </div>
 
     </section>

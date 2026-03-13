@@ -334,3 +334,7 @@ export interface StudentFeeCardProps {
   student_first_name: string
   student_last_name: string
 }
+
+export interface TermCourseInteface {
+  subject: string
+}
