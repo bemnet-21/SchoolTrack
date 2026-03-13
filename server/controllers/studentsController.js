@@ -250,6 +250,7 @@ export const getStudentProfile = async (req, res) => {
                 s.gender AS studentGender, 
                 s.address AS studentAddress, 
                 s.student_email AS studentemail,
+                s.created_at AS joined,
                 c.name AS class, c.grade AS grade, 
                 p.name AS parentName, 
                 p.phone AS parentPhone, 
