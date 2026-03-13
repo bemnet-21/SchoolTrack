@@ -409,9 +409,14 @@ export const getTermCourse = async (req, res) => {
                 JOIN class_subjects cs ON cs.class_id = s.class_id
                 JOIN subject sub ON sub.id = cs.subject_id
                 WHERE s.id = $1
-            `, [studentId])
+                AND cs.term = $2
+                AND cs.year = $3
+            `, [studentId, term, year])
 
-        res.status(200).json(results.rows)
+        res.status(200).json({
+            message : "Success",
+            data: results.rows
+        })
     } catch(err) {
         console.log(err)
         res.status(500).json({ message : "Internal server error" })
