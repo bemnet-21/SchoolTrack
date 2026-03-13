@@ -13,7 +13,7 @@ export const getAllStudents = () => {
     return api.get('/students')
 }
 
-export const getStudentProfile = ( studentId: string ) => {
+export const getStudentProfile = ( studentId?: string ) => {
     return api.get(`/students/profile/${studentId}`)
 }
 
