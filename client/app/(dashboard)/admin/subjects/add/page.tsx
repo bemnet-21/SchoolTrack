@@ -61,7 +61,7 @@ const AddSubjectPage = () => {
                             placeholder='e.g. Mathematics'
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className='w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all'
+                            className='w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-lightOrange focus:border-mutedOrange outline-none transition-all'
                             autoFocus
                         />
                     </div>
@@ -80,7 +80,7 @@ const AddSubjectPage = () => {
                     <button 
                         type="submit"
                         disabled={loading || !name.trim()}
-                        className={`px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`px-6 py-3 rounded-lg bg-mutedOrange text-white font-medium hover:bg-hoverMutedOrange shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
                         {loading ? 'Saving...' : <><FaSave /> Create Subject</>}
                     </button>

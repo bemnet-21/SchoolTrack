@@ -7,17 +7,7 @@ import { getAllSubjects } from '@/services/subject.service'
 import Pills from '@/app/components/Pills'
 import { FaBook, FaSearch, FaEllipsisV, FaLayerGroup, FaChalkboardTeacher } from 'react-icons/fa'
 
-const getSubjectColor = (name: string) => {
-    const colors = [
-        'bg-blue-100 text-blue-600',
-        'bg-green-100 text-green-600',
-        'bg-purple-100 text-purple-600',
-        'bg-orange-100 text-orange-600',
-        'bg-pink-100 text-pink-600',
-        'bg-teal-100 text-teal-600',
-    ];
-    return colors[name.length % colors.length];
-}
+
 
 const SubjectsPage = () => {
   const [subjects, setSubjects] = useState<SubjectProps[]>([])
@@ -61,7 +51,7 @@ const SubjectsPage = () => {
                         placeholder="Search subjects..." 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-blue-500 bg-white"
+                        className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-mutedOrange bg-white"
                     />
                 </div>
                 <Link href="/admin/subjects/add" className="w-full sm:w-auto">
@@ -85,10 +75,10 @@ const SubjectsPage = () => {
                         key={subject.id} 
                         className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group relative overflow-hidden"
                     >
-                        <div className={`absolute top-0 left-0 w-full h-1.5 ${getSubjectColor(subject.name).replace('text', 'bg').split(' ')[1]}`}></div>
+                        <div className={`absolute top-0 left-0 w-full h-1.5 bg-lightOrange text-mutedOrange`}></div>
 
                         <div className="flex justify-between items-start mb-4">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${getSubjectColor(subject.name)}`}>
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-lightOrange text-mutedOrange`}>
                                 <FaBook />
                             </div>
                             <button className="text-gray-300 hover:text-gray-600 transition-colors">

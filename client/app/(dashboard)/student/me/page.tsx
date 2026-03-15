@@ -3,10 +3,12 @@ import { StudentProfileInterface } from '@/interface'
 import { getStudentProfile } from '@/services/student.service'
 import { formatDate } from '@/utils/formatTime' 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { FaEnvelope, FaIdBadge, FaLock, FaShieldAlt, FaUser, FaMapMarkerAlt, FaBirthdayCake, FaPhone, FaUsers } from 'react-icons/fa'
+import { FaEnvelope, FaIdBadge, FaLock, FaShieldAlt, FaUser, FaMapMarkerAlt, FaBirthdayCake, FaPhone, FaUsers, FaArrowLeft } from 'react-icons/fa'
 
 const StudentProfilePage = () => {
+  const router = useRouter()
   const [profileData, setProfileData] = useState<StudentProfileInterface | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -43,6 +45,12 @@ const StudentProfilePage = () => {
 
   return (
     <section className='w-full max-w-5xl mx-auto p-4 md:p-8 space-y-8'>
+        <button 
+                    onClick={() => router.push('/student')} 
+                    className='flex items-center gap-2 text-gray-500 hover:text-mutedOrange transition-colors w-fit font-medium cursor-pointer'
+                >
+                    <FaArrowLeft /> Back to Directory
+                </button>
         
         <div>
             <h1 className='text-3xl font-bold text-gray-800'>My Profile</h1>

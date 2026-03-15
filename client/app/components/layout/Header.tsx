@@ -117,7 +117,7 @@ const Header = () => {
                     <FiUser className="text-xl" />
                 </div>
                 <div className="hidden md:flex flex-col">
-                    <span className="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors">{name}</span>
+                    <span className="text-sm font-bold text-gray-700 group-hover:text-mutedOrange transition-colors">{name}</span>
                     <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{role}</span>
                 </div>
             </Link>
